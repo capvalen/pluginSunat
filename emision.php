@@ -19,7 +19,7 @@ switch ($_POST['emitir']) {
 	default: # code... break;
 }
 
-$sqlCorrelativo="SELECT LPAD(factCorrelativo+1, 8, '0') as contador FROM `fact_cabecera` where idLocal='{$_POST['local']}' and factSerie = '{$serie}' order by factCorrelativo desc limit 1";
+$sqlCorrelativo="SELECT LPAD(factCorrelativo+1, 8, '0') as contador  FROM `fact_cabecera` where idLocal='{$_POST['local']}' and factSerie = '{$serie}' order by factCorrelativo desc limit 1";
 $resultadoCorrelativo=$cadena->query($sqlCorrelativo);
 $filasCorrelativo = $resultadoCorrelativo->num_rows;
 if($filasCorrelativo==0){
@@ -83,7 +83,7 @@ if($filasCabeza==1){
 	
 	$lineaCabeza = $rowC['tipOperacion'].$separador.$rowC['fechaEmision'].$separador.$rowC['horaEmision'].$separador.$rowC['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowC['dniRUC'].$separador.$rowC['razonSocial']. $separador.$rowC['tipoMoneda'].$separador. $costo.$separador. $igvFin.$separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
 
-	echo $lineaCabeza;
+	//echo $lineaCabeza;
 	$archivo = fopen("{$directorio}{$nombreArchivo}.cab", "w");
 	fwrite($archivo, "{$lineaCabeza}");
 	fclose($archivo);
@@ -109,7 +109,7 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 	$igvSubFin = str_replace (',', '',number_format($rowD['igvUnitario'],2));
 	$valorSubFin = str_replace (',', '',number_format($rowD['valorItem'],2));
 
-	$lineaDetalle =  $lineaDetalle . $unidad.$separador.$rowD['cantidadItem']. $separador.$i.$separador. $rowD['codProductoSUNAT'].$separador.$rowD['descripcionItem'].$separador. $valorFin.$separador.  $igvSubFin.$separador. $rowD['codTriIGV'] .$separador. $igvSubFin.$separador. $valorSubFin.$separador. $rowD['nomTributoIgvItem'].$separador. $tributoExtranjero.$separador.$afectacion. $separador. $rowD['porIgvItem'] .$separador. $rowD['codTriISC'] .$separador. $rowD['codTriISC']. $separador. $rowD['mtoIscItem'] . $separador. $rowD['mtoBaseIscItem'] . $separador. $rowD['nomTributoIscItem'] .$separador . $rowD['codTipTributoIscItem'] .$separador. $rowD['porIscItem']. $separador. $rowD['codTriOtroItem']. $separador. $tributoOtro .$separador. $tributoOtroItem .$separador.$baseOtroItem .$separador.$codigoOtroItem. $separador. $rowD['porTriOtroItem'] .$separador. $rowD['mtoPrecioVenta'] . $separador. $rowD['mtoValorVenta']. $separador. $rowD['mtoValorReferencialUnitario']. $separador."\n";
+	$lineaDetalle =  $lineaDetalle . $unidad.$separador.$rowD['cantidadItem']. $separador.$i.$separador. $rowD['codProductoSUNAT'].$separador.$rowD['descripcionItem'].$separador. $valorFin.$separador.  $igvSubFin.$separador. $rowD['codTriIGV'] .$separador. $igvSubFin.$separador. $valorSubFin.$separador. $rowD['nomTributoIgvItem'].$separador. $rowD['codTipTributoIgvItem'] .$separador.$rowD['tipAfeIGV']. $separador. $rowD['porIgvItem'] .$separador. $rowD['codTriISC'] . $separador. $rowD['mtoIscItem'] . $separador. $rowD['mtoBaseIscItem'] . $separador. $rowD['nomTributoIscItem'] .$separador . $rowD['codTipTributoIscItem'] .$separador . $rowD['tipSisISC'] .$separador. $rowD['porIscItem']. $separador. $rowD['codTriOtroItem']. $separador. $tributoOtro .$separador. $tributoOtroItem .$separador.$baseOtroItem .$separador.$rowD['codTipTributoIOtroItem'] . $separador. $rowD['porTriOtroItem'] .$separador. $rowD['mtoPrecioVenta'] . $separador. $rowD['mtoValorVenta']. $separador. $rowD['mtoValorReferencialUnitario']. $separador."\n";
 
 	
 	$i++;
@@ -121,6 +121,20 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 $detalle = fopen("{$directorio}{$nombreArchivo}.det", "w");
 fwrite($detalle, "{$lineaDetalle}");
 fclose($detalle);
+
+$leyenda = $rowC['codLeyenda'].$separador. $letras .$separador;
+
+$fLeyenda = fopen("{$directorio}{$nombreArchivo}.ley", "w");
+fwrite($fLeyenda, "{$leyenda}");
+fclose($fLeyenda);
+
+
+
+$tributo = $rowC['ideTributo'] . $separador . $rowC['nomTributo'] . $separador .  $rowC['codTipTributo']  . $separador . $rowC['mtoBaseImponible'] . $separador . $rowC['mtoTributo'] . $separador;
+
+$fTributo = fopen("{$directorio}{$nombreArchivo}.tri", "w");
+fwrite($fTributo, "{$tributo}");
+fclose($fTributo);
 
 echo "fin";
 

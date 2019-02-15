@@ -38,7 +38,10 @@ include "generales.php"; ?>
         </button>
       </div>
       <div class="modal-body">
-        <p>Los archivos correctamente se crearon en la ruta <strong><?php echo $directorio; ?></strong></p>
+        <p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
+				<button class="btn btn-outline-primary">Imprimir en ticketera</button>
+				<button class="btn btn-outline-primary">Generar PDF (A4)</button>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
@@ -81,8 +84,8 @@ include "generales.php"; ?>
           <span aria-hidden="true">&times;</span>
         </button>
         <p>Procesos para el Ticket <strong class="text-uppercase"><span id="spanTicket"></span></strong>:</p>
-				<button class="btn btn-block btn-outline-primary my-3" id="btnEmitirFact">Emitir Factura</button>
-				<button class="btn btn-block btn-outline-primary my-3">Emitir Boleta de Venta</button>
+				<button class="btn btn-block btn-outline-primary my-3" id="btnEmitirFactura">Emitir Factura</button>
+				<button class="btn btn-block btn-outline-primary my-3" id="btnEmitirBoleta">Emitir Boleta de Venta</button>
 				<button class="btn btn-block btn-outline-primary my-3">Generar Nota de Crédito</button>
 				<button class="btn btn-block btn-outline-primary my-3">Generar Nota de Pedido</button>
       </div>
@@ -131,11 +134,22 @@ $('#btnConsultarDisponibilidad').click(function() {
 	}
 });
 
-$('#btnEmitirFact').click(function() {
+$('#btnEmitirFactura').click(function() {
+	$.ajax({url: 'emision.php', type: 'POST', data: { emitir: 1, local:$('#txtCodLocal').val() , negocio:$('#txtNCodNegocio').val() , ticket:$('#txtNumTicket').val()  }}).done(function(resp) {
+		console.log(resp)
+		if(resp=='fin'){
+			$('#modalProcesarComprobante').modal('hide');
+			$('#modalArchivoBien').modal('show');
+		}
+	});
+});
+
+$('#btnEmitirBoleta').click(function() {
 	$.ajax({url: 'emision.php', type: 'POST', data: { emitir: 3, local:$('#txtCodLocal').val() , negocio:$('#txtNCodNegocio').val() , ticket:$('#txtNumTicket').val()  }}).done(function(resp) {
 		console.log(resp)
 		if(resp=='fin'){
-			//$('#modalArchivoBien').modal('show');
+			$('#modalProcesarComprobante').modal('hide');
+			$('#modalArchivoBien').modal('show');
 		}
 	});
 });
