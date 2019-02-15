@@ -1,7 +1,7 @@
 <?php
 //Rellenar por cada Cliente:
-$directorio = 'C:/xampp/src/';
-$rucEmisor = '20602690866';
+$directorio = 'C:\SFS_v1.2\sunat_archivos\sfs\DATA/';
+$rucEmisor = '20602337147';
 
 
 
