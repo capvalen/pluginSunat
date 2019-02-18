@@ -4,8 +4,6 @@ include 'conexion.php';
 include 'generales.php';
 require "NumeroALetras.php";
 
-
-
 $caso = "-0{$_POST['emitir']}-"; // 01 para factura, 03 para boleta
 
 
@@ -14,8 +12,8 @@ $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc();
 
 switch ($_POST['emitir']) {
-	case '1': $serie = $rowSeries['serieFactura']; break;
-	case '3': $serie = $rowSeries['serieBoleta']; break;
+	case '1': $serie = $rowSeries['serieFactura']; $soy="FACTURA"; break;
+	case '3': $serie = $rowSeries['serieBoleta']; $soy="BOLETA"; break;
 	default: # code... break;
 }
 
@@ -90,6 +88,7 @@ if($filasCabeza==1){
 
 }
 
+$rowProductos = array();
 
 $i=1;
 $lineaDetalle ='';
@@ -111,7 +110,7 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 
 	$lineaDetalle =  $lineaDetalle . $unidad.$separador.$rowD['cantidadItem']. $separador.$i.$separador. $rowD['codProductoSUNAT'].$separador.$rowD['descripcionItem'].$separador. $valorFin.$separador.  $igvSubFin.$separador. $rowD['codTriIGV'] .$separador. $igvSubFin.$separador. $valorSubFin.$separador. $rowD['nomTributoIgvItem'].$separador. $rowD['codTipTributoIgvItem'] .$separador.$rowD['tipAfeIGV']. $separador. $rowD['porIgvItem'] .$separador. $rowD['codTriISC'] . $separador. $rowD['mtoIscItem'] . $separador. $rowD['mtoBaseIscItem'] . $separador. $rowD['nomTributoIscItem'] .$separador . $rowD['codTipTributoIscItem'] .$separador . $rowD['tipSisISC'] .$separador. $rowD['porIscItem']. $separador. $rowD['codTriOtroItem']. $separador. $tributoOtro .$separador. $tributoOtroItem .$separador.$baseOtroItem .$separador.$rowD['codTipTributoIOtroItem'] . $separador. $rowD['porTriOtroItem'] .$separador. $rowD['mtoPrecioVenta'] . $separador. $rowD['mtoValorVenta']. $separador. $rowD['mtoValorReferencialUnitario']. $separador."\n";
 
-	
+	$rowProductos[$i] = array( 'cantidad'=>$rowD['cantidadItem'], 'descripcion'=> $rowD['descripcionItem'], 'precio'=> $rowD['mtoPrecioVenta']  );
 	$i++;
 
 	
@@ -136,6 +135,14 @@ $fTributo = fopen("{$directorio}{$nombreArchivo}.tri", "w");
 fwrite($fTributo, "{$tributo}");
 fclose($fTributo);
 
-echo "fin";
+
+
+$filas=array();
+$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $_POST['emitir'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin) );
+
+array_push ( $filas, $rowProductos);
+
+echo json_encode($filas);
+//echo "fin";
 
 ?>

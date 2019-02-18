@@ -1,7 +1,8 @@
 <?php
-require "NumeroALetras.php";
+include('phpqrcode/qrlib.php'); 
 
-
-$resp=NumeroALetras::convertir(125);
-var_dump($resp);
-?>
+$tempDir = './';
+$filename = "qrtemp";
+$body =  "contenido generado";
+$codeContents = $body; 
+QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);

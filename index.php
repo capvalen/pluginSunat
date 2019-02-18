@@ -39,7 +39,7 @@ include "generales.php"; ?>
       </div>
       <div class="modal-body">
         <p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
-				<button class="btn btn-outline-primary">Imprimir en ticketera</button>
+				<button class="btn btn-outline-primary" id="btnPrintTicketera">Imprimir en ticketera</button>
 				<button class="btn btn-outline-primary">Generar PDF (A4)</button>
 
       </div>
@@ -136,8 +136,9 @@ $('#btnConsultarDisponibilidad').click(function() {
 
 $('#btnEmitirFactura').click(function() {
 	$.ajax({url: 'emision.php', type: 'POST', data: { emitir: 1, local:$('#txtCodLocal').val() , negocio:$('#txtNCodNegocio').val() , ticket:$('#txtNumTicket').val()  }}).done(function(resp) {
-		console.log(resp)
-		if(resp=='fin'){
+		//console.log(resp)
+		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+		if($.jTicket.length >=1){
 			$('#modalProcesarComprobante').modal('hide');
 			$('#modalArchivoBien').modal('show');
 		}
@@ -146,11 +147,33 @@ $('#btnEmitirFactura').click(function() {
 
 $('#btnEmitirBoleta').click(function() {
 	$.ajax({url: 'emision.php', type: 'POST', data: { emitir: 3, local:$('#txtCodLocal').val() , negocio:$('#txtNCodNegocio').val() , ticket:$('#txtNumTicket').val()  }}).done(function(resp) {
-		console.log(resp)
-		if(resp=='fin'){
+		//console.log(resp)
+		$.jTicket = JSON.parse(resp); console.log( $.jTicket );
+		if($.jTicket.length >=1){
 			$('#modalProcesarComprobante').modal('hide');
 			$('#modalArchivoBien').modal('show');
 		}
+		//if(resp=='fin'){	} 
+	});
+});
+$('#btnPrintTicketera').click(function() {
+	$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
+		tipoComprobante: $.jTicket[0].tipoComprobante,
+		rucEmisor: $.jTicket[0].rucEmisor,
+		queEs: $.jTicket[0].queSoy,
+		serie: $.jTicket[0].serie,
+		correlativo: $.jTicket[0].correlativo,
+		tipoCliente: $.jTicket[0].tipoCliente,
+		fecha: $.jTicket[0].fechaEmision,
+		cliente: $.jTicket[0].razonSocial,
+		docClient: $.jTicket[0].ruc,
+		monedas: $.jTicket[0].letras,
+		costoFinal: $.jTicket[0].costoFinal,
+		igvFinal: $.jTicket[0].igvFinal,
+		totalFinal: $.jTicket[0].totalFinal,
+		productos: $.jTicket[1]
+	 }}).done(function(resp) {
+		console.log(resp)
 	});
 });
 

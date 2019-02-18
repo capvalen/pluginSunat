@@ -1,68 +1,67 @@
 <?php
+include('phpqrcode/qrlib.php'); 
 
-/* Change to the correct path if you copy this example! */
 require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\EscposImage; //librería de imagen
-/**
- * Assuming your printer is available at LPT1,
- * simpy instantiate a WindowsPrintConnector to it.
- *
- * When troubleshooting, make sure you can send it
- * data from the command-line first:
- *  echo "Hello World" > LPT1
- */
- 
-    //$connector = new WindowsPrintConnector("smb://192.168.1.131/TM-U220");
-$connectorV31 = new WindowsPrintConnector("smb://192.168.0.3/XP-58");
+
+$separador ='|';
+$tempDir = './';
+$filename = "qrtemp";
+$body =  $_POST['rucEmisor'] .$separador. $_POST['tipoComprobante'] .$separador. $_POST['serie'] .$separador. $_POST['correlativo'] .$separador. $_POST['igvFinal'] .$separador. $_POST['totalFinal'] . $separador. $_POST['fecha'] . $separador. $_POST['tipoCliente'] . $separador. $_POST['docClient']. $separador;
+$codeContents = $body; 
+QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
+
+
+$productos=$_POST['productos'];
+$todoProd= '';
+foreach ($productos as $variable) {
+    $todoProd = $todoProd.$variable['cantidad']." UND ". $variable['descripcion'] .'  S/ '. number_format($variable['precio'],2)."\n";
+}
+//echo $todoProd;
+
+
+$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/xp-58");
 try {
-    // A FilePrintConnector will also work, but on non-Windows systems, writes
-    // to an actual file called 'LPT1' rather than giving a useful error.
-    // $connector = new FilePrintConnector("LPT1");
-    /* Print a "Hello world" receipt" */
-    $tux = EscposImage::load("bitmap.png", false);
+
+    $tux = EscposImage::load("bitmap.jpg", false);
+    $tuxQR = EscposImage::load("qrtemp.png", false);
 
     $printer = new Printer($connectorV31);
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> bitImage($tux);
     $printer -> setEmphasis(true);
-    $printer -> text("\nINFOCAT SOLUCIONES S.A.C.\n");
-    $printer -> text("RUC: 20602337147\n");
+    $printer -> text("\nINVERSIONES PORTAIMPORT S.A.C.\n");
+    $printer -> text("RUC: 20568472862\n");
     $printer -> setEmphasis(false);
-    $printer -> text("Av. Huancavelica 435 - El Tambo - Huancayo -\n");
-    $printer -> text("Cel: 977692108\n");
+    $printer -> text("Cal. Los Lirios N°256 Urb. Primavera Lima El Agustino\n");
     $printer -> setEmphasis(true);
-    $printer -> text("BOLETA ELECTRÓNICA\n");
-    $printer -> text("EB01-19\n"); //Cambniar Codigooooooooo
+    $printer -> text("{$_POST['queEs']} ELECTRÓNICA\n");
+    $printer -> text("{$_POST['serie']} - {$_POST['correlativo']}\n"); //Cambniar Codigooooooooo
     $printer -> setEmphasis(false);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
     $printer -> text("Fecha de emisión: 15/02/2018\n");
-    $printer -> text("Señor(es): Perucash\n");
-    $printer -> text("Doc. Ident.: 00000000\n");
-    $printer -> text("Dirección: Las Retamas\n");
+    $printer -> text("Doc. Ident.: {$_POST['docClient']}\n");
+    $printer -> text("Señor(es): {$_POST['cliente']}\n");
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
-    $printer -> text("1 UND Teclado Logitec K120 USB \n");
-    $printer->setJustification(Printer::JUSTIFY_RIGHT);
-    $printer -> text("S/ 33.00 \n");
-    $printer->setJustification(Printer::JUSTIFY_LEFT);
+    $printer -> text("{$todoProd}\n");
     $printer -> text("---------------------------------\n");
-    $printer -> text("Sub Total: S/ 27.97 \n");
-    $printer -> text("IGV (18%): S/ 5.03 \n");
-    $printer -> text("Total: S/ 33.00 \n");
-    $printer -> text("SON: TREINTA Y TRES SOLES 00/100 \n");
+    $printer -> text("Sub Total: S/ {$_POST['costoFinal']} \n");
+    $printer -> text("IGV (18%): S/ {$_POST['igvFinal']} \n");
+    $printer -> text("Total: S/ {$_POST['totalFinal']} \n");
+    $printer -> text("SON: {$_POST['monedas']} \n");
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
-    $printer -> text("www.infocatsoluciones.com\n");
-    $printer -> text("Gracias por tu preferencia\n\n");
-    
+    $printer -> bitImage($tuxQR);
     $printer -> text("--------------------------------\n");
+    $printer -> text("Gracias por tu preferencia\n\n");
     $printer -> text("Esta es una representación impresa de la factura electrónica, generada en el Sistema de SUNAT. Puede verificarla utilizando su Clave SOL.\n");
     $printer -> cut();
-    /* Close printer */
+    // Close printer 
     $printer -> close();
 } catch (Exception $e) {
     echo "No se pudo imprimir en la impresora: " . $e -> getMessage() . "\n";
