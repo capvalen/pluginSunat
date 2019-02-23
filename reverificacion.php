@@ -4,32 +4,22 @@ include 'conexion.php';
 include 'generales.php';
 require "NumeroALetras.php";
 
-$caso = "-0{$_POST['emitir']}-"; // 01 para factura, 03 para boleta
 
 
-$sqlSeries="SELECT * FROM `fact_series`";
+
+$sqlSeries="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE idNegocio = '{$_POST['negocio']}' and idLocal='{$_POST['local']}' and idTicket='{$_POST['ticket']}'";
 $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc();
 
-switch ($_POST['emitir']) {
-	case '1': $serie = $rowSeries['serieFactura']; $soy="FACTURA"; break;
-	case '3': $serie = $rowSeries['serieBoleta']; $soy="BOLETA"; break;
-	default: # code... break;
-}
 
-$sqlCorrelativo="SELECT LPAD(factCorrelativo+1, 8, '0') as contador  FROM `fact_cabecera` where idLocal='{$_POST['local']}' and factSerie = '{$serie}' order by factCorrelativo desc limit 1";
-$resultadoCorrelativo=$cadena->query($sqlCorrelativo);
-$filasCorrelativo = $resultadoCorrelativo->num_rows;
-if($filasCorrelativo==0){
-	$correlativo='00000001';
-}else{
-	$rowCorrelativo=$resultadoCorrelativo->fetch_assoc(); 
-	$correlativo = $rowCorrelativo['contador'];
-}
+$caso = "-0{$rowSeries['factTipoDocumento']}-"; // 01 para factura, 03 para boleta
+
+$serie = $rowSeries['factSerie'];
+$soy = $rowSeries['queDoc'];
+$correlativo = $rowSeries['factCorrelativo'];
 
 
 $factura =  $serie.'-'.$correlativo;
-
 $nombreArchivo = $rucEmisor.$caso.$factura ;
 
 $sqlBase="select totalFinal from `fact_cabecera` where 	idNegocio = '{$_POST['negocio']}' and idLocal='{$_POST['local']}' and idTicket='{$_POST['ticket']}'; ";
@@ -42,23 +32,6 @@ $parteDecimal = ($rowBase['totalFinal']-$parteEntera)*100;
 //Pedir las letras del monto facturado
 
 $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'/100 MN';
-
-
-/* ------- Haciendo un update sobre la table fact cabecera ---------- */
-
-
-$sql="UPDATE `fact_cabecera` SET
-`factTipoDocumento`= '{$_POST['emitir']}',
-`factSerie`= '{$serie}',
-`factCorrelativo`= '{$correlativo}',
-`desLeyenda`= '{$letras}',
-`comprobanteEmitido` =1,
-`comprobanteFechado` =now() where idNegocio = '{$_POST['negocio']}' and idLocal='{$_POST['local']}' and idTicket='{$_POST['ticket']}';";
-
-$resultado=$cadena->query($sql);
-
-/* ------- Fin update sobre la table fact cabecera ---------- */
-
 
 
 
@@ -75,7 +48,6 @@ if($filasCabeza==1){
 	}else if(strlen($rowC['dniRUC'])==0){
 		$tipoDoc = '0';
 	}
-
 	$descuento = $rowC['sumDescTotal'];
 	$costo= str_replace (',', '',number_format($rowC['costoFinal'],2));
 	$igvFin = str_replace (',', '',number_format($rowC['IGVFinal'],2));
@@ -140,7 +112,7 @@ fclose($fTributo);
 
 
 $filas=array();
-$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $_POST['emitir'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin) );
+$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $rowSeries['factTipoDocumento'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin) );
 
 array_push ( $filas, $rowProductos);
 

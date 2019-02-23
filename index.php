@@ -20,8 +20,8 @@ include "generales.php"; ?>
 				<div class="row">
 				<div class="col-sm-12 mx-5 px-5">
 						<button class="btn btn-outline-success btn-block btn-lg my-4" id="btnEmitirComprobante">Emitir Comprobante</button>
-						<button class="btn btn-outline-warning btn-block btn-lg my-4">Consultar comprobante</button>
-						<button class="btn btn-outline-dark btn-block btn-lg my-4">Modificar serie de comprobante</button>
+						<button class="btn btn-outline-warning btn-block btn-lg my-4" id="btnConsultarComprobante">Consultar comprobante</button>
+						<button class="btn btn-outline-dark btn-block btn-lg my-4" id="btnModificarSerie">Modificar serie de comprobante</button>
 					</div>
 				</div>
 			</div>
@@ -40,7 +40,7 @@ include "generales.php"; ?>
       <div class="modal-body">
         <p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
 				<button class="btn btn-outline-primary" id="btnPrintTicketera">Imprimir en ticketera</button>
-				<button class="btn btn-outline-primary">Generar PDF (A4)</button>
+				<button class="btn btn-outline-primary" id="btnPrintA4">Generar PDF (A4)</button>
 
       </div>
       <div class="modal-footer">
@@ -75,6 +75,32 @@ include "generales.php"; ?>
   </div>
 </div>
 
+<!-- Modal para consultar el N° ticket -->
+<div class="modal fade" id="modalConsultaTicket" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p>Ingrese los datos de negocio y el N° de Ticket:</p>
+				<input type="text" class="form-control text-uppercase text-center my-3" id="txtNCodNegocio2" placeholder='Código de negocio' value="113">
+				<input type="text" class="form-control text-uppercase text-center my-3" id="txtCodLocal2" placeholder='Código de local' value="12300">
+				<input type="text" class="form-control text-uppercase text-center my-3" id="txtNumTicket2" placeholder='N° de Ticket' value="103420-8">
+      </div>
+      <div class="modal-footer">
+				<div class="container-fluid">
+					<div class="row">
+						<p for="" class="text-danger "><small class="lblError"></small></p>
+					</div>
+					<button type="button" class="btn btn-secondary float-right" id="btnConsultarDisponibilidad2" >Consultar</button>
+				</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Modal para empezar el proceso B/v-Fact -->
 <div class="modal fade" id="modalProcesarComprobante" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -89,6 +115,31 @@ include "generales.php"; ?>
 				<button class="btn btn-block btn-outline-primary my-3">Generar Nota de Crédito</button>
 				<button class="btn btn-block btn-outline-primary my-3">Generar Nota de Pedido</button>
       </div>
+  	</div>
+	</div>
+</div>
+
+<!-- Modal para empezar Modificar las series -->
+<div class="modal fade" id="modalModSerie" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modificar series</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="">Serie de Boletas:</label>
+				<input type="text" class="form-control text-center" id="txtSerieBoleta">
+				<label for="">Serie de Facturas:</label>
+				<input type="text" class="form-control text-center" id="txtSerieFactura">
+      </div>
+      <div class="modal-footer">
+				<p class="text-danger d-none" id="pError2"></p>
+        <button type="button" class="btn btn-primary" id="btnUpdateSeries">Actualizar series</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -133,7 +184,39 @@ $('#btnConsultarDisponibilidad').click(function() {
 		});
 	}
 });
+$('#btnConsultarDisponibilidad2').click(function() {
+	if( $('#txtNCodNegocio2').val()=='' || $('#txtCodLocal2').val()=='' || $('#txtNumTicket2').val()==''){
+		$('#modalConsultaTicket .lblError').text('Debe rellenar todos los datos para procesar su ticket');
+	}else{
+		
+		$('#spanTicket2').text($('#txtNumTicket2').val());
+		$.ajax({url: 'comprobarTicket.php', type: 'POST', data: { local:$('#txtCodLocal2').val() , negocio:$('#txtNCodNegocio2').val() , ticket:$('#txtNumTicket2').val() }}).done(function(resp) {
+			//console.log(resp)
+			if( resp == $('#txtNumTicket2').val() ){
+				$.ajax({url: 'reverificacion.php', type: 'POST', data: { local:$('#txtCodLocal2').val() , negocio:$('#txtNCodNegocio2').val() , ticket:$('#txtNumTicket2').val() }}).done(function(resp) {
+					console.log(resp)
+					$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+					if($.jTicket.length >=1){
+						$('#modalProcesarComprobante').modal('hide');
+						$('#modalArchivoBien').modal('show');
+					}
+				});
+				$('#modalConsultaTicket').modal('hide');
+				$('#modalArchivoBien').modal('show');
+			}else if(resp =='sin coincidencia'){
+				$('#modalConsultaTicket .lblError').text('Datos errados, no coinciden con ningún local y ticket.');
+			}else{
+				$('#modalConsultaTicket .lblError').text('Hubo un error interno, comuníquelo a su proveedor');
+			}
+			//
+		});
+	}
+});
+$('#btnConsultarComprobante').click(function() {
+	$('#modalConsultaTicket .lblError').text('');
+	$('#modalConsultaTicket').modal('show');
 
+});
 $('#btnEmitirFactura').click(function() {
 	$.ajax({url: 'emision.php', type: 'POST', data: { emitir: 1, local:$('#txtCodLocal').val() , negocio:$('#txtNCodNegocio').val() , ticket:$('#txtNumTicket').val()  }}).done(function(resp) {
 		//console.log(resp)
@@ -168,15 +251,43 @@ $('#btnPrintTicketera').click(function() {
 		cliente: $.jTicket[0].razonSocial,
 		docClient: $.jTicket[0].ruc,
 		monedas: $.jTicket[0].letras,
-		costoFinal: $.jTicket[0].costoFinal,
-		igvFinal: $.jTicket[0].igvFinal,
-		totalFinal: $.jTicket[0].totalFinal,
+		descuento: parseFloat($.jTicket[0].descuento).toFixed(2),
+		costoFinal: parseFloat($.jTicket[0].costoFinal).toFixed(2),
+		igvFinal: parseFloat($.jTicket[0].igvFinal).toFixed(2),
+		totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
 		productos: $.jTicket[1]
 	 }}).done(function(resp) {
 		console.log(resp)
 	});
 });
-
+$('#btnModificarSerie').click(function() {
+	$.ajax({url: 'llamarSeries.php', type: 'POST', data: { }}).done(function(resp) {
+		
+		var data = JSON.parse(resp)[0];
+		console.log( data );
+		$('#txtSerieBoleta').val( data.serieBoleta );
+		$('#txtSerieFactura').val( data.serieFactura );
+		$('#modalModSerie').modal('show');
+	});
+	
+});
+$('#btnUpdateSeries').click(function() {
+	$('#pError2').addClass('d-none')
+	if( $('#txtSerieBoleta').val()=='' || $('#txtSerieFactura').val()=='' ){
+		$('#pError2').removeClass('d-none').text('Ambos campos deben estar rellenados');
+	}else{
+		$.ajax({url: 'updateSeries.php', type: 'POST', data: { serFact: $('#txtSerieFactura').val(), serBol: $('#txtSerieBoleta').val() }}).done(function(resp) {
+			if( resp =='ok' ){
+				$('#modalModSerie').modal('hide');
+			}else{
+				$('#pError2').removeClass('d-none').text('Hubo un error interno al guardar los datos');
+			}
+		});
+	}
+});
+$('#btnPrintA4').click(function() {
+	window.open( 'printComprobanteA4.php?negocio='+$('#txtNCodNegocio2').val()+'&local='+$('#txtCodLocal2').val()+'&ticket='+$('#txtNumTicket2').val() ,'_blank');
+});
 </script>
 </body>
 </html>

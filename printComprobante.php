@@ -49,7 +49,8 @@ try {
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
     $printer -> text("{$todoProd}\n");
-    $printer -> text("---------------------------------\n");
+    $printer -> text("--------------------------------\n");
+    $printer -> text("Descuento: S/ {$_POST['descuento']} \n");
     $printer -> text("Sub Total: S/ {$_POST['costoFinal']} \n");
     $printer -> text("IGV (18%): S/ {$_POST['igvFinal']} \n");
     $printer -> text("Total: S/ {$_POST['totalFinal']} \n");
