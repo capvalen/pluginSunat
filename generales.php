@@ -2,6 +2,7 @@
 //Rellenar por cada Cliente:
 $directorio = 'C:\SFS_v1.2\sunat_archivos\sfs\DATA/';
 $rucEmisor = '20568472862';
+$nombrePrint = 'xp-58';
 
 
 

@@ -1,5 +1,6 @@
 <?php
 include('phpqrcode/qrlib.php'); 
+include "generales.php";
 
 require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
 use Mike42\Escpos\Printer;
@@ -22,7 +23,7 @@ foreach ($productos as $variable) {
 //echo $todoProd;
 
 
-$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/xp-58");
+$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/".$nombrePrint);
 try {
 
     $tux = EscposImage::load("bitmap.jpg", false);
