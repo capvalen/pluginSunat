@@ -1,26 +1,38 @@
 <?php
-date_default_timezone_set('America/Lima');
 
 include 'conexion.php';
 include 'generales.php';
 require "NumeroALetras.php";
 
+$caso = "-0{$_POST['emitir']}-"; // 01 para factura, 03 para boleta
 
-$sqlSeries="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}' and `fechaEmision` = curdate();";
+
+$sqlSeries="SELECT * FROM `fact_series`";
 $resultadoSeries=$esclavo->query($sqlSeries);
-$rowSeries=$resultadoSeries->fetch_assoc(); 
+$rowSeries=$resultadoSeries->fetch_assoc();
 
-$caso = "-0{$rowSeries['factTipoDocumento']}-"; // 01 para factura, 03 para boleta
+switch ($_POST['emitir']) {
+	case '1': $serie = $rowSeries['serieFactura']; $soy="FACTURA"; break;
+	case '3': $serie = $rowSeries['serieBoleta']; $soy="BOLETA"; break;
+	default: # code... break;
+}
 
-$serie = $rowSeries['factSerie'];
-$soy = $rowSeries['queDoc'];
-$correlativo = $rowSeries['factCorrelativo'];
+$sqlCorrelativo="SELECT LPAD(factCorrelativo+1, 8, '0') as contador  FROM `fact_cabecera` where idLocal='{$_POST['local']}' and factSerie = '{$serie}' order by factCorrelativo desc limit 1";
+$resultadoCorrelativo=$cadena->query($sqlCorrelativo);
+$filasCorrelativo = $resultadoCorrelativo->num_rows;
+if($filasCorrelativo==0){
+	$correlativo='00000001';
+}else{
+	$rowCorrelativo=$resultadoCorrelativo->fetch_assoc(); 
+	$correlativo = $rowCorrelativo['contador'];
+}
 
 
 $factura =  $serie.'-'.$correlativo;
-$nombreArchivo = $rucEmisor.$caso.$factura ; 
 
-$sqlBase="select totalFinal from `fact_cabecera` where 	idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}'; ";
+$nombreArchivo = $rucEmisor.$caso.$factura ;
+
+$sqlBase="select totalFinal from `fact_cabecera` where 	idNegocio = '{$_POST['negocio']}' and idLocal='{$_POST['local']}' and idTicket='{$_POST['ticket']}'; ";
 $resultadoBase=$cadena->query($sqlBase);
 $rowBase=$resultadoBase->fetch_assoc();
 	
@@ -36,9 +48,12 @@ $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'
 
 
 $sql="UPDATE `fact_cabecera` SET
+`factTipoDocumento`= '{$_POST['emitir']}',
+`factSerie`= '{$serie}',
+`factCorrelativo`= '{$correlativo}',
 `desLeyenda`= '{$letras}',
 `comprobanteEmitido` =1,
-`comprobanteFechado` =now() where idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}' and `fechaEmision` = curdate();";
+`comprobanteFechado` =now() where idNegocio = '{$_POST['negocio']}' and idLocal='{$_POST['local']}' and idTicket='{$_POST['ticket']}';";
 
 $resultado=$cadena->query($sql);
 
@@ -46,7 +61,8 @@ $resultado=$cadena->query($sql);
 
 
 
-$sqlCabeza="select * from `fact_cabecera` where idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}';";
+
+$sqlCabeza="select * from `fact_cabecera` where idNegocio = '{$_POST['negocio']}' and idLocal='{$_POST['local']}' and idTicket='{$_POST['ticket']}';";
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){
@@ -78,7 +94,7 @@ $rowProductos = array();
 
 $i=1;
 $lineaDetalle ='';
-$sqlDetalle="SELECT * FROM `fact_detalle` WHERE idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}' and `fechaEmision` = curdate();";
+$sqlDetalle="SELECT * FROM `fact_detalle` WHERE idNegocio = '{$_POST['negocio']}' and idLocal='{$_POST['local']}' and idTicket='{$_POST['ticket']}';";
 $resultadoDetalle=$cadena->query($sqlDetalle);
 while($rowD=$resultadoDetalle->fetch_assoc()){ 
 
@@ -124,7 +140,7 @@ fclose($fTributo);
 
 
 $filas=array();
-$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $rowSeries['factTipoDocumento'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion']));
+$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $_POST['emitir'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin) );
 
 array_push ( $filas, $rowProductos);
 

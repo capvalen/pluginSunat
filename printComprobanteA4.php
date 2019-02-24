@@ -31,7 +31,7 @@ include 'generales.php';
 require "NumeroALetras.php";
 
 
-$sqlSeries="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE idNegocio = '{$_GET['negocio']}' and idLocal='{$_GET['local']}' and idTicket='{$_GET['ticket']}'";
+$sqlSeries="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_GET['ticket']}' and `fechaEmision` = '{$_GET['fecha']}'";
 $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc();
 
@@ -47,7 +47,7 @@ $factura =  $serie.'-'.$correlativo;
 $nombreArchivo = $rucEmisor.$caso.$factura ; 
 
 
-$sqlBase="select totalFinal from `fact_cabecera` where 	idNegocio = '{$_GET['negocio']}' and idLocal='{$_GET['local']}' and idTicket='{$_GET['ticket']}'; ";
+$sqlBase="select totalFinal from `fact_cabecera` where 	idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_GET['ticket']}' and `fechaEmision` = curdate(); ";
 $resultadoBase=$cadena->query($sqlBase);
 $rowBase=$resultadoBase->fetch_assoc();
 	
@@ -60,7 +60,7 @@ $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'
 
 
 
-$sqlCabeza="select * from `fact_cabecera` where idNegocio = '{$_GET['negocio']}' and idLocal='{$_GET['local']}' and idTicket='{$_GET['ticket']}';";
+$sqlCabeza="select * from `fact_cabecera` where idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_GET['ticket']}' and `fechaEmision` = curdate();";
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){
@@ -115,9 +115,9 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 <section>
 	<div class="border bordeDelgado p-2 container-fluid">
 	<div class="row">
-		<div class="col">
+		<div class="col-8">
 			<p>Srs: <?= $rowC['razonSocial']; ?> </p>
-			<p>Domicilio Fiscal: -</p>
+			<p>Domicilio Fiscal: <?= $rowC['cliDireccion']; ?></p>
 			<p>N° Documento: <?= $rowC['dniRUC']; ?></p>
 			
 		</div>
@@ -150,7 +150,7 @@ $i=1;
 $rowProductos = array();
 
 $lineaDetalle ='';
-$sqlDetalle="SELECT * FROM `fact_detalle` WHERE idNegocio = '{$_GET['negocio']}' and idLocal='{$_GET['local']}' and idTicket='{$_GET['ticket']}';";
+$sqlDetalle="SELECT * FROM `fact_detalle` WHERE idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_GET['ticket']}' and `fechaEmision` = curdate();";
 $resultadoDetalle=$cadena->query($sqlDetalle);
 while($rowD=$resultadoDetalle->fetch_assoc()){ 
 
@@ -187,10 +187,13 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 <section>
 <div class="row">
 <div class="col-6">
-	<div class="d-flex justify-content-center">
-		<img src="qrtemp.png" alt="">
+	<div class="d-flex flex-column text-center">
+		<div>
+			<img src="qrtemp.png" alt="">
+		</div>
+		<p><?= $_GET['hash'];?></p>
 	</div>
-<p>Representacion Impresa de <?= $soy; ?> ELECTRÓNICA N° <?= $factura; ?></p>
+<p>Representacion Impresa de <br><?= $soy; ?> ELECTRÓNICA N° <?= $factura; ?></p>
 <h5>Son: <?= $letras; ?></h5>
 </div>
 <div class="col-6">

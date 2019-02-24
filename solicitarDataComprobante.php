@@ -6,7 +6,8 @@ include 'generales.php';
 require "NumeroALetras.php";
 
 
-$sqlSeries="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}' and `fechaEmision` = curdate();";
+$sqlSeries="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}' and `fechaEmision` = '{$_POST['fecha']}';";
+
 $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc(); 
 
@@ -31,19 +32,31 @@ $parteDecimal = ($rowBase['totalFinal']-$parteEntera)*100;
 
 $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'/100 MN';
 
-
-/* ------- Haciendo un update sobre la table fact cabecera ---------- */
-
-
-$sql="UPDATE `fact_cabecera` SET
-`desLeyenda`= '{$letras}',
-`comprobanteEmitido` =1,
-`comprobanteFechado` =now() where idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}' and `fechaEmision` = curdate();";
-
-$resultado=$cadena->query($sql);
-
 /* ------- Fin update sobre la table fact cabecera ---------- */
 
+
+
+$sqlCabeza="select * from `fact_cabecera` where idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}';";
+$resultadoCabeza=$cadena->query($sqlCabeza);
+$filasCabeza = $resultadoCabeza->num_rows;
+if($filasCabeza==1){
+	$rowC=$resultadoCabeza->fetch_assoc();
+
+	if(strlen($rowC['dniRUC'])==11){
+		$tipoDoc = '6';
+	}else if(strlen($rowC['dniRUC'])==8){
+		$tipoDoc = '1';
+	}else if(strlen($rowC['dniRUC'])==0){
+		$tipoDoc = '0';
+	}
+
+	$descuento = $rowC['sumDescTotal'];
+	$costo= str_replace (',', '',number_format($rowC['costoFinal'],2));
+	$igvFin = str_replace (',', '',number_format($rowC['IGVFinal'],2));
+	$totFin = str_replace (',', '',number_format($rowC['totalFinal'],2));
+	
+
+}
 
 
 $sqlCabeza="select * from `fact_cabecera` where idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}';";
@@ -101,25 +114,6 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 
 	
 }
-//echo $lineaDetalle ;
-
-$detalle = fopen("{$directorio}{$nombreArchivo}.det", "w");
-fwrite($detalle, "{$lineaDetalle}");
-fclose($detalle);
-
-$leyenda = $rowC['codLeyenda'].$separador. $letras .$separador;
-
-$fLeyenda = fopen("{$directorio}{$nombreArchivo}.ley", "w");
-fwrite($fLeyenda, "{$leyenda}");
-fclose($fLeyenda);
-
-
-
-$tributo = $rowC['ideTributo'] . $separador . $rowC['nomTributo'] . $separador .  $rowC['codTipTributo']  . $separador . $rowC['mtoBaseImponible'] . $separador . $rowC['mtoTributo'] . $separador;
-
-$fTributo = fopen("{$directorio}{$nombreArchivo}.tri", "w");
-fwrite($fTributo, "{$tributo}");
-fclose($fTributo);
 
 
 

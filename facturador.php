@@ -24,7 +24,7 @@ include "generales.php"; ?>
       <a class="nav-item nav-link " href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
       <a class="nav-item nav-link" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
       <a class="nav-item nav-link" href="#!" id="btnModificarSerie">Modificar serie</a>
-      <a class="nav-item nav-link " href="desconectar.php">Cerrar sesión</a>
+      <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar sesión</a>
     </div>
   </div>
 </nav>
@@ -38,7 +38,7 @@ include "generales.php"; ?>
 			<div class="col-sm-12 mx-5 px-5">
 					<button class="btn btn-outline-success btn-block btn-lg my-4" >Emitir Comprobante</button>
 					<button class="btn btn-outline-warning btn-block btn-lg my-4">Consultar comprobante</button>
-					<button class="btn btn-outline-dark btn-block btn-lg my-4" >Modificar serie de comprobante</button>
+					<button class="btn btn-outline-dark btn-block btn-lg my-4 d-none">Modificar serie de comprobante</button>
 				</div>
 			</div>
 		</div>
@@ -51,7 +51,7 @@ include "generales.php"; ?>
 		<h5>Local: <?= $_COOKIE['ckLocal']?></h5>
 		<div class="row d-flex justify-content-between">
 			<div class="col-sm-3"><input type="date" class="form-control" id="fechaFiltro"></div>
-			<div class="col-sm-2"><button class="btn btn-outline-primary"><i class="icofont-refresh"></i> Actualizar</button></div>
+			<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
 		</div>
 		<table class="table table-hover mt-3">
 			<thead>
@@ -215,12 +215,14 @@ $(document).ready(function(){
 	$.ajax({url: 'listarTodoPorFecha.php', type: 'POST' }).done(function(resp) {
 		//console.log(resp)
 		$('tbody').append(resp);
+		$('[data-toggle="tooltip"]').tooltip();
 	});
 	$('#fechaFiltro').change(function() {
 		console.log( moment($('#fechaFiltro').val()).isValid() );
 		$.ajax({url: 'listarTodoPorFecha.php', type: 'POST', data:{fecha: $('#fechaFiltro').val() } }).done(function(resp) {
 			$('tbody').children().remove();
-			$('tbody').append(resp);
+			$('tbody').append(resp).anotherJqueryMethod;
+			$('[data-toggle="tooltip"]').tooltip();
 		});
 	});
 });
@@ -315,25 +317,88 @@ $('#btnEmitirBoleta').click(function() {
 		//if(resp=='fin'){	} 
 	});
 });
+$('tbody').on('click', '.imprTicketFuera', function (e) {
+	var padre= $(this).parent()
+
+	var caso = padre.attr('data-caso');
+	var serie = padre.attr('data-serie');
+	var correlativo = padre.attr('data-correlativo');
+	var ticket = padre.attr('data-ticket');
+
+	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { fecha: $('#fechaFiltro').val(), ticket: ticket }}).done(function(resp) {
+		console.log( resp );
+		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+		if($.jTicket.length >=1){  
+			$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',
+				caso: caso,
+				serie: serie,
+				correlativo: correlativo}
+				).done(function(respu){
+					console.log( respu );
+					if( respu == 'Sin firma'){
+						$.hash = '';
+					}else{
+						$hassh= respu;
+					}
+					$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
+							tipoComprobante: $.jTicket[0].tipoComprobante,
+							rucEmisor: $.jTicket[0].rucEmisor,
+							queEs: $.jTicket[0].queSoy,
+							serie: $.jTicket[0].serie,
+							correlativo: $.jTicket[0].correlativo,
+							tipoCliente: $.jTicket[0].tipoCliente,
+							fecha: $.jTicket[0].fechaEmision,
+							cliente: $.jTicket[0].razonSocial,
+							docClient: $.jTicket[0].ruc,
+							monedas: $.jTicket[0].letras,
+							descuento: parseFloat($.jTicket[0].descuento).toFixed(2),
+							costoFinal: parseFloat($.jTicket[0].costoFinal).toFixed(2),
+							igvFinal: parseFloat($.jTicket[0].igvFinal).toFixed(2),
+							totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
+							productos: $.jTicket[1],
+							direccion:$.jTicket[0].direccion,
+							hash: $hassh
+						}}).done(function(resp) {
+							console.log(resp)
+							location.reload();
+						});
+				});
+		}
+	});
+});
 $('#btnPrintTicketera').click(function() {
-	$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
-		tipoComprobante: $.jTicket[0].tipoComprobante,
-		rucEmisor: $.jTicket[0].rucEmisor,
-		queEs: $.jTicket[0].queSoy,
-		serie: $.jTicket[0].serie,
-		correlativo: $.jTicket[0].correlativo,
-		tipoCliente: $.jTicket[0].tipoCliente,
-		fecha: $.jTicket[0].fechaEmision,
-		cliente: $.jTicket[0].razonSocial,
-		docClient: $.jTicket[0].ruc,
-		monedas: $.jTicket[0].letras,
-		descuento: parseFloat($.jTicket[0].descuento).toFixed(2),
-		costoFinal: parseFloat($.jTicket[0].costoFinal).toFixed(2),
-		igvFinal: parseFloat($.jTicket[0].igvFinal).toFixed(2),
-		totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
-		productos: $.jTicket[1]
-	 }}).done(function(resp) {
-		console.log(resp)
+	$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',	caso: $.jTicket[0].tipoComprobante,
+	serie: $.jTicket[0].serie,
+	correlativo: $.jTicket[0].correlativo}
+	).done(function(respu){
+		console.log( respu );
+		if( respu == 'Sin firma'){
+			$hassh = '';
+		}else{
+			$hassh= respu;
+			$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
+				tipoComprobante: $.jTicket[0].tipoComprobante,
+				rucEmisor: $.jTicket[0].rucEmisor,
+				queEs: $.jTicket[0].queSoy,
+				serie: $.jTicket[0].serie,
+				correlativo: $.jTicket[0].correlativo,
+				tipoCliente: $.jTicket[0].tipoCliente,
+				fecha: $.jTicket[0].fechaEmision,
+				cliente: $.jTicket[0].razonSocial,
+				docClient: $.jTicket[0].ruc,
+				monedas: $.jTicket[0].letras,
+				descuento: parseFloat($.jTicket[0].descuento).toFixed(2),
+				costoFinal: parseFloat($.jTicket[0].costoFinal).toFixed(2),
+				igvFinal: parseFloat($.jTicket[0].igvFinal).toFixed(2),
+				totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
+				productos: $.jTicket[1],
+				direccion:$.jTicket[0].direccion,
+				hash: $hassh
+			}}).done(function(resp) {
+				console.log(resp)
+				location.reload();
+			});
+		}
 	});
 });
 $('#btnModificarSerie').click(function() {
@@ -361,9 +426,66 @@ $('#btnUpdateSeries').click(function() {
 		});
 	}
 });
-$('#btnPrintA4').click(function() {
-	window.open( 'printComprobanteA4.php?negocio='+$('#txtNCodNegocio2').val()+'&local='+$('#txtCodLocal2').val()+'&ticket='+$('#txtNumTicket2').val() ,'_blank');
+$('tbody').on('click', '.imprA4Fuera', function (e) {
+	var padre= $(this).parent()
+
+	var caso = padre.attr('data-caso');
+	var serie = padre.attr('data-serie');
+	var correlativo = padre.attr('data-correlativo');
+	var ticket = padre.attr('data-ticket');
+
+	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { fecha: $('#fechaFiltro').val(), ticket: ticket }}).done(function(resp) {
+		console.log(resp)
+		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+		if($.jTicket.length >=1){
+			$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',
+				caso: caso,
+				serie: serie,
+				correlativo: correlativo}
+				).done(function(respu){
+					console.log( respu );
+					if( respu == 'Sin firma'){
+						$hash = '';
+					}else{
+						$hash= respu;
+						window.open( 'printComprobanteA4.php?ticket='+ticket+'&hash='+encodeURIComponent($hash)+"&fecha="+encodeURIComponent($('#fechaFiltro').val()) ,'_blank');
+					}
+				});
+		}
+	});
 });
+$('#btnPrintA4').click(function() {
+	$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',	caso: $.jTicket[0].tipoComprobante,
+	serie: $.jTicket[0].serie,
+	correlativo: $.jTicket[0].correlativo}
+	).done(function(respu){
+		console.log( respu );
+		if( respu == 'Sin firma'){
+			$.hash = '';
+		}else{
+			$hassh= respu;
+			window.open( 'printComprobanteA4.php?negocio='+$('#txtNCodNegocio2').val()+'&local='+$('#txtCodLocal2').val()+'&ticket='+$('#txtNumTicket2').val()+'&hash='+encodeURIComponent($.hash)+"&fecha="+encodeURIComponent($('#fechaFiltro').val()) ,'_blank');
+		}
+	});
+	
+});
+$('tbody').on('click', '.btnGenComprobante', function (e) {
+	var ticket = $(this).attr('data-ticket');
+	//console.log( ticket );
+	
+	$.ajax({url: 'emision.php', type: 'POST', data: { ticket: ticket }}).done(function(resp) {
+		console.log(resp)
+		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+		if($.jTicket.length >=1){
+			$('#modalProcesarComprobante').modal('hide');
+			$('#modalArchivoBien').modal('show');
+		}
+	});
+});
+$('#btnRefresh').click(function() {
+	location.reload();
+});
+
 </script>
 </body>
 </html>

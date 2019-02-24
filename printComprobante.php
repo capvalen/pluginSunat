@@ -46,6 +46,7 @@ try {
     $printer -> text("Fecha de emisión: 15/02/2018\n");
     $printer -> text("Doc. Ident.: {$_POST['docClient']}\n");
     $printer -> text("Señor(es): {$_POST['cliente']}\n");
+    $printer -> text("Dirección: {$_POST['direccion']}\n");
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
@@ -59,6 +60,7 @@ try {
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
     $printer -> bitImage($tuxQR);
+    $printer -> text("{$_POST['hash']} \n");
     $printer -> text("--------------------------------\n");
     $printer -> text("Gracias por tu preferencia\n\n");
     $printer -> text("Esta es una representación impresa de la factura electrónica, generada en el Sistema de SUNAT. Puede verificarla utilizando su Clave SOL.\n");
