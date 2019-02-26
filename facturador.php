@@ -14,6 +14,18 @@ include "generales.php"; ?>
 
 </head>
 <body>
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+</style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5">
   <a class="navbar-brand" href="#">Facturador</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,8 +33,17 @@ include "generales.php"; ?>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link " href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
-      <a class="nav-item nav-link" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Emitir
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
+					<a class="dropdown-item" href="#!" id="AEmitirFactura"><i class="icofont-ui-copy"></i> Factura</a>
+				</div>
+			</li>
+      <a class="nav-item nav-link d-none" href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
+      <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
       <a class="nav-item nav-link" href="#!" id="btnModificarSerie">Modificar serie</a>
       <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar sesión</a>
     </div>
@@ -36,19 +57,18 @@ include "generales.php"; ?>
 		<div class="container">
 			<div class="row">
 			<div class="col-sm-12 mx-5 px-5">
-					<button class="btn btn-outline-success btn-block btn-lg my-4" >Emitir Comprobante</button>
-					<button class="btn btn-outline-warning btn-block btn-lg my-4">Consultar comprobante</button>
-					<button class="btn btn-outline-dark btn-block btn-lg my-4 d-none">Modificar serie de comprobante</button>
-				</div>
+				<button class="btn btn-outline-success btn-block btn-lg my-4 " >Emitir Comprobante</button>
+				<button class="btn btn-outline-warning btn-block btn-lg my-4">Consultar comprobante</button>
+				<button class="btn btn-outline-dark btn-block btn-lg my-4 d-none">Modificar serie de comprobante</button>
+			</div>
 			</div>
 		</div>
 	</section>
 </div>
 <section>
 	<div class="container-fluid mt-5 px-5">
-		<h3>Comprobantes generados:</h3>
-		<h5>Negocio: <?= $_COOKIE['ckNegocio']?></h5>
-		<h5>Local: <?= $_COOKIE['ckLocal']?></h5>
+		<h3>Comprobantes generados: </h3>
+		<small>Usuario: <?= strtoupper($_COOKIE['ckNegocio']); ?></small>
 		<div class="row d-flex justify-content-between">
 			<div class="col-sm-3"><input type="date" class="form-control" id="fechaFiltro"></div>
 			<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
@@ -103,6 +123,93 @@ include "generales.php"; ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal para Emitir Boleta -->
+<div class="modal fade" id="modalEmisionBoleta" tabindex="-1" role="dialog" data-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+				</button>
+				<h5>Generar Boleta de venta</h5>
+				<div class="form-inline">
+				<div class="form-check mb-3">
+					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" checked="true">
+					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
+				</div>
+				<div class="form-check mb-3 ml-5">
+					<input type="text" class='form-control text-uppercase' placeholder="Placa de Vehículo">
+				</div>
+				</div>
+			
+				
+				<div id="divDatosCliente" class="d-none card mb-3">
+					<div class="card-body">
+						<p class="text-muted"><strong>Datos del cliente:</strong></p>
+						<div class="row mb-3">
+							<div class="col-4">
+								<input type="text"  class="form-control ml-2" id="txtDniBoleta" value="" placeholder='Dni' readonly>
+							</div>
+							<div class="col-8">
+								<input type="text"  class="form-control ml-2" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<input type="text"  class="form-control ml-2" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-body">
+						<p class="text-muted"><strong>Productos:</strong></p>
+						<div class="row">
+							<div class="col-2"><strong>Cant.</strong></div>
+							<div class="col-1"><strong>Und</strong></div>
+							<div class="col-5"><strong>Producto</strong></div>
+							<div class="col-2"><strong>Precio Unit.</strong></div>
+							<div class="col-2"><strong>Sub-Total</strong></div>
+						</div>
+						<div class="row mb-1" data-producto="2">
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoCantidad" value="0.00" step="0.5" min="0"></div>
+							<div class="col-1">Galón</div>
+							<div class="col-5">Gasolina</div>
+							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioGasolina" step='0.1' min="0"></div>
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" value="0.00"></div>
+						</div>
+						<div class="row mb-1" data-producto="1">
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoCantidad" value="0.00" step="0.5" min="0"></div>
+							<div class="col-1">Galón</div>
+							<div class="col-5">Petróleo</div>
+							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0"></div>
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" value="0.00"></div>
+						</div>
+					</div>
+				</div>
+				<div class='mt-2 pr-5'>
+					<div class="d-flex align-items-end flex-column">
+						<h5><span>Sub-Total:</span> <span>S/ <span id="spSubTotBoleta">0.00</span></span></h5>
+						<h5><span>IGV:</span> <span>S/ <span id="spIgvBoleta">0.00</span></span></h5>
+						<h5><span>Total:</span> <span>S/ <span id="spTotalBoleta">0.00</span></span></h5>
+					</div>
+				</div>
+				
+       
+      </div>
+      <div class="modal-footer">
+				<div class="container-fluid">
+					<div class="row">
+						<p for="" class="text-danger "><small class="lblError"></small></p>
+					</div>
+					<button type="button" class="btn btn-outline-primary float-right" id="btnConsultarDisponibilidad" ><i class="icofont-paper"></i> Emitir boleta</button>
+				</div>
       </div>
     </div>
   </div>
@@ -205,9 +312,17 @@ include "generales.php"; ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script src="js/impotem.js"></script>
 <script src="js/moment.js"></script>
 <script>
 $(document).ready(function(){
+	$.ajax({url: 'php/getPreciosProductos.php', type: 'POST' }).done(function(resp) {
+		//console.log(resp)
+		$.precios = JSON.parse(resp);
+		console.log( $.precios );
+		$('#txtPrecioGasolina').val($.precios[1].prodPrecio);
+		$('#txtPrecioPetroleo').val($.precios[0].prodPrecio);
+	});
 	$('#fechaFiltro').val( moment().format('YYYY-MM-DD'));
 	$('[data-toggle="tooltip"]').tooltip();
 	$('tbody').children().remove();
@@ -485,7 +600,69 @@ $('tbody').on('click', '.btnGenComprobante', function (e) {
 $('#btnRefresh').click(function() {
 	location.reload();
 });
+$('#AEmitirBoleta').click(function() {
+	$('#modalEmisionBoleta').modal('show');
+});
 
+$('#chkEstadoDni').change(function() {
+	if($('#chkEstadoDni').prop('checked')	){
+		$('#labelEstadoDni').text('Cliente anónimo');
+		$('#divDatosCliente').addClass('d-none');
+		$('#txtDniBoleta').attr('readonly', true).val('');
+		$('#txtRazonBoleta').attr('readonly', true).val('');
+		$('#txtDireccionBoleta').attr('readonly', true).val('');
+	}else{
+		$('#labelEstadoDni').text('Cliente con documento de identidad');
+		$('#divDatosCliente').removeClass('d-none');
+		$('#txtRazonBoleta').attr('readonly', false);
+		$('#txtDireccionBoleta').attr('readonly', false);
+		$('#txtDniBoleta').attr('readonly', false).focus();
+	}
+});
+$('.campoSubTotal').keyup(function() {
+	var padre = $(this).parent().parent();
+	var subTotal = parseFloat($(this).val());
+	var precio = parseFloat(padre.find('.campoPrecioUnit').val());
+	var cantidad = 0;//parseFloat(padre.find('.campoCantidad').val());
+	
+	cantidad = parseFloat(subTotal/precio);
+	padre.find('.campoCantidad').val( cantidad.toFixed(2) );
+	sumaTodo();
+});
+$('.campoPrecioUnit').keyup(function() {
+	var padre = $(this).parent().parent();
+	var precio = parseFloat($(this).val());
+	var cantidad = parseFloat(padre.find('.campoCantidad').val());
+	var subTotal = 0;//parseFloat(padre.find('.campoPrecioUnit').val());
+	
+	subTotal = parseFloat(cantidad*precio);
+	padre.find('.campoSubTotal').val( subTotal.toFixed(2) );
+	sumaTodo();
+});
+$('.campoCantidad').keyup(function() {
+	var padre = $(this).parent().parent();
+	var cantidad = parseFloat($(this).val());
+	var precio = parseFloat(padre.find('.campoPrecioUnit').val());
+	var subTotal = 0;//parseFloat(padre.find('.campoPrecioUnit').val());
+	
+	subTotal = parseFloat(cantidad*precio);
+	padre.find('.campoSubTotal').val( subTotal.toFixed(2) );
+	sumaTodo();
+});
+function sumaTodo() {
+	var sumaTotal = 0;
+	$.each( $('.campoSubTotal'), function(i, elem){
+		//console.log( $(elem).val() );
+		sumaTotal+=parseFloat($(elem).val());
+	});
+	console.log( sumaTotal );
+	var costo = sumaTotal/1.18;
+	var igv=sumaTotal-costo;
+	$('#spSubTotBoleta').text(parseFloat(costo).toFixed(2));
+	$('#spIgvBoleta').text(parseFloat(igv).toFixed(2));
+	$('#spTotalBoleta').text(parseFloat(sumaTotal).toFixed(2));
+
+}
 </script>
 </body>
 </html>
