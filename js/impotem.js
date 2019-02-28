@@ -10,3 +10,12 @@ $('.esMoneda').change(function(){
 $("input").focus(function(){
   this.select();
 });
+$('.esGalon').change(function(){
+	var campo = $(this);
+	var valor =campo.val();
+	if(valor<0){
+		$(this).val('0.00')
+	}else{
+		$(this).val(parseFloat(valor).toFixed(3));
+	}
+});

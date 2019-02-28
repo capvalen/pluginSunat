@@ -1,4 +1,5 @@
 <?php
+include 'conexion.php';
 if( !isset($_COOKIE['ckNegocio']) ){ header("Location: index.html");
 	die(); }
 include "generales.php"; ?>
@@ -77,8 +78,8 @@ input[type=number] {
 			<thead>
 				<tr>
 					<th>N°</th>
-					<th>Ticket</th>
 					<th>Tipo</th>
+					<th>Código</th>
 					<th>Hora</th>
 					<th>Cliente</th>
 					<th>Monto</th>
@@ -144,7 +145,19 @@ input[type=number] {
 					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
 				</div>
 				<div class="form-check mb-3 ml-5">
-					<input type="text" class='form-control text-uppercase' placeholder="Placa de Vehículo">
+					<input type="text" class='form-control text-uppercase' placeholder="Placa de Vehículo" id="txtPlacaBoleta">
+				</div>
+				<div class="dropdown mb-3 ml-auto">
+				<?php 
+					$sqlSerieBoleta="SELECT * FROM `fact_series`";
+					$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
+					$rowSerieBoleta=$resultadoSerieBoleta->fetch_assoc();
+				?>
+				<select class="form-control" id="sltSeriesBoleta">
+					<option><?= $rowSerieBoleta['serieFactura']; ?></option>
+					<option><?= $rowSerieBoleta['serieOpcional']; ?></option>
+				</select>
+					
 				</div>
 				</div>
 			
@@ -157,12 +170,12 @@ input[type=number] {
 								<input type="text"  class="form-control ml-2" id="txtDniBoleta" value="" placeholder='Dni' readonly>
 							</div>
 							<div class="col-8">
-								<input type="text"  class="form-control ml-2" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly>
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col">
-								<input type="text"  class="form-control ml-2" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly>
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly>
 							</div>
 						</div>
 					</div>
@@ -177,17 +190,17 @@ input[type=number] {
 							<div class="col-2"><strong>Precio Unit.</strong></div>
 							<div class="col-2"><strong>Sub-Total</strong></div>
 						</div>
-						<div class="row mb-1" data-producto="2">
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoCantidad" value="0.00" step="0.5" min="0"></div>
+						<div class="row mb-1 cardHijoProducto" data-producto="2">
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
 							<div class="col-1">Galón</div>
-							<div class="col-5">Gasolina</div>
+							<div class="col-5 divNombProducto">Gasolina</div>
 							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioGasolina" step='0.1' min="0"></div>
 							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" value="0.00"></div>
 						</div>
-						<div class="row mb-1" data-producto="1">
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoCantidad" value="0.00" step="0.5" min="0"></div>
+						<div class="row mb-1 cardHijoProducto" data-producto="1">
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
 							<div class="col-1">Galón</div>
-							<div class="col-5">Petróleo</div>
+							<div class="col-5 divNombProducto">Petróleo</div>
 							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0"></div>
 							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" value="0.00"></div>
 						</div>
@@ -208,7 +221,7 @@ input[type=number] {
 					<div class="row">
 						<p for="" class="text-danger "><small class="lblError"></small></p>
 					</div>
-					<button type="button" class="btn btn-outline-primary float-right" id="btnConsultarDisponibilidad" ><i class="icofont-paper"></i> Emitir boleta</button>
+					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir boleta</button>
 				</div>
       </div>
     </div>
@@ -300,6 +313,8 @@ input[type=number] {
 				<input type="text" class="form-control text-center" id="txtSerieBoleta">
 				<label for="">Serie de Facturas:</label>
 				<input type="text" class="form-control text-center" id="txtSerieFactura">
+				<label for="">Serie de Interna:</label>
+				<input type="text" class="form-control text-center" id="txtSerieInterna">
       </div>
       <div class="modal-footer">
 				<p class="text-danger d-none" id="pError2"></p>
@@ -312,7 +327,7 @@ input[type=number] {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js"></script>
+<script src="js/impotem.js?version=1.0.1"></script>
 <script src="js/moment.js"></script>
 <script>
 $(document).ready(function(){
@@ -518,21 +533,22 @@ $('#btnPrintTicketera').click(function() {
 });
 $('#btnModificarSerie').click(function() {
 	$.ajax({url: 'llamarSeries.php', type: 'POST', data: { }}).done(function(resp) {
-		
 		var data = JSON.parse(resp)[0];
 		console.log( data );
 		$('#txtSerieBoleta').val( data.serieBoleta );
 		$('#txtSerieFactura').val( data.serieFactura );
+		$('#txtSerieInterna').val( data.serieOpcional );
+		
 		$('#modalModSerie').modal('show');
 	});
 	
 });
 $('#btnUpdateSeries').click(function() {
 	$('#pError2').addClass('d-none')
-	if( $('#txtSerieBoleta').val()=='' || $('#txtSerieFactura').val()=='' ){
+	if( $('#txtSerieBoleta').val()=='' || $('#txtSerieFactura').val()=='' || $('#txtSerieInterna').val()=='' ){
 		$('#pError2').removeClass('d-none').text('Ambos campos deben estar rellenados');
 	}else{
-		$.ajax({url: 'updateSeries.php', type: 'POST', data: { serFact: $('#txtSerieFactura').val(), serBol: $('#txtSerieBoleta').val() }}).done(function(resp) {
+		$.ajax({url: 'updateSeries.php', type: 'POST', data: { serFact: $('#txtSerieFactura').val(), serBol: $('#txtSerieBoleta').val(), serInt: $('#txtSerieInterna').val() }}).done(function(resp) {
 			if( resp =='ok' ){
 				$('#modalModSerie').modal('hide');
 			}else{
@@ -626,7 +642,7 @@ $('.campoSubTotal').keyup(function() {
 	var cantidad = 0;//parseFloat(padre.find('.campoCantidad').val());
 	
 	cantidad = parseFloat(subTotal/precio);
-	padre.find('.campoCantidad').val( cantidad.toFixed(2) );
+	padre.find('.campoCantidad').val( cantidad.toFixed(3) );
 	sumaTodo();
 });
 $('.campoPrecioUnit').keyup(function() {
@@ -661,8 +677,31 @@ function sumaTodo() {
 	$('#spSubTotBoleta').text(parseFloat(costo).toFixed(2));
 	$('#spIgvBoleta').text(parseFloat(igv).toFixed(2));
 	$('#spTotalBoleta').text(parseFloat(sumaTotal).toFixed(2));
-
 }
+$('#modalEmisionBoleta').on('shown.bs.modal', function () { 
+	$('#txtPlacaBoleta').focus();
+});
+$('#btnEmitirBoletav2').click(function() {
+	var jsonProductos= [];
+	$.each( $('.cardHijoProducto'), function (i, elem) {
+		jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
+			descripcionProducto: $(elem).find('.divNombProducto').text(),
+			precioProducto: $(elem).find('.campoPrecioUnit').val(),
+			subtotal: $(elem).find('.campoSubTotal').val()
+		});
+	});
+	var dniRc ='', razon='';
+	if($('#txtDniBoleta').val()!=''){
+		dniRc=$('#txtDniBoleta').val();
+		razon=$('#txtRazonBoleta').val()
+	}else{
+		dniRc='00000000';
+		razon='Cliente sin documento';
+	}
+	$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos }}).done(function(resp) {
+		console.log(resp)
+	});
+});
 </script>
 </body>
 </html>

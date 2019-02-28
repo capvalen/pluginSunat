@@ -6,8 +6,7 @@ if (isset($_POST['fecha'])){ $fecha = $_POST['fecha'];}else{
 	$fecha = date('Y-m-d');
 }
 
-$sql="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion` FROM `fact_cabecera` WHERE 
-`idNegocio` = '{$_COOKIE['ckNegocio']}' and `idLocal` = '{$_COOKIE['ckLocal']}' and `fechaEmision` = '{$fecha}';";
+$sql="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion` FROM `fact_cabecera` WHERE  `fechaEmision` = '{$fecha}';";
 
 $resultado=$cadena->query($sql);
 $numero = $resultado ->num_rows;
@@ -22,8 +21,9 @@ while($row=$resultado->fetch_assoc()){
 	?>
 	<tr>
 		<td><?= $i; ?></td>
-		<td><?= $row['idTicket']; ?></td>
+		
 		<td><?= $row['queDoc']; ?></td>
+		<td><?= $row['factSerie']."-".$row['factCorrelativo']; ?></td>
 		<td><?= $hora->format('h:m a'); ?></td>
 		<td><?= $row['razonSocial']; ?></td>
 		<td><?= number_format($row['totalFinal'],2); ?></td>
