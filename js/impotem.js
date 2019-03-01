@@ -19,3 +19,8 @@ $('.esGalon').change(function(){
 		$(this).val(parseFloat(valor).toFixed(3));
 	}
 });
+$('.soloNumeros').keypress(function (e) {//|| 
+	if( !(e.which >= 48 /* 0 */ && e.which <= 90 /* 9 */)  ) {
+        e.preventDefault();
+    }
+});

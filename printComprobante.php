@@ -10,7 +10,7 @@ use Mike42\Escpos\EscposImage; //librería de imagen
 $separador ='|';
 $tempDir = './';
 $filename = "qrtemp";
-$body =  $_POST['rucEmisor'] .$separador. $_POST['tipoComprobante'] .$separador. $_POST['serie'] .$separador. $_POST['correlativo'] .$separador. $_POST['igvFinal'] .$separador. $_POST['totalFinal'] . $separador. $_POST['fecha'] . $separador. $_POST['tipoCliente'] . $separador. $_POST['docClient']. $separador;
+$body =  $_POST['rucEmisor'] .$separador. $_POST['tipoComprobante'] .$separador. $_POST['serie'] .$separador. $_POST['correlativo'] .$separador. $_POST['igvFinal'] .$separador. $_POST['totalFinal'] . $separador. $_POST['fecha'] . $separador. $_POST['tipoCliente'] . $separador. $_POST['docClient']. $separador. $_POST['placa']. $separador;
 $codeContents = $body; 
 QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 
@@ -18,7 +18,7 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 $productos=$_POST['productos'];
 $todoProd= '';
 foreach ($productos as $variable) {
-    $todoProd = $todoProd.$variable['cantidad']." UND ". $variable['descripcion'] .'  S/ '. number_format($variable['precio'],2)."\n";
+    $todoProd = $todoProd.$variable['cantidad']." GAL ". $variable['descripcion'] .'  S/ '. number_format($variable['precio'],2)."\n";
 }
 //echo $todoProd;
 
@@ -33,10 +33,10 @@ try {
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> bitImage($tux);
     $printer -> setEmphasis(true);
-    $printer -> text("\nINVERSIONES PORTAIMPORT S.A.C.\n");
-    $printer -> text("RUC: 20568472862\n");
+    $printer -> text("\nESTACION DE SERVICIOS ANRY S.A.C\n");
+    $printer -> text("RUC: 20600180259\n");
     $printer -> setEmphasis(false);
-    $printer -> text("Cal. Los Lirios N°256 Urb. Primavera Lima El Agustino\n");
+    $printer -> text("Car. Central N°1130 Junin Jauja El Mantaro\n");
     $printer -> setEmphasis(true);
     $printer -> text("{$_POST['queEs']} ELECTRÓNICA\n");
     $printer -> text("{$_POST['serie']} - {$_POST['correlativo']}\n"); //Cambniar Codigooooooooo
@@ -47,6 +47,7 @@ try {
     $printer -> text("Doc. Ident.: {$_POST['docClient']}\n");
     $printer -> text("Señor(es): {$_POST['cliente']}\n");
     $printer -> text("Dirección: {$_POST['direccion']}\n");
+    $printer -> text("PLACA: {$_POST['placa']}\n");
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
@@ -60,7 +61,6 @@ try {
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
     $printer -> bitImage($tuxQR);
-    $printer -> text("{$_POST['hash']} \n");
     $printer -> text("--------------------------------\n");
     $printer -> text("Gracias por tu preferencia\n\n");
     $printer -> text("Esta es una representación impresa de la factura electrónica, generada en el Sistema de SUNAT. Puede verificarla utilizando su Clave SOL.\n");

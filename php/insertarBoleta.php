@@ -56,11 +56,11 @@ if(strlen($_POST['dniRUC'])==11){
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
  `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
-  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`) 
+  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`) 
 VALUES (null,3,'{$serie}','{$correlativo}',curdate(),curtime(),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
 	{$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1,now(), '{$_POST['cliDireccion']}' )";
+	1,now(), '{$_POST['cliDireccion']}', '{$_POST['placa']}' )";
 
 $resultado=$cadena->query($sql);
 
@@ -153,9 +153,15 @@ if($_POST['placa']<>''){
 	fclose($fplaca);
 }
 
-/* Generando los archivos txt para sunat */
 
-//echo $serie."-".$correlativo;
+
+//echo $serie."-".$correlativo."-OK";
+$filas=array();
+$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $_POST['emitir'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion'], "placa"=> $_POST['placa'] ));
+
+array_push ( $filas, $rowProductos);
+
+echo json_encode($filas);
 
 
 ?>

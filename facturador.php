@@ -36,7 +36,7 @@ input[type=number] {
     <div class="navbar-nav">
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Emitir
+					Emitir comprobante
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
@@ -154,7 +154,9 @@ input[type=number] {
 					$rowSerieBoleta=$resultadoSerieBoleta->fetch_assoc();
 				?>
 				<select class="form-control" id="sltSeriesBoleta">
-					<option><?= $rowSerieBoleta['serieFactura']; ?></option>
+					<option value="series" selected>Series</option>
+					<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
+					<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
 					<option><?= $rowSerieBoleta['serieOpcional']; ?></option>
 				</select>
 					
@@ -167,7 +169,7 @@ input[type=number] {
 						<p class="text-muted"><strong>Datos del cliente:</strong></p>
 						<div class="row mb-3">
 							<div class="col-4">
-								<input type="text"  class="form-control ml-2" id="txtDniBoleta" value="" placeholder='Dni' readonly>
+								<input type="text"  class="form-control ml-2 soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' readonly>
 							</div>
 							<div class="col-8">
 								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly>
@@ -195,14 +197,14 @@ input[type=number] {
 							<div class="col-1">Galón</div>
 							<div class="col-5 divNombProducto">Gasolina</div>
 							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioGasolina" step='0.1' min="0"></div>
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" value="0.00"></div>
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioGasolina" value="0.00"></div>
 						</div>
 						<div class="row mb-1 cardHijoProducto" data-producto="1">
 							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
 							<div class="col-1">Galón</div>
 							<div class="col-5 divNombProducto">Petróleo</div>
 							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0"></div>
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" value="0.00"></div>
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioPetroleo" value="0.00"></div>
 						</div>
 					</div>
 				</div>
@@ -218,10 +220,11 @@ input[type=number] {
       </div>
       <div class="modal-footer">
 				<div class="container-fluid">
-					<div class="row">
-						<p for="" class="text-danger "><small class="lblError"></small></p>
+					<div class="row text-center">
+						<p for="" class="text-danger d-none"> <span class="lblError"></span></p>
 					</div>
-					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir boleta</button>
+					<button type="button" class="btn btn-outline-primary float-right d-none" id="btnEmitirFacturav2" ><i class="icofont-paper"></i> Emitir Factura</button>
+					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir Boleta</button>
 				</div>
       </div>
     </div>
@@ -327,7 +330,7 @@ input[type=number] {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.1"></script>
+<script src="js/impotem.js?version=1.0.3"></script>
 <script src="js/moment.js"></script>
 <script>
 $(document).ready(function(){
@@ -458,55 +461,32 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { fecha: $('#fechaFiltro').val(), ticket: ticket }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		if($.jTicket.length >=1){  
-			$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',
-				caso: caso,
-				serie: serie,
-				correlativo: correlativo}
-				).done(function(respu){
-					console.log( respu );
-					if( respu == 'Sin firma'){
-						$.hash = '';
-					}else{
-						$hassh= respu;
-					}
-					$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
-							tipoComprobante: $.jTicket[0].tipoComprobante,
-							rucEmisor: $.jTicket[0].rucEmisor,
-							queEs: $.jTicket[0].queSoy,
-							serie: $.jTicket[0].serie,
-							correlativo: $.jTicket[0].correlativo,
-							tipoCliente: $.jTicket[0].tipoCliente,
-							fecha: $.jTicket[0].fechaEmision,
-							cliente: $.jTicket[0].razonSocial,
-							docClient: $.jTicket[0].ruc,
-							monedas: $.jTicket[0].letras,
-							descuento: parseFloat($.jTicket[0].descuento).toFixed(2),
-							costoFinal: parseFloat($.jTicket[0].costoFinal).toFixed(2),
-							igvFinal: parseFloat($.jTicket[0].igvFinal).toFixed(2),
-							totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
-							productos: $.jTicket[1],
-							direccion:$.jTicket[0].direccion,
-							hash: $hassh
-						}}).done(function(resp) {
-							console.log(resp)
-							location.reload();
-						});
-				});
-		}
+		$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
+			tipoComprobante: $.jTicket[0].tipoComprobante,
+			rucEmisor: $.jTicket[0].rucEmisor,
+			queEs: $.jTicket[0].queSoy,
+			serie: $.jTicket[0].serie,
+			correlativo: $.jTicket[0].correlativo,
+			tipoCliente: $.jTicket[0].tipoCliente,
+			fecha: $.jTicket[0].fechaEmision,
+			cliente: $.jTicket[0].razonSocial,
+			docClient: $.jTicket[0].ruc,
+			monedas: $.jTicket[0].letras,
+			descuento: parseFloat($.jTicket[0].descuento).toFixed(2),
+			costoFinal: parseFloat($.jTicket[0].costoFinal).toFixed(2),
+			igvFinal: parseFloat($.jTicket[0].igvFinal).toFixed(2),
+			totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
+			productos: $.jTicket[1],
+			direccion:$.jTicket[0].direccion,
+			placa: $.jTicket[0].placa,
+		}}).done(function(resp) {
+			console.log(resp)
+			location.reload();
+		});
 	});
 });
 $('#btnPrintTicketera').click(function() {
-	$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',	caso: $.jTicket[0].tipoComprobante,
-	serie: $.jTicket[0].serie,
-	correlativo: $.jTicket[0].correlativo}
-	).done(function(respu){
-		console.log( respu );
-		if( respu == 'Sin firma'){
-			$hassh = '';
-		}else{
-			$hassh= respu;
-			$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
+	$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
 				tipoComprobante: $.jTicket[0].tipoComprobante,
 				rucEmisor: $.jTicket[0].rucEmisor,
 				queEs: $.jTicket[0].queSoy,
@@ -523,13 +503,11 @@ $('#btnPrintTicketera').click(function() {
 				totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
 				productos: $.jTicket[1],
 				direccion:$.jTicket[0].direccion,
-				hash: $hassh
+				placa: $.jTicket[0].placa,
 			}}).done(function(resp) {
 				console.log(resp)
 				location.reload();
 			});
-		}
-	});
 });
 $('#btnModificarSerie').click(function() {
 	$.ajax({url: 'llamarSeries.php', type: 'POST', data: { }}).done(function(resp) {
@@ -568,36 +546,11 @@ $('tbody').on('click', '.imprA4Fuera', function (e) {
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { fecha: $('#fechaFiltro').val(), ticket: ticket }}).done(function(resp) {
 		console.log(resp)
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		if($.jTicket.length >=1){
-			$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',
-				caso: caso,
-				serie: serie,
-				correlativo: correlativo}
-				).done(function(respu){
-					console.log( respu );
-					if( respu == 'Sin firma'){
-						$hash = '';
-					}else{
-						$hash= respu;
-						window.open( 'printComprobanteA4.php?ticket='+ticket+'&hash='+encodeURIComponent($hash)+"&fecha="+encodeURIComponent($('#fechaFiltro').val()) ,'_blank');
-					}
-				});
-		}
+		window.open( 'printComprobanteA4.php?ticket='+ticket+'&hash='+encodeURIComponent($hash)+"&fecha="+encodeURIComponent($('#fechaFiltro').val()) ,'_blank');
 	});
 });
 $('#btnPrintA4').click(function() {
-	$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',	caso: $.jTicket[0].tipoComprobante,
-	serie: $.jTicket[0].serie,
-	correlativo: $.jTicket[0].correlativo}
-	).done(function(respu){
-		console.log( respu );
-		if( respu == 'Sin firma'){
-			$.hash = '';
-		}else{
-			$hassh= respu;
-			window.open( 'printComprobanteA4.php?negocio='+$('#txtNCodNegocio2').val()+'&local='+$('#txtCodLocal2').val()+'&ticket='+$('#txtNumTicket2').val()+'&hash='+encodeURIComponent($.hash)+"&fecha="+encodeURIComponent($('#fechaFiltro').val()) ,'_blank');
-		}
-	});
+	window.open( 'printComprobanteA4.php?serie='+encodeURIComponent($.jTicket[0].serie)+'&correlativo='+encodeURIComponent($.jTicket[0].correlativo) ,'_blank');
 	
 });
 $('tbody').on('click', '.btnGenComprobante', function (e) {
@@ -617,9 +570,23 @@ $('#btnRefresh').click(function() {
 	location.reload();
 });
 $('#AEmitirBoleta').click(function() {
+	$('#optBoleta').attr('disabled',false);
+	$('#optFactura').attr('disabled',true);
+	$('#btnEmitirBoletav2').removeClass('d-none');
+	$('#btnEmitirFacturav2').addClass('d-none');
+	$('#sltSeriesBoleta').val('series');
+	$('#chkEstadoDni').prop('checked', true).change();
 	$('#modalEmisionBoleta').modal('show');
 });
-
+$('#AEmitirFactura').click(function() {
+	$('#optBoleta').attr('disabled',true);
+	$('#optFactura').attr('disabled',false);
+	$('#btnEmitirBoletav2').addClass('d-none');
+	$('#btnEmitirFacturav2').removeClass('d-none');
+	$('#sltSeriesBoleta').val('series');
+	$('#chkEstadoDni').prop('checked', false).change();
+	$('#modalEmisionBoleta').modal('show');
+});
 $('#chkEstadoDni').change(function() {
 	if($('#chkEstadoDni').prop('checked')	){
 		$('#labelEstadoDni').text('Cliente anónimo');
@@ -682,26 +649,82 @@ $('#modalEmisionBoleta').on('shown.bs.modal', function () {
 	$('#txtPlacaBoleta').focus();
 });
 $('#btnEmitirBoletav2').click(function() {
-	var jsonProductos= [];
-	$.each( $('.cardHijoProducto'), function (i, elem) {
-		jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
-			descripcionProducto: $(elem).find('.divNombProducto').text(),
-			precioProducto: $(elem).find('.campoPrecioUnit').val(),
-			subtotal: $(elem).find('.campoSubTotal').val()
-		});
-	});
-	var dniRc ='', razon='';
-	if($('#txtDniBoleta').val()!=''){
-		dniRc=$('#txtDniBoleta').val();
-		razon=$('#txtRazonBoleta').val()
+	if( $('#sltSeriesBoleta').val()=='series'){
+		$('#sltSeriesBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
+	}else if( $('#txtCampoPrecioGasolina').val()==0 && $('#txtCampoPrecioPetroleo').val()==0 ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No hay ningún producto rellenado').parent().removeClass('d-none');
 	}else{
-		dniRc='00000000';
-		razon='Cliente sin documento';
+		var jsonProductos= [];
+		$.each( $('.cardHijoProducto'), function (i, elem) {
+			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
+				descripcionProducto: $(elem).find('.divNombProducto').text(),
+				precioProducto: $(elem).find('.campoPrecioUnit').val(),
+				subtotal: $(elem).find('.campoSubTotal').val()
+			});
+		});
+		var dniRc ='', razon='';
+		if($('#txtDniBoleta').val()!=''){
+			dniRc=$('#txtDniBoleta').val();
+			razon=$('#txtRazonBoleta').val()
+		}else{
+			dniRc='00000000';
+			razon='Cliente sin documento';
+		}
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos }}).done(function(resp) {
+			console.log(resp)
+			$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+			if($.jTicket.length >=1){
+				$('#modalEmisionBoleta').modal('hide');
+				$('#modalArchivoBien').modal('show');
+			}
+		});
 	}
-	$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos }}).done(function(resp) {
-		console.log(resp)
-	});
 });
+$('#btnEmitirFacturav2').click(function() {
+
+	if( $('#sltSeriesBoleta').val()=='series'){
+		$('#sltSeriesBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
+	}else if( $('#txtPlacaBoleta').val()==''){
+		$('#txtPlacaBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> La placa del automóvil tiene que ser rellenado').parent().removeClass('d-none');
+	}else if( $('#txtDniBoleta').val().length!=11 ){
+		$('#txtDniBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> El RUC del cliente, no es correcto').parent().removeClass('d-none');
+	}else if( $('#txtRazonBoleta').val()=='' ){
+		$('#txtRazonBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> La razón social no puede estar en blanco').parent().removeClass('d-none');
+	}else if( $('#txtCampoPrecioGasolina').val()==0 && $('#txtCampoPrecioPetroleo').val()==0 ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No hay ningún producto rellenado').parent().removeClass('d-none');
+	}else{
+		var jsonProductos= [];
+		$.each( $('.cardHijoProducto'), function (i, elem) {
+			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
+				descripcionProducto: $(elem).find('.divNombProducto').text(),
+				precioProducto: $(elem).find('.campoPrecioUnit').val(),
+				subtotal: $(elem).find('.campoSubTotal').val()
+			});
+		});
+		var dniRc ='', razon='';
+		if($('#txtDniBoleta').val()!=''){
+			dniRc=$('#txtDniBoleta').val();
+			razon=$('#txtRazonBoleta').val()
+		}else{
+			dniRc='00000000';
+			razon='Cliente sin documento';
+		}
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos }}).done(function(resp) {
+			console.log(resp)
+			$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+			if($.jTicket.length >=1){
+				$('#modalEmisionBoleta').modal('hide');
+				$('#modalArchivoBien').modal('show');
+			}
+		});
+	}
+});
+
 </script>
 </body>
 </html>

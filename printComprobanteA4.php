@@ -7,7 +7,7 @@ include('phpqrcode/qrlib.php');
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Impresión - Facturador electrónico</title>
+	<title>Facturador electrónico <?= $_GET['serie']."-".$_GET['correlativo'];?></title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
 <body>
@@ -31,7 +31,7 @@ include 'generales.php';
 require "NumeroALetras.php";
 
 
-$sqlSeries="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_GET['ticket']}' and `fechaEmision` = '{$_GET['fecha']}'";
+$sqlSeries="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
 $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc();
 
@@ -47,7 +47,7 @@ $factura =  $serie.'-'.$correlativo;
 $nombreArchivo = $rucEmisor.$caso.$factura ; 
 
 
-$sqlBase="select totalFinal from `fact_cabecera` where 	idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_GET['ticket']}' and `fechaEmision` = curdate(); ";
+$sqlBase="select totalFinal from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
 $resultadoBase=$cadena->query($sqlBase);
 $rowBase=$resultadoBase->fetch_assoc();
 	
@@ -60,7 +60,8 @@ $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'
 
 
 
-$sqlCabeza="select * from `fact_cabecera` where idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_GET['ticket']}' and `fechaEmision` = curdate();";
+$sqlCabeza="select * from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}';";
+
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){
@@ -81,9 +82,6 @@ if($filasCabeza==1){
 	$lineaCabeza = $rowC['tipOperacion'].$separador.$rowC['fechaEmision'].$separador.$rowC['horaEmision'].$separador.$rowC['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowC['dniRUC'].$separador.$rowC['razonSocial']. $separador.$rowC['tipoMoneda'].$separador. $costo.$separador. $igvFin.$separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
 
 	//echo $lineaCabeza;
-	$archivo = fopen("{$directorio}{$nombreArchivo}.cab", "w");
-	fwrite($archivo, "{$lineaCabeza}");
-	fclose($archivo);
 
 }
 
@@ -91,7 +89,7 @@ $fecha= new DateTime($rowC['fechaEmision']);
 
 $tempDir = './';
 $filename = "qrtemp";
-$body =  $rucEmisor .$separador. $rowSeries['factTipoDocumento'] .$separador. $serie .$separador. $correlativo .$separador. $rowC['IGVFinal'] .$separador. $rowC['totalFinal'] . $separador. $fecha->format('d/m/Y') . $separador. $tipoDoc . $separador. $rowC['dniRUC'] . $separador;
+$body =  $rucEmisor .$separador. $rowSeries['factTipoDocumento'] .$separador. $serie .$separador. $correlativo .$separador. $rowC['IGVFinal'] .$separador. $rowC['totalFinal'] . $separador. $fecha->format('d/m/Y') . $separador. $tipoDoc . $separador. $rowC['dniRUC'] . $separador . $rowC['factPlaca']. $separador;
 $codeContents = $body; 
 QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 
@@ -150,7 +148,7 @@ $i=1;
 $rowProductos = array();
 
 $lineaDetalle ='';
-$sqlDetalle="SELECT * FROM `fact_detalle` WHERE idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_GET['ticket']}' and `fechaEmision` = curdate();";
+$sqlDetalle="SELECT * FROM `fact_detalle` WHERE facSerieCorre = '{$_GET['serie']}-{$_GET['correlativo']}'";
 $resultadoDetalle=$cadena->query($sqlDetalle);
 while($rowD=$resultadoDetalle->fetch_assoc()){ 
 
@@ -191,7 +189,6 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 		<div>
 			<img src="qrtemp.png" alt="">
 		</div>
-		<p><?= $_GET['hash'];?></p>
 	</div>
 <p>Representacion Impresa de <br><?= $soy; ?> ELECTRÓNICA N° <?= $factura; ?></p>
 <h5>Son: <?= $letras; ?></h5>
