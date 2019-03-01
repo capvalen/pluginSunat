@@ -7,18 +7,33 @@ use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\EscposImage; //librería de imagen
 
+
+include "vendor/autoload.php";
+
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\LabelAlignment;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Response\QrCodeResponse;
+
+
 $separador ='|';
 $tempDir = './';
 $filename = "qrtemp";
 $body =  $_POST['rucEmisor'] .$separador. $_POST['tipoComprobante'] .$separador. $_POST['serie'] .$separador. $_POST['correlativo'] .$separador. $_POST['igvFinal'] .$separador. $_POST['totalFinal'] . $separador. $_POST['fecha'] . $separador. $_POST['tipoCliente'] . $separador. $_POST['docClient']. $separador. $_POST['placa']. $separador;
-$codeContents = $body; 
-QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
+
+$qrCode = new QrCode($body);
+$qrCode->setSize(260);
+$qrCode->setWriterByName('png');
+$qrCode->setMargin(10);
+$qrCode->setEncoding('UTF-8');
+$qrCode->setErrorCorrectionLevel(new ErrorCorrectionLevel(ErrorCorrectionLevel::LOW));
+$qrCode->writeFile(__DIR__.'/qrcode.png');
 
 
 $productos=$_POST['productos'];
 $todoProd= '';
 foreach ($productos as $variable) {
-    $todoProd = $todoProd.$variable['cantidad']." GAL ". $variable['descripcion'] .'  S/ '. number_format($variable['precio'],2)."\n";
+    $todoProd = $todoProd.$variable['cantidad']." GAL | ". "S/ ". $variable['costo']." | ". $variable['descripcion'] .'  S/ '. number_format($variable['precio'],2)."\n";
 }
 //echo $todoProd;
 
@@ -27,7 +42,7 @@ $connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/".$nombrePrint);
 try {
 
     $tux = EscposImage::load("bitmap.jpg", false);
-    $tuxQR = EscposImage::load("qrtemp.png", false);
+    $tuxQR = EscposImage::load("qrcode.png", false);
 
     $printer = new Printer($connectorV31);
     $printer->setJustification(Printer::JUSTIFY_CENTER);
@@ -43,14 +58,19 @@ try {
     $printer -> setEmphasis(false);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
-    $printer -> text("Fecha de emisión: 15/02/2018\n");
+    $printer -> text("Fecha de emisión: ".date('d/m/Y')."\n");
     $printer -> text("Doc. Ident.: {$_POST['docClient']}\n");
     $printer -> text("Señor(es): {$_POST['cliente']}\n");
-    $printer -> text("Dirección: {$_POST['direccion']}\n");
-    $printer -> text("PLACA: {$_POST['placa']}\n");
+    if($_POST['direccion']==''){
+        $printer -> text("Dirección: ---\n");
+    }else{
+        $printer -> text("Dirección: {$_POST['direccion']}\n");}
+    if($_POST['placa']!=''){
+        $printer -> text("PLACA: {$_POST['placa']}\n");}
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
+	$printer -> text("CANT |  P.UNIT.  |  PRODUCTO  |  SUBTOTAL  |\n");
     $printer -> text("{$todoProd}\n");
     $printer -> text("--------------------------------\n");
     $printer -> text("Descuento: S/ {$_POST['descuento']} \n");

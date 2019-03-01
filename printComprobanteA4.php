@@ -8,7 +8,7 @@ include('phpqrcode/qrlib.php');
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Facturador electrónico <?= $_GET['serie']."-".$_GET['correlativo'];?></title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
 <body>
 <style>
@@ -135,8 +135,9 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 		<th>Descripción</th>
 		<th>Und.</th>
 		<th>Cantidad</th>
+		<th>Prec. Unt.</th>
 		<th>Imp. Unit. <br> (sin IGV)</th>
-		<th>Precio Unit. <br> (inc. IGV)</th>
+		<th>SubTotal. <br> (inc. IGV)</th>
 	</tr>
 </thead>
 <tbody>
@@ -167,6 +168,7 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 		<td><?= $i;?></td>
 		<td><?= $rowD['descripcionItem']; ?></td>
 		<td>UND</td>
+		<td><?= $rowD['valorUnitario']; ?></td>
 		<td><?= $rowD['cantidadItem']; ?></td>
 		<td><?= $rowD['mtoIgvItem']; ?></td>
 		<td><?= number_format($rowD['mtoPrecioVenta'],2)?></td>
@@ -220,10 +222,29 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 
 
 </div> <!-- Fin de contariner 1 -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 
-
+<script>
+$(document).ready(function () {
+window.print();	//Activa la impresion apenas cargo todo
+});
+/*Determina si se imprimio o se cancelo, para cerrar la pesataña activa*/
+(function () {
+	var afterPrint = function () {
+	window.top.close();
+	};
+	if (window.matchMedia) {
+		var mediaQueryList = window.matchMedia('print');
+		mediaQueryList.addListener(function (mql) {
+				//alert($(mediaQueryList).html());
+				if (mql.matches) {
+				} else { afterPrint(); }
+		});
+	}
+	window.onafterprint = afterPrint;
+}());
+</script>
 </body>
 </html>

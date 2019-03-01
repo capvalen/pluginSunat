@@ -6,7 +6,7 @@ if (isset($_POST['fecha'])){ $fecha = $_POST['fecha'];}else{
 	$fecha = date('Y-m-d');
 }
 
-$sql="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion` FROM `fact_cabecera` WHERE  `fechaEmision` = '{$fecha}';";
+$sql="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'Factura' when `factTipoDocumento`= 3 then 'Boleta' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion` FROM `fact_cabecera` WHERE  `fechaEmision` = '{$fecha}';";
 
 $resultado=$cadena->query($sql);
 $numero = $resultado ->num_rows;
@@ -24,8 +24,8 @@ while($row=$resultado->fetch_assoc()){
 		
 		<td><?= $row['queDoc']; ?></td>
 		<td><?= $row['factSerie']."-".$row['factCorrelativo']; ?></td>
-		<td><?= $hora->format('h:m a'); ?></td>
-		<td><?= $row['razonSocial']; ?></td>
+		<td data-sort-value="<?= $hora->format('Hi'); ?>"><?= $hora->format('h:i a'); ?></td>
+		<td class="text-capitalize"><?= $row['razonSocial']; ?></td>
 		<td><?= number_format($row['totalFinal'],2); ?></td>
 		<td><?php if($row['comprobanteEmitido']==0){ echo 'Sin emitir'; }else { echo "<span class='text-success'>Emitido</span>";}?></td>
 		<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" data-ticket="<?= $row['idTicket']; ?>">
@@ -41,6 +41,6 @@ while($row=$resultado->fetch_assoc()){
 			?>
 		</td>
 	</tr>
-<?php }
+<?php  $i++; }
 
 ?>

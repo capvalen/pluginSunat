@@ -10,8 +10,9 @@ include "generales.php"; ?>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Facturador electrónico</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<link rel="stylesheet" href="icofont.min.css">
+	<link rel="stylesheet" href="css/bootstrap-select.min.css">
 
 </head>
 <body>
@@ -26,6 +27,19 @@ input::-webkit-inner-spin-button {
 input[type=number] {
     -moz-appearance:textfield; /* Firefox */
 }
+#txtPlacaBoleta::placeholder{
+	font-family:'Icofont', 'Segoe UI';
+	text-align: right;
+}
+.bootstrap-select .dropdown-toggle .filter-option{font-family:'Icofont', 'Segoe UI';}
+.close{color: #ff0202}
+.close:hover, .close:not(:disabled):not(.disabled):hover{color: #fd0000;opacity:1;}
+#imgLogo{max-width:250px;}
+.bootstrap-select .btn-light{background-color: #ffffff;}
+.bootstrap-select .dropdown-toggle .filter-option{    border: 1px solid #ced4da;
+    border-radius: .25rem;}
+thead tr th{cursor: pointer;}
+.dropdown-item .text, .bootstrap-select button{text-transform: capitalize;}
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5">
   <a class="navbar-brand" href="#">Facturador</a>
@@ -46,6 +60,7 @@ input[type=number] {
       <a class="nav-item nav-link d-none" href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
       <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
       <a class="nav-item nav-link" href="#!" id="btnModificarSerie">Modificar serie</a>
+      <a class="nav-item nav-link" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
       <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar sesión</a>
     </div>
   </div>
@@ -68,22 +83,31 @@ input[type=number] {
 </div>
 <section>
 	<div class="container-fluid mt-5 px-5">
-		<h3>Comprobantes generados: </h3>
-		<small>Usuario: <?= strtoupper($_COOKIE['ckNegocio']); ?></small>
-		<div class="row d-flex justify-content-between">
-			<div class="col-sm-3"><input type="date" class="form-control" id="fechaFiltro"></div>
-			<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
+		<div class="row">
+		<div class="col-2">
+			<img src="bitmap.jpg" id="imgLogo">
 		</div>
+		<div class="col ml-4">
+			<h3 class="display-4">Facturación Electrónica</h3>
+			
+			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckNegocio']); ?></small>
+			<div class="row d-flex justify-content-between">
+				<div class="col-sm-3"><input type="date" class="form-control text-center" id="fechaFiltro"></div>
+				<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
+			</div>
+		</div></div>
+		
+
 		<table class="table table-hover mt-3">
 			<thead>
 				<tr>
-					<th>N°</th>
-					<th>Tipo</th>
-					<th>Código</th>
-					<th>Hora</th>
-					<th>Cliente</th>
-					<th>Monto</th>
-					<th>Estado</th>
+					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Código</th>
+					<th data-sort="int"><i class="icofont-expand-alt"></i> Hora</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 					<th>@</th>
 				</tr>
 			</thead>
@@ -107,7 +131,7 @@ input[type=number] {
 	</div>
 </section>
 
-<div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog">
+<div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog" data-backdrop="static" >
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -122,7 +146,7 @@ input[type=number] {
 				<button class="btn btn-outline-primary" id="btnPrintA4">Generar PDF (A4)</button>
 
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer d-none">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
       </div>
     </div>
@@ -138,16 +162,24 @@ input[type=number] {
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
 				</button>
-				<h5>Generar Boleta de venta</h5>
+				<h5>Generar comprobante de venta</h5>
 				<div class="form-inline">
 				<div class="form-check mb-3">
-					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" checked="true">
+					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
 					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
 				</div>
 				<div class="form-check mb-3 ml-5">
-					<input type="text" class='form-control text-uppercase' placeholder="Placa de Vehículo" id="txtPlacaBoleta">
+					<label for="">Placa de vehículo:</label>
+					<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
 				</div>
-				<div class="dropdown mb-3 ml-auto">
+				<div class="form-inline mt-n3 pl-3">
+				<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
+						<?php include "php/listarTodosClientes.php";?>
+					</select>
+				</div>
+				<div class="form-inline  ml-auto">
+				<label class="pr-3 mt-n3" for=""><strong>Serie:</strong></label>
+				<div class="dropdown mb-3">
 				<?php 
 					$sqlSerieBoleta="SELECT * FROM `fact_series`";
 					$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
@@ -159,6 +191,8 @@ input[type=number] {
 					<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
 					<option><?= $rowSerieBoleta['serieOpcional']; ?></option>
 				</select>
+				</div>
+
 					
 				</div>
 				</div>
@@ -195,14 +229,14 @@ input[type=number] {
 						<div class="row mb-1 cardHijoProducto" data-producto="2">
 							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
 							<div class="col-1">Galón</div>
-							<div class="col-5 divNombProducto">Gasolina</div>
+							<div class="col-5 divNombProducto">Gasohol 90 Plus</div>
 							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioGasolina" step='0.1' min="0"></div>
 							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioGasolina" value="0.00"></div>
 						</div>
 						<div class="row mb-1 cardHijoProducto" data-producto="1">
 							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
 							<div class="col-1">Galón</div>
-							<div class="col-5 divNombProducto">Petróleo</div>
+							<div class="col-5 divNombProducto">Diesel D5 S-50 UV</div>
 							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0"></div>
 							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioPetroleo" value="0.00"></div>
 						</div>
@@ -223,7 +257,7 @@ input[type=number] {
 					<div class="row text-center">
 						<p for="" class="text-danger d-none"> <span class="lblError"></span></p>
 					</div>
-					<button type="button" class="btn btn-outline-primary float-right d-none" id="btnEmitirFacturav2" ><i class="icofont-paper"></i> Emitir Factura</button>
+					<button type="button" class="btn btn-outline-success float-right d-none" id="btnEmitirFacturav2" ><i class="icofont-paper"></i> Emitir Factura</button>
 					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir Boleta</button>
 				</div>
       </div>
@@ -327,13 +361,43 @@ input[type=number] {
   </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<!-- Modal para empezar Modificar las precios -->
+<div class="modal fade" id="modalModPrecios" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Modificar precios</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="">Precio de Gasohol 90 Plus:</label>
+				<input type="text" class="form-control text-center" id="txtPrecGasoholv2">
+				<label for="">Precio de Diesel D5 S-50 UV:</label>
+				<input type="text" class="form-control text-center" id="txtPrecDieselv2">
+      </div>
+      <div class="modal-footer">
+				<p class="text-danger d-none" id="pError3"></p>
+        <button type="button" class="btn btn-primary" id="btnUpdatePrecios"><i class="icofont-refresh"></i> Actualizar precios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 <script src="js/impotem.js?version=1.0.3"></script>
 <script src="js/moment.js"></script>
+<script src="js/bootstrap-select.js"></script>
+<script src="js/stupidtable.js"></script>
+
 <script>
 $(document).ready(function(){
+	$('.selectpicker').selectpicker('render');
+	$('.selectpicker').selectpicker('val', -1);
+
 	$.ajax({url: 'php/getPreciosProductos.php', type: 'POST' }).done(function(resp) {
 		//console.log(resp)
 		$.precios = JSON.parse(resp);
@@ -349,6 +413,7 @@ $(document).ready(function(){
 		//console.log(resp)
 		$('tbody').append(resp);
 		$('[data-toggle="tooltip"]').tooltip();
+		$("table").stupidtable();
 	});
 	$('#fechaFiltro').change(function() {
 		console.log( moment($('#fechaFiltro').val()).isValid() );
@@ -456,9 +521,9 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	var caso = padre.attr('data-caso');
 	var serie = padre.attr('data-serie');
 	var correlativo = padre.attr('data-correlativo');
-	var ticket = padre.attr('data-ticket');
+	
 
-	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { fecha: $('#fechaFiltro').val(), ticket: ticket }}).done(function(resp) {
+	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
 		$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
@@ -506,7 +571,7 @@ $('#btnPrintTicketera').click(function() {
 				placa: $.jTicket[0].placa,
 			}}).done(function(resp) {
 				console.log(resp)
-				location.reload();
+				//location.reload();
 			});
 });
 $('#btnModificarSerie').click(function() {
@@ -541,17 +606,15 @@ $('tbody').on('click', '.imprA4Fuera', function (e) {
 	var caso = padre.attr('data-caso');
 	var serie = padre.attr('data-serie');
 	var correlativo = padre.attr('data-correlativo');
-	var ticket = padre.attr('data-ticket');
 
-	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { fecha: $('#fechaFiltro').val(), ticket: ticket }}).done(function(resp) {
+	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
 		console.log(resp)
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		window.open( 'printComprobanteA4.php?ticket='+ticket+'&hash='+encodeURIComponent($hash)+"&fecha="+encodeURIComponent($('#fechaFiltro').val()) ,'_blank');
+		window.open( 'printComprobanteA4.php?serie='+encodeURIComponent(serie)+'&correlativo='+encodeURIComponent(correlativo) ,'_blank');
 	});
 });
 $('#btnPrintA4').click(function() {
 	window.open( 'printComprobanteA4.php?serie='+encodeURIComponent($.jTicket[0].serie)+'&correlativo='+encodeURIComponent($.jTicket[0].correlativo) ,'_blank');
-	
 });
 $('tbody').on('click', '.btnGenComprobante', function (e) {
 	var ticket = $(this).attr('data-ticket');
@@ -572,15 +635,20 @@ $('#btnRefresh').click(function() {
 $('#AEmitirBoleta').click(function() {
 	$('#optBoleta').attr('disabled',false);
 	$('#optFactura').attr('disabled',true);
+	$('#txtDniBoleta').attr('placeholder', 'D.N.I.');
+	$('#txtRazonBoleta').attr('placeholder', 'Nombres y apellidos');
 	$('#btnEmitirBoletav2').removeClass('d-none');
 	$('#btnEmitirFacturav2').addClass('d-none');
-	$('#sltSeriesBoleta').val('series');
+	$('#sltSeriesBoleta option').removeAttr('selected');
+	$('#optBoleta').attr('selected', true);
 	$('#chkEstadoDni').prop('checked', true).change();
 	$('#modalEmisionBoleta').modal('show');
 });
 $('#AEmitirFactura').click(function() {
 	$('#optBoleta').attr('disabled',true);
 	$('#optFactura').attr('disabled',false);
+	$('#txtDniBoleta').attr('placeholder', 'R.U.C.');
+	$('#txtRazonBoleta').attr('placeholder', 'Razón social');
 	$('#btnEmitirBoletav2').addClass('d-none');
 	$('#btnEmitirFacturav2').removeClass('d-none');
 	$('#sltSeriesBoleta').val('series');
@@ -594,6 +662,7 @@ $('#chkEstadoDni').change(function() {
 		$('#txtDniBoleta').attr('readonly', true).val('');
 		$('#txtRazonBoleta').attr('readonly', true).val('');
 		$('#txtDireccionBoleta').attr('readonly', true).val('');
+		$('.selectpicker').selectpicker('val', -1);
 	}else{
 		$('#labelEstadoDni').text('Cliente con documento de identidad');
 		$('#divDatosCliente').removeClass('d-none');
@@ -655,6 +724,14 @@ $('#btnEmitirBoletav2').click(function() {
 	}else if( $('#txtCampoPrecioGasolina').val()==0 && $('#txtCampoPrecioPetroleo').val()==0 ){
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No hay ningún producto rellenado').parent().removeClass('d-none');
 	}else{
+		var jsonCliente= [];
+		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
+			jsonCliente.push({dni: $('#txtDniBoleta').val(),
+				razon: $('#txtRazonBoleta').val(),
+				direccion: $('#txtDireccionBoleta').val()
+			});
+		}
+
 		var jsonProductos= [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
 			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
@@ -671,7 +748,7 @@ $('#btnEmitirBoletav2').click(function() {
 			dniRc='00000000';
 			razon='Cliente sin documento';
 		}
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos }}).done(function(resp) {
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos, jsonCliente:jsonCliente }}).done(function(resp) {
 			console.log(resp)
 			$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
 			if($.jTicket.length >=1){
@@ -724,7 +801,41 @@ $('#btnEmitirFacturav2').click(function() {
 		});
 	}
 });
-
+$('#btnModificarPrecios').click(function() {
+	$.ajax({url: 'php/llamarPrecios.php', type: 'POST'}).done(function(resp) {
+		data=JSON.parse(resp);
+		console.log( data );
+		$('#txtPrecDieselv2').val(parseFloat(data[0].prodPrecio).toFixed(2))
+		$('#txtPrecGasoholv2').val(parseFloat(data[1].prodPrecio).toFixed(2))
+	});
+	$('#modalModPrecios').modal('show');
+});
+$('#btnUpdatePrecios').click(function() {
+	$('#pError3').addClass('d-none')
+	if( $('#txtPrecDieselv2').val()=='' || $('#txtPrecGasoholv2').val()==''  ){
+		$('#pError3').removeClass('d-none').text('Ningún precio puede estar vacío');
+	}else{
+		$.ajax({url: 'php/updatePrecios.php', type: 'POST', data: { diesel: $('#txtPrecDieselv2').val(), gasohol: $('#txtPrecGasoholv2').val() }}).done(function(resp) {
+			console.log( resp );
+			if( resp =='ok' ){
+				$('#modalModPrecios').modal('hide');
+				location.reload();
+			}else{
+				$('#pError3').removeClass('d-none').text('Hubo un error interno al guardar los datos');
+			}
+		});
+	}
+});
+$('#sltFiltroClientes').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+  
+	var index=$('#sltFiltroClientes').val();
+	var padre = $("#sltFiltroClientes option[value="+index+"]");
+	$('#chkEstadoDni').prop('checked', false).change();
+	
+	$('#txtDniBoleta').val(padre.attr('data-ruc'));
+	$('#txtRazonBoleta').val(padre.attr('data-razon'));
+	$('#txtDireccionBoleta').val(padre.attr('data-direccion'));
+});
 </script>
 </body>
 </html>
