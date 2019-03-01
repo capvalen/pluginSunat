@@ -1,4 +1,5 @@
 <?php
+include 'conexion.php';
 if( !isset($_COOKIE['ckNegocio']) ){ header("Location: index.html");
 	die(); }
 include "generales.php"; ?>
@@ -14,6 +15,18 @@ include "generales.php"; ?>
 
 </head>
 <body>
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+</style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5">
   <a class="navbar-brand" href="#">Facturador</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,8 +34,17 @@ include "generales.php"; ?>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link " href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
-      <a class="nav-item nav-link" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Emitir comprobante
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
+					<a class="dropdown-item" href="#!" id="AEmitirFactura"><i class="icofont-ui-copy"></i> Factura</a>
+				</div>
+			</li>
+      <a class="nav-item nav-link d-none" href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
+      <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
       <a class="nav-item nav-link" href="#!" id="btnModificarSerie">Modificar serie</a>
       <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar sesión</a>
     </div>
@@ -36,19 +58,18 @@ include "generales.php"; ?>
 		<div class="container">
 			<div class="row">
 			<div class="col-sm-12 mx-5 px-5">
-					<button class="btn btn-outline-success btn-block btn-lg my-4" >Emitir Comprobante</button>
-					<button class="btn btn-outline-warning btn-block btn-lg my-4">Consultar comprobante</button>
-					<button class="btn btn-outline-dark btn-block btn-lg my-4 d-none">Modificar serie de comprobante</button>
-				</div>
+				<button class="btn btn-outline-success btn-block btn-lg my-4 " >Emitir Comprobante</button>
+				<button class="btn btn-outline-warning btn-block btn-lg my-4">Consultar comprobante</button>
+				<button class="btn btn-outline-dark btn-block btn-lg my-4 d-none">Modificar serie de comprobante</button>
+			</div>
 			</div>
 		</div>
 	</section>
 </div>
 <section>
 	<div class="container-fluid mt-5 px-5">
-		<h3>Comprobantes generados:</h3>
-		<h5>Negocio: <?= $_COOKIE['ckNegocio']?></h5>
-		<h5>Local: <?= $_COOKIE['ckLocal']?></h5>
+		<h3>Comprobantes generados: </h3>
+		<small>Usuario: <?= strtoupper($_COOKIE['ckNegocio']); ?></small>
 		<div class="row d-flex justify-content-between">
 			<div class="col-sm-3"><input type="date" class="form-control" id="fechaFiltro"></div>
 			<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
@@ -57,8 +78,8 @@ include "generales.php"; ?>
 			<thead>
 				<tr>
 					<th>N°</th>
-					<th>Ticket</th>
 					<th>Tipo</th>
+					<th>Código</th>
 					<th>Hora</th>
 					<th>Cliente</th>
 					<th>Monto</th>
@@ -103,6 +124,108 @@ include "generales.php"; ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal para Emitir Boleta -->
+<div class="modal fade" id="modalEmisionBoleta" tabindex="-1" role="dialog" data-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+				</button>
+				<h5>Generar Boleta de venta</h5>
+				<div class="form-inline">
+				<div class="form-check mb-3">
+					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" checked="true">
+					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
+				</div>
+				<div class="form-check mb-3 ml-5">
+					<input type="text" class='form-control text-uppercase' placeholder="Placa de Vehículo" id="txtPlacaBoleta">
+				</div>
+				<div class="dropdown mb-3 ml-auto">
+				<?php 
+					$sqlSerieBoleta="SELECT * FROM `fact_series`";
+					$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
+					$rowSerieBoleta=$resultadoSerieBoleta->fetch_assoc();
+				?>
+				<select class="form-control" id="sltSeriesBoleta">
+					<option value="series" selected>Series</option>
+					<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
+					<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
+					<option><?= $rowSerieBoleta['serieOpcional']; ?></option>
+				</select>
+					
+				</div>
+				</div>
+			
+				
+				<div id="divDatosCliente" class="d-none card mb-3">
+					<div class="card-body">
+						<p class="text-muted"><strong>Datos del cliente:</strong></p>
+						<div class="row mb-3">
+							<div class="col-4">
+								<input type="text"  class="form-control ml-2 soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' readonly>
+							</div>
+							<div class="col-8">
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-body">
+						<p class="text-muted"><strong>Productos:</strong></p>
+						<div class="row">
+							<div class="col-2"><strong>Cant.</strong></div>
+							<div class="col-1"><strong>Und</strong></div>
+							<div class="col-5"><strong>Producto</strong></div>
+							<div class="col-2"><strong>Precio Unit.</strong></div>
+							<div class="col-2"><strong>Sub-Total</strong></div>
+						</div>
+						<div class="row mb-1 cardHijoProducto" data-producto="2">
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
+							<div class="col-1">Galón</div>
+							<div class="col-5 divNombProducto">Gasolina</div>
+							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioGasolina" step='0.1' min="0"></div>
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioGasolina" value="0.00"></div>
+						</div>
+						<div class="row mb-1 cardHijoProducto" data-producto="1">
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
+							<div class="col-1">Galón</div>
+							<div class="col-5 divNombProducto">Petróleo</div>
+							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0"></div>
+							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioPetroleo" value="0.00"></div>
+						</div>
+					</div>
+				</div>
+				<div class='mt-2 pr-5'>
+					<div class="d-flex align-items-end flex-column">
+						<h5><span>Sub-Total:</span> <span>S/ <span id="spSubTotBoleta">0.00</span></span></h5>
+						<h5><span>IGV:</span> <span>S/ <span id="spIgvBoleta">0.00</span></span></h5>
+						<h5><span>Total:</span> <span>S/ <span id="spTotalBoleta">0.00</span></span></h5>
+					</div>
+				</div>
+				
+       
+      </div>
+      <div class="modal-footer">
+				<div class="container-fluid">
+					<div class="row text-center">
+						<p for="" class="text-danger d-none"> <span class="lblError"></span></p>
+					</div>
+					<button type="button" class="btn btn-outline-primary float-right d-none" id="btnEmitirFacturav2" ><i class="icofont-paper"></i> Emitir Factura</button>
+					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir Boleta</button>
+				</div>
       </div>
     </div>
   </div>
@@ -193,6 +316,8 @@ include "generales.php"; ?>
 				<input type="text" class="form-control text-center" id="txtSerieBoleta">
 				<label for="">Serie de Facturas:</label>
 				<input type="text" class="form-control text-center" id="txtSerieFactura">
+				<label for="">Serie de Interna:</label>
+				<input type="text" class="form-control text-center" id="txtSerieInterna">
       </div>
       <div class="modal-footer">
 				<p class="text-danger d-none" id="pError2"></p>
@@ -205,9 +330,17 @@ include "generales.php"; ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script src="js/impotem.js?version=1.0.3"></script>
 <script src="js/moment.js"></script>
 <script>
 $(document).ready(function(){
+	$.ajax({url: 'php/getPreciosProductos.php', type: 'POST' }).done(function(resp) {
+		//console.log(resp)
+		$.precios = JSON.parse(resp);
+		console.log( $.precios );
+		$('#txtPrecioGasolina').val($.precios[1].prodPrecio);
+		$('#txtPrecioPetroleo').val($.precios[0].prodPrecio);
+	});
 	$('#fechaFiltro').val( moment().format('YYYY-MM-DD'));
 	$('[data-toggle="tooltip"]').tooltip();
 	$('tbody').children().remove();
@@ -328,55 +461,32 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { fecha: $('#fechaFiltro').val(), ticket: ticket }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		if($.jTicket.length >=1){  
-			$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',
-				caso: caso,
-				serie: serie,
-				correlativo: correlativo}
-				).done(function(respu){
-					console.log( respu );
-					if( respu == 'Sin firma'){
-						$.hash = '';
-					}else{
-						$hassh= respu;
-					}
-					$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
-							tipoComprobante: $.jTicket[0].tipoComprobante,
-							rucEmisor: $.jTicket[0].rucEmisor,
-							queEs: $.jTicket[0].queSoy,
-							serie: $.jTicket[0].serie,
-							correlativo: $.jTicket[0].correlativo,
-							tipoCliente: $.jTicket[0].tipoCliente,
-							fecha: $.jTicket[0].fechaEmision,
-							cliente: $.jTicket[0].razonSocial,
-							docClient: $.jTicket[0].ruc,
-							monedas: $.jTicket[0].letras,
-							descuento: parseFloat($.jTicket[0].descuento).toFixed(2),
-							costoFinal: parseFloat($.jTicket[0].costoFinal).toFixed(2),
-							igvFinal: parseFloat($.jTicket[0].igvFinal).toFixed(2),
-							totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
-							productos: $.jTicket[1],
-							direccion:$.jTicket[0].direccion,
-							hash: $hassh
-						}}).done(function(resp) {
-							console.log(resp)
-							location.reload();
-						});
-				});
-		}
+		$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
+			tipoComprobante: $.jTicket[0].tipoComprobante,
+			rucEmisor: $.jTicket[0].rucEmisor,
+			queEs: $.jTicket[0].queSoy,
+			serie: $.jTicket[0].serie,
+			correlativo: $.jTicket[0].correlativo,
+			tipoCliente: $.jTicket[0].tipoCliente,
+			fecha: $.jTicket[0].fechaEmision,
+			cliente: $.jTicket[0].razonSocial,
+			docClient: $.jTicket[0].ruc,
+			monedas: $.jTicket[0].letras,
+			descuento: parseFloat($.jTicket[0].descuento).toFixed(2),
+			costoFinal: parseFloat($.jTicket[0].costoFinal).toFixed(2),
+			igvFinal: parseFloat($.jTicket[0].igvFinal).toFixed(2),
+			totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
+			productos: $.jTicket[1],
+			direccion:$.jTicket[0].direccion,
+			placa: $.jTicket[0].placa,
+		}}).done(function(resp) {
+			console.log(resp)
+			location.reload();
+		});
 	});
 });
 $('#btnPrintTicketera').click(function() {
-	$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',	caso: $.jTicket[0].tipoComprobante,
-	serie: $.jTicket[0].serie,
-	correlativo: $.jTicket[0].correlativo}
-	).done(function(respu){
-		console.log( respu );
-		if( respu == 'Sin firma'){
-			$hassh = '';
-		}else{
-			$hassh= respu;
-			$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
+	$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
 				tipoComprobante: $.jTicket[0].tipoComprobante,
 				rucEmisor: $.jTicket[0].rucEmisor,
 				queEs: $.jTicket[0].queSoy,
@@ -393,31 +503,30 @@ $('#btnPrintTicketera').click(function() {
 				totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
 				productos: $.jTicket[1],
 				direccion:$.jTicket[0].direccion,
-				hash: $hassh
+				placa: $.jTicket[0].placa,
 			}}).done(function(resp) {
 				console.log(resp)
 				location.reload();
 			});
-		}
-	});
 });
 $('#btnModificarSerie').click(function() {
 	$.ajax({url: 'llamarSeries.php', type: 'POST', data: { }}).done(function(resp) {
-		
 		var data = JSON.parse(resp)[0];
 		console.log( data );
 		$('#txtSerieBoleta').val( data.serieBoleta );
 		$('#txtSerieFactura').val( data.serieFactura );
+		$('#txtSerieInterna').val( data.serieOpcional );
+		
 		$('#modalModSerie').modal('show');
 	});
 	
 });
 $('#btnUpdateSeries').click(function() {
 	$('#pError2').addClass('d-none')
-	if( $('#txtSerieBoleta').val()=='' || $('#txtSerieFactura').val()=='' ){
+	if( $('#txtSerieBoleta').val()=='' || $('#txtSerieFactura').val()=='' || $('#txtSerieInterna').val()=='' ){
 		$('#pError2').removeClass('d-none').text('Ambos campos deben estar rellenados');
 	}else{
-		$.ajax({url: 'updateSeries.php', type: 'POST', data: { serFact: $('#txtSerieFactura').val(), serBol: $('#txtSerieBoleta').val() }}).done(function(resp) {
+		$.ajax({url: 'updateSeries.php', type: 'POST', data: { serFact: $('#txtSerieFactura').val(), serBol: $('#txtSerieBoleta').val(), serInt: $('#txtSerieInterna').val() }}).done(function(resp) {
 			if( resp =='ok' ){
 				$('#modalModSerie').modal('hide');
 			}else{
@@ -437,36 +546,11 @@ $('tbody').on('click', '.imprA4Fuera', function (e) {
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { fecha: $('#fechaFiltro').val(), ticket: ticket }}).done(function(resp) {
 		console.log(resp)
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		if($.jTicket.length >=1){
-			$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',
-				caso: caso,
-				serie: serie,
-				correlativo: correlativo}
-				).done(function(respu){
-					console.log( respu );
-					if( respu == 'Sin firma'){
-						$hash = '';
-					}else{
-						$hash= respu;
-						window.open( 'printComprobanteA4.php?ticket='+ticket+'&hash='+encodeURIComponent($hash)+"&fecha="+encodeURIComponent($('#fechaFiltro').val()) ,'_blank');
-					}
-				});
-		}
+		window.open( 'printComprobanteA4.php?ticket='+ticket+'&hash='+encodeURIComponent($hash)+"&fecha="+encodeURIComponent($('#fechaFiltro').val()) ,'_blank');
 	});
 });
 $('#btnPrintA4').click(function() {
-	$.post('solicitarFirma.php',{ emisor: '<?= $rucEmisor;?>',	caso: $.jTicket[0].tipoComprobante,
-	serie: $.jTicket[0].serie,
-	correlativo: $.jTicket[0].correlativo}
-	).done(function(respu){
-		console.log( respu );
-		if( respu == 'Sin firma'){
-			$.hash = '';
-		}else{
-			$hassh= respu;
-			window.open( 'printComprobanteA4.php?negocio='+$('#txtNCodNegocio2').val()+'&local='+$('#txtCodLocal2').val()+'&ticket='+$('#txtNumTicket2').val()+'&hash='+encodeURIComponent($.hash)+"&fecha="+encodeURIComponent($('#fechaFiltro').val()) ,'_blank');
-		}
-	});
+	window.open( 'printComprobanteA4.php?serie='+encodeURIComponent($.jTicket[0].serie)+'&correlativo='+encodeURIComponent($.jTicket[0].correlativo) ,'_blank');
 	
 });
 $('tbody').on('click', '.btnGenComprobante', function (e) {
@@ -484,6 +568,161 @@ $('tbody').on('click', '.btnGenComprobante', function (e) {
 });
 $('#btnRefresh').click(function() {
 	location.reload();
+});
+$('#AEmitirBoleta').click(function() {
+	$('#optBoleta').attr('disabled',false);
+	$('#optFactura').attr('disabled',true);
+	$('#btnEmitirBoletav2').removeClass('d-none');
+	$('#btnEmitirFacturav2').addClass('d-none');
+	$('#sltSeriesBoleta').val('series');
+	$('#chkEstadoDni').prop('checked', true).change();
+	$('#modalEmisionBoleta').modal('show');
+});
+$('#AEmitirFactura').click(function() {
+	$('#optBoleta').attr('disabled',true);
+	$('#optFactura').attr('disabled',false);
+	$('#btnEmitirBoletav2').addClass('d-none');
+	$('#btnEmitirFacturav2').removeClass('d-none');
+	$('#sltSeriesBoleta').val('series');
+	$('#chkEstadoDni').prop('checked', false).change();
+	$('#modalEmisionBoleta').modal('show');
+});
+$('#chkEstadoDni').change(function() {
+	if($('#chkEstadoDni').prop('checked')	){
+		$('#labelEstadoDni').text('Cliente anónimo');
+		$('#divDatosCliente').addClass('d-none');
+		$('#txtDniBoleta').attr('readonly', true).val('');
+		$('#txtRazonBoleta').attr('readonly', true).val('');
+		$('#txtDireccionBoleta').attr('readonly', true).val('');
+	}else{
+		$('#labelEstadoDni').text('Cliente con documento de identidad');
+		$('#divDatosCliente').removeClass('d-none');
+		$('#txtRazonBoleta').attr('readonly', false);
+		$('#txtDireccionBoleta').attr('readonly', false);
+		$('#txtDniBoleta').attr('readonly', false).focus();
+	}
+});
+$('.campoSubTotal').keyup(function() {
+	var padre = $(this).parent().parent();
+	var subTotal = parseFloat($(this).val());
+	var precio = parseFloat(padre.find('.campoPrecioUnit').val());
+	var cantidad = 0;//parseFloat(padre.find('.campoCantidad').val());
+	
+	cantidad = parseFloat(subTotal/precio);
+	padre.find('.campoCantidad').val( cantidad.toFixed(3) );
+	sumaTodo();
+});
+$('.campoPrecioUnit').keyup(function() {
+	var padre = $(this).parent().parent();
+	var precio = parseFloat($(this).val());
+	var cantidad = parseFloat(padre.find('.campoCantidad').val());
+	var subTotal = 0;//parseFloat(padre.find('.campoPrecioUnit').val());
+	
+	subTotal = parseFloat(cantidad*precio);
+	padre.find('.campoSubTotal').val( subTotal.toFixed(2) );
+	sumaTodo();
+});
+$('.campoCantidad').keyup(function() {
+	var padre = $(this).parent().parent();
+	var cantidad = parseFloat($(this).val());
+	var precio = parseFloat(padre.find('.campoPrecioUnit').val());
+	var subTotal = 0;//parseFloat(padre.find('.campoPrecioUnit').val());
+	
+	subTotal = parseFloat(cantidad*precio);
+	padre.find('.campoSubTotal').val( subTotal.toFixed(2) );
+	sumaTodo();
+});
+function sumaTodo() {
+	var sumaTotal = 0;
+	$.each( $('.campoSubTotal'), function(i, elem){
+		//console.log( $(elem).val() );
+		sumaTotal+=parseFloat($(elem).val());
+	});
+	console.log( sumaTotal );
+	var costo = sumaTotal/1.18;
+	var igv=sumaTotal-costo;
+	$('#spSubTotBoleta').text(parseFloat(costo).toFixed(2));
+	$('#spIgvBoleta').text(parseFloat(igv).toFixed(2));
+	$('#spTotalBoleta').text(parseFloat(sumaTotal).toFixed(2));
+}
+$('#modalEmisionBoleta').on('shown.bs.modal', function () { 
+	$('#txtPlacaBoleta').focus();
+});
+$('#btnEmitirBoletav2').click(function() {
+	if( $('#sltSeriesBoleta').val()=='series'){
+		$('#sltSeriesBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
+	}else if( $('#txtCampoPrecioGasolina').val()==0 && $('#txtCampoPrecioPetroleo').val()==0 ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No hay ningún producto rellenado').parent().removeClass('d-none');
+	}else{
+		var jsonProductos= [];
+		$.each( $('.cardHijoProducto'), function (i, elem) {
+			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
+				descripcionProducto: $(elem).find('.divNombProducto').text(),
+				precioProducto: $(elem).find('.campoPrecioUnit').val(),
+				subtotal: $(elem).find('.campoSubTotal').val()
+			});
+		});
+		var dniRc ='', razon='';
+		if($('#txtDniBoleta').val()!=''){
+			dniRc=$('#txtDniBoleta').val();
+			razon=$('#txtRazonBoleta').val()
+		}else{
+			dniRc='00000000';
+			razon='Cliente sin documento';
+		}
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos }}).done(function(resp) {
+			console.log(resp)
+			$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+			if($.jTicket.length >=1){
+				$('#modalEmisionBoleta').modal('hide');
+				$('#modalArchivoBien').modal('show');
+			}
+		});
+	}
+});
+$('#btnEmitirFacturav2').click(function() {
+
+	if( $('#sltSeriesBoleta').val()=='series'){
+		$('#sltSeriesBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
+	}else if( $('#txtPlacaBoleta').val()==''){
+		$('#txtPlacaBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> La placa del automóvil tiene que ser rellenado').parent().removeClass('d-none');
+	}else if( $('#txtDniBoleta').val().length!=11 ){
+		$('#txtDniBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> El RUC del cliente, no es correcto').parent().removeClass('d-none');
+	}else if( $('#txtRazonBoleta').val()=='' ){
+		$('#txtRazonBoleta').focus();
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> La razón social no puede estar en blanco').parent().removeClass('d-none');
+	}else if( $('#txtCampoPrecioGasolina').val()==0 && $('#txtCampoPrecioPetroleo').val()==0 ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No hay ningún producto rellenado').parent().removeClass('d-none');
+	}else{
+		var jsonProductos= [];
+		$.each( $('.cardHijoProducto'), function (i, elem) {
+			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
+				descripcionProducto: $(elem).find('.divNombProducto').text(),
+				precioProducto: $(elem).find('.campoPrecioUnit').val(),
+				subtotal: $(elem).find('.campoSubTotal').val()
+			});
+		});
+		var dniRc ='', razon='';
+		if($('#txtDniBoleta').val()!=''){
+			dniRc=$('#txtDniBoleta').val();
+			razon=$('#txtRazonBoleta').val()
+		}else{
+			dniRc='00000000';
+			razon='Cliente sin documento';
+		}
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos }}).done(function(resp) {
+			console.log(resp)
+			$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+			if($.jTicket.length >=1){
+				$('#modalEmisionBoleta').modal('hide');
+				$('#modalArchivoBien').modal('show');
+			}
+		});
+	}
 });
 
 </script>

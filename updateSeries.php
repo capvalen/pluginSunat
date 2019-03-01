@@ -1,7 +1,7 @@
 <?php
 include "conexion.php";
 
-$sql="UPDATE `fact_series` SET `serieFactura`='{$_POST['serFact']}',`serieBoleta`='{$_POST['serBol']}' WHERE 1;";
+$sql="UPDATE `fact_series` SET `serieFactura`='{$_POST['serFact']}',`serieBoleta`='{$_POST['serBol']}',`serieOpcional`='{$_POST['serInt']}' WHERE 1;";
 $resultado=$cadena->query($sql);
 if( $resultado ){
 	echo 'ok';
