@@ -526,7 +526,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
+		$.ajax({url: 'http://127.0.0.1/estacionanry/printComprobante.php', type: 'POST', data: {
 			tipoComprobante: $.jTicket[0].tipoComprobante,
 			rucEmisor: $.jTicket[0].rucEmisor,
 			queEs: $.jTicket[0].queSoy,
@@ -546,12 +546,12 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 			placa: $.jTicket[0].placa,
 		}}).done(function(resp) {
 			console.log(resp)
-			location.reload();
+			//location.reload();
 		});
 	});
 });
 $('#btnPrintTicketera').click(function() {
-	$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
+	$.ajax({url: 'http://127.0.0.1/estacionanry/printComprobante.php', type: 'POST', data: {
 				tipoComprobante: $.jTicket[0].tipoComprobante,
 				rucEmisor: $.jTicket[0].rucEmisor,
 				queEs: $.jTicket[0].queSoy,
@@ -571,7 +571,7 @@ $('#btnPrintTicketera').click(function() {
 				placa: $.jTicket[0].placa,
 			}}).done(function(resp) {
 				console.log(resp)
-				//location.reload();
+				location.reload();
 			});
 });
 $('#btnModificarSerie').click(function() {
@@ -615,6 +615,7 @@ $('tbody').on('click', '.imprA4Fuera', function (e) {
 });
 $('#btnPrintA4').click(function() {
 	window.open( 'printComprobanteA4.php?serie='+encodeURIComponent($.jTicket[0].serie)+'&correlativo='+encodeURIComponent($.jTicket[0].correlativo) ,'_blank');
+	location.reload();
 });
 $('tbody').on('click', '.btnGenComprobante', function (e) {
 	var ticket = $(this).attr('data-ticket');
@@ -731,7 +732,6 @@ $('#btnEmitirBoletav2').click(function() {
 				direccion: $('#txtDireccionBoleta').val()
 			});
 		}
-
 		var jsonProductos= [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
 			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
@@ -775,6 +775,13 @@ $('#btnEmitirFacturav2').click(function() {
 	}else if( $('#txtCampoPrecioGasolina').val()==0 && $('#txtCampoPrecioPetroleo').val()==0 ){
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No hay ningún producto rellenado').parent().removeClass('d-none');
 	}else{
+		var jsonCliente= [];
+		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
+			jsonCliente.push({dni: $('#txtDniBoleta').val(),
+				razon: $('#txtRazonBoleta').val(),
+				direccion: $('#txtDireccionBoleta').val()
+			});
+		}
 		var jsonProductos= [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
 			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
@@ -791,7 +798,7 @@ $('#btnEmitirFacturav2').click(function() {
 			dniRc='00000000';
 			razon='Cliente sin documento';
 		}
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos }}).done(function(resp) {
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente }}).done(function(resp) {
 			console.log(resp)
 			$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
 			if($.jTicket.length >=1){

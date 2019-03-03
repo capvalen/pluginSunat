@@ -33,7 +33,7 @@ $qrCode->writeFile(__DIR__.'/qrcode.png');
 $productos=$_POST['productos'];
 $todoProd= '';
 foreach ($productos as $variable) {
-    $todoProd = $todoProd.$variable['cantidad']." GAL | ". "S/ ". $variable['costo']." | ". $variable['descripcion'] .'  S/ '. number_format($variable['precio'],2)."\n";
+    $todoProd = $todoProd.$variable['cantidad']." GAL | ". "S/ ". $variable['preProducto']." | ". $variable['descripcion'] .'  S/ '. number_format($variable['precio'],2)."\n";
 }
 //echo $todoProd;
 
@@ -60,13 +60,13 @@ try {
     $printer->setJustification(Printer::JUSTIFY_LEFT);
     $printer -> text("Fecha de emisión: ".date('d/m/Y')."\n");
     $printer -> text("Doc. Ident.: {$_POST['docClient']}\n");
-    $printer -> text("Señor(es): {$_POST['cliente']}\n");
+    $printer -> text("Señor(es): ".strtoupper($_POST['cliente'])."\n");
     if($_POST['direccion']==''){
         $printer -> text("Dirección: ---\n");
     }else{
-        $printer -> text("Dirección: {$_POST['direccion']}\n");}
+        $printer -> text("Dirección: ".strtoupper($_POST['direccion'])."\n");}
     if($_POST['placa']!=''){
-        $printer -> text("PLACA: {$_POST['placa']}\n");}
+        $printer -> text("PLACA: ".strtoupper($_POST['placa'])."\n");}
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);

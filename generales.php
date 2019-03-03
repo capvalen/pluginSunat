@@ -1,8 +1,8 @@
 <?php
 //Rellenar por cada Cliente:
 $directorio = 'C:\SFS_v1.2\sunat_archivos\sfs\DATA/';
-$rucEmisor = '20602337147'; //'20600180259';
-$nombrePrint = 'xp-58'; //'TP-180';
+$rucEmisor ='20600180259';
+$nombrePrint = 'TP-180';
 
 
 
