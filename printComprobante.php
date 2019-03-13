@@ -19,7 +19,7 @@ use Endroid\QrCode\Response\QrCodeResponse;
 $separador ='|';
 $tempDir = './';
 $filename = "qrtemp";
-$body =  $_POST['rucEmisor'] .$separador. $_POST['tipoComprobante'] .$separador. $_POST['serie'] .$separador. $_POST['correlativo'] .$separador. $_POST['igvFinal'] .$separador. $_POST['totalFinal'] . $separador. $_POST['fecha'] . $separador. $_POST['tipoCliente'] . $separador. $_POST['docClient']. $separador. $_POST['placa']. $separador;
+$body =  $_POST['rucEmisor'] .$separador. $_POST['tipoComprobante'] .$separador. $_POST['serie'] .$separador. $_POST['correlativo'] .$separador. $_POST['igvFinal'] .$separador. $_POST['totalFinal'] . $separador. $_POST['fecha'] . $separador. $_POST['tipoCliente'] . $separador. $_POST['docClient']. $separador ;
 
 $qrCode = new QrCode($body);
 $qrCode->setSize(260);
@@ -33,7 +33,7 @@ $qrCode->writeFile(__DIR__.'/qrcode.png');
 $productos=$_POST['productos'];
 $todoProd= '';
 foreach ($productos as $variable) {
-    $todoProd = $todoProd.$variable['cantidad']." GAL | ". "S/ ". $variable['preProducto']." | ". $variable['descripcion'] .'  S/ '. number_format($variable['precio'],2)."\n";
+    $todoProd = $todoProd.$variable['cantidad']." ".$variable['undCorto']." | ". "S/ ". $variable['preProducto']." | ". ucwords($variable['descripcion']) .'  S/ '. number_format($variable['precio'],2)."\n";
 }
 //echo $todoProd;
 
@@ -48,10 +48,10 @@ try {
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> bitImage($tux);
     $printer -> setEmphasis(true);
-    $printer -> text("\nESTACION DE SERVICIOS ANRY S.A.C\n");
-    $printer -> text("RUC: 20600180259\n");
+    $printer -> text("\nAGRO DISTRIBUCIONES MAYRA EIRL\n");
+    $printer -> text("RUC: 20601638810\n");
     $printer -> setEmphasis(false);
-    $printer -> text("Car. Central N°1130 Junin Jauja El Mantaro\n");
+    $printer -> text("Jr. Petrona Apoalaya N° 398 Pblo Chupaca Chupaca Junín\n");
     $printer -> setEmphasis(true);
     $printer -> text("{$_POST['queEs']} ELECTRÓNICA\n");
     $printer -> text("{$_POST['serie']} - {$_POST['correlativo']}\n"); //Cambniar Codigooooooooo
@@ -65,8 +65,6 @@ try {
         $printer -> text("Dirección: ---\n");
     }else{
         $printer -> text("Dirección: ".strtoupper($_POST['direccion'])."\n");}
-    if($_POST['placa']!=''){
-        $printer -> text("PLACA: ".strtoupper($_POST['placa'])."\n");}
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);

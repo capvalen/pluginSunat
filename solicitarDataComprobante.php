@@ -21,7 +21,7 @@ $correlativo = $rowSeries['factCorrelativo'];
 $factura =  $serie.'-'.$correlativo;
 $nombreArchivo = $rucEmisor.$caso.$factura ; 
 
-$sqlBase="select totalFinal from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';; ";
+$sqlBase="SELECT totalFinal from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';; ";
 $resultadoBase=$cadena->query($sqlBase);
 $rowBase=$resultadoBase->fetch_assoc();
 	
@@ -36,7 +36,7 @@ $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'
 
 
 
-$sqlCabeza="select * from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';";
+$sqlCabeza="SELECT * from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';";
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){
@@ -59,7 +59,7 @@ if($filasCabeza==1){
 }
 
 
-$sqlCabeza="select * from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';";
+$sqlCabeza="SELECT * from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';";
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){
@@ -91,7 +91,8 @@ $rowProductos = array();
 
 $i=1;
 $lineaDetalle ='';
-$sqlDetalle="SELECT * FROM `fact_detalle` WHERE `facSerieCorre` ='{$_POST['serie']}-{$_POST['correlativo']}';";
+$sqlDetalle="SELECT fd.*, u.undCorto FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida
+WHERE `facSerieCorre` ='{$_POST['serie']}-{$_POST['correlativo']}';";
 $resultadoDetalle=$cadena->query($sqlDetalle);
 while($rowD=$resultadoDetalle->fetch_assoc()){ 
 
@@ -101,16 +102,16 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 		case 'BOLSA': $unidad = 'BG'; break;
 		default: $unidad =''; break;
 	} */
-	$unidad = 'NIU';
+	$unidad = $rowD['codUnidadMedida'];
 	
 	$valorFin = str_replace (',', '',number_format($rowD['valorUnitario'],2));
 	$igvSubFin = str_replace (',', '',number_format($rowD['igvUnitario'],2));
 	$valorSubFin = str_replace (',', '',number_format($rowD['valorItem'],2));
 	$precProducto = number_format($rowD['valorUnitario']+$rowD['igvUnitario'],2);
 
-	$lineaDetalle =  $lineaDetalle . $unidad.$separador.$rowD['cantidadItem']. $separador.$i.$separador. $rowD['codProductoSUNAT'].$separador.$rowD['descripcionItem'].$separador. $valorFin.$separador.  $igvSubFin.$separador. $rowD['codTriIGV'] .$separador. $igvSubFin.$separador. $valorSubFin.$separador. $rowD['nomTributoIgvItem'].$separador. $rowD['codTipTributoIgvItem'] .$separador.$rowD['tipAfeIGV']. $separador. $rowD['porIgvItem'] .$separador. $rowD['codTriISC'] . $separador. $rowD['mtoIscItem'] . $separador. $rowD['mtoBaseIscItem'] . $separador. $rowD['nomTributoIscItem'] .$separador . $rowD['codTipTributoIscItem'] .$separador . $rowD['tipSisISC'] .$separador. $rowD['porIscItem']. $separador. $rowD['codTriOtroItem']. $separador. $tributoOtro .$separador. $tributoOtroItem .$separador.$baseOtroItem .$separador.$rowD['codTipTributoIOtroItem'] . $separador. $rowD['porTriOtroItem'] .$separador. $rowD['mtoPrecioVenta'] . $separador. $rowD['mtoValorVenta']. $separador. $rowD['mtoValorReferencialUnitario']. $separador."\n";
+	$lineaDetalle =  $lineaDetalle . $unidad. $separador.$rowD['cantidadItem']. $separador.$i.$separador. $rowD['codProductoSUNAT'].$separador.$rowD['descripcionItem'].$separador. $valorFin.$separador.  $igvSubFin.$separador. $rowD['codTriIGV'] .$separador. $igvSubFin.$separador. $valorSubFin.$separador. $rowD['nomTributoIgvItem'].$separador. $rowD['codTipTributoIgvItem'] .$separador.$rowD['tipAfeIGV']. $separador. $rowD['porIgvItem'] .$separador. $rowD['codTriISC'] . $separador. $rowD['mtoIscItem'] . $separador. $rowD['mtoBaseIscItem'] . $separador. $rowD['nomTributoIscItem'] .$separador . $rowD['codTipTributoIscItem'] .$separador . $rowD['tipSisISC'] .$separador. $rowD['porIscItem']. $separador. $rowD['codTriOtroItem']. $separador. $tributoOtro .$separador. $tributoOtroItem .$separador.$baseOtroItem .$separador.$rowD['codTipTributoIOtroItem'] . $separador. $rowD['porTriOtroItem'] .$separador. $rowD['mtoPrecioVenta'] . $separador. $rowD['mtoValorVenta']. $separador. $rowD['mtoValorReferencialUnitario']. $separador."\n";
 
-	$rowProductos[$i] = array( 'cantidad'=>$rowD['cantidadItem'], 'descripcion'=> $rowD['descripcionItem'], 'precio'=> $rowD['mtoPrecioVenta'], 'preProducto'=> $precProducto  );
+	$rowProductos[$i] = array( 'cantidad'=>$rowD['cantidadItem'], 'descripcion'=> $rowD['descripcionItem'], 'precio'=> $rowD['mtoPrecioVenta'], 'preProducto'=> $precProducto, 'undCorto'=> $rowD['undCorto']  );
 	$i++;
 
 	

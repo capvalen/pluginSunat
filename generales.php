@@ -1,8 +1,10 @@
 <?php
 //Rellenar por cada Cliente:
 $directorio = 'C:\SFS_v1.2\sunat_archivos\sfs\DATA/';
-$rucEmisor ='20600180259';
-$nombrePrint = 'TP-180';
+$rucEmisor ='20602337147';
+$nombreEmisor = "AGRO DISTRIBUCIONES MAYRA EIRL";
+$direccionEmisor = "Jr. Petrona Apoalaya N° 398 Pblo Chupaca Chupaca Junín";
+$nombrePrint = 'XP-58';
 
 
 

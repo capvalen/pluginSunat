@@ -7,7 +7,7 @@ include('phpqrcode/qrlib.php');
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Facturador electrónico <?= $_GET['serie']."-".$_GET['correlativo'];?></title>
+	<title>Facturador electrónico <?= $_GET['serie']."-".$_GET['correlativo'];?> - Desarrollado por https://infocatsoluciones.com</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
 <body>
@@ -97,12 +97,12 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 
 
 <div class="row">
-<div class="col-sm-6">
-	<img src="bitmap.jpg" alt="" >
-	<p class="mb-0"><strong>INVERSIONES PORTAIMPORT S.A.C.</strong></p>
-	<p>Cal. Los Lirios N°256 Urb. Primavera Lima El Agustino</p>
+<div class="col-sm-6 ">
+	<img src="bitmap.jpg?version=1.0.2" alt="" >
+	<p class="mb-0 mt-2"><strong><?= $nombreEmisor;?></strong></p>
+	<p><?= $direccionEmisor;?></p>
 </div>
-<div class="col-sm-6 mt-5 text-center " class="">
+<div class="col-sm-6 mt-5 mb-2 text-center " class="">
 	<div class="border border-dark bordeGrueso">
 		<h3 class="text-uppercase">RUC: <?= $rucEmisor; ?></h3>
 		<h2 class="text-uppercase"><?= $soy; ?> ELECTRÓNICA</h2>
@@ -114,8 +114,8 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 	<div class="border bordeDelgado p-2 container-fluid">
 	<div class="row">
 		<div class="col-8">
-			<p>Srs: <?= $rowC['razonSocial']; ?> </p>
-			<p>Domicilio Fiscal: <?= $rowC['cliDireccion']; ?></p>
+			<p class="text-capitalize">Srs: <?= $rowC['razonSocial']; ?> </p>
+			<p  class="text-capitalize">Domicilio Fiscal: <?= $rowC['cliDireccion']; ?></p>
 			<p>N° Documento: <?= $rowC['dniRUC']; ?></p>
 			
 		</div>
@@ -127,14 +127,14 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 	</div>
 	</div>
 </section>
-<section class="pt-5">
+<section class="pt-2">
 <table class="table table-bordered">
 <thead>
 	<tr>
 		<th>Item</th>
 		<th>Descripción</th>
 		<th>Und.</th>
-		<th>Galones</th>
+		<th>Cant.</th>
 		<th>Prec. Unt.</th>
 		<th>SubTotal. <br> (inc. IGV)</th>
 	</tr>
@@ -148,7 +148,7 @@ $i=1;
 $rowProductos = array();
 
 $lineaDetalle ='';
-$sqlDetalle="SELECT * FROM `fact_detalle` WHERE facSerieCorre = '{$_GET['serie']}-{$_GET['correlativo']}'";
+$sqlDetalle="SELECT fd.*, u.undCorto FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida WHERE facSerieCorre = '{$_GET['serie']}-{$_GET['correlativo']}'";
 $resultadoDetalle=$cadena->query($sqlDetalle);
 while($rowD=$resultadoDetalle->fetch_assoc()){ 
 
@@ -166,9 +166,8 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 	?>
 	<tr>
 		<td><?= $i;?></td>
-		<td><?= $rowD['descripcionItem']; ?></td>
-		<td>GAL</td>
-		
+		<td class="text-capitalize"><?= $rowD['descripcionItem']; ?></td>
+		<td><?= $rowD['undCorto']?></td>
 		<td><?= $rowD['cantidadItem']; ?></td>
 		<td><?= $precProducto; ?></td>
 		<td><?= number_format($rowD['mtoPrecioVenta'],2)?></td>

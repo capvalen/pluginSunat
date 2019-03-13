@@ -7,7 +7,7 @@ $('.esMoneda').change(function(){
 		$(this).val(parseFloat(valor).toFixed(2));
 	}
 });
-$("input").focus(function(){
+$("body").on('focus', 'input',function(){
   this.select();
 });
 $('.esGalon').change(function(){

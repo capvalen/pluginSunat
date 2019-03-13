@@ -73,7 +73,7 @@ thead tr th{cursor: pointer;}
 		<div class="container">
 			<div class="row">
 			<div class="col-sm-12 mx-5 px-5">
-				<button class="btn btn-outline-success btn-block btn-lg my-4 " >Emitir Comprobante</button>
+				<button class="btn btn-outline-success btn-block btn-lg my-4">Emitir Comprobante</button>
 				<button class="btn btn-outline-warning btn-block btn-lg my-4">Consultar comprobante</button>
 				<button class="btn btn-outline-dark btn-block btn-lg my-4 d-none">Modificar serie de comprobante</button>
 			</div>
@@ -84,12 +84,11 @@ thead tr th{cursor: pointer;}
 <section>
 	<div class="container-fluid mt-5 px-5">
 		<div class="row">
-		<div class="col-2">
-			<img src="bitmap.jpg" id="imgLogo">
+		<div class="col-3">
+			<img src="bitmap.jpg?version=1.0.2" class='img-fluid'>
 		</div>
 		<div class="col ml-4">
 			<h3 class="display-4">Facturación Electrónica</h3>
-			
 			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckNegocio']); ?></small>
 			<div class="row d-flex justify-content-between">
 				<div class="col-sm-3"><input type="date" class="form-control text-center" id="fechaFiltro"></div>
@@ -142,8 +141,8 @@ thead tr th{cursor: pointer;}
       </div>
       <div class="modal-body">
         <p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
-				<button class="btn btn-outline-primary" id="btnPrintTicketera">Imprimir en ticketera</button>
-				<button class="btn btn-outline-primary" id="btnPrintA4">Generar PDF (A4)</button>
+				<button class="btn btn-outline-primary" id="btnPrintTicketera"><i class="icofont-paper"></i> Imprimir en ticketera</button>
+				<button class="btn btn-outline-success" id="btnPrintA4"><i class="icofont-print"></i> Generar PDF (A4)</button>
 
       </div>
       <div class="modal-footer d-none">
@@ -168,14 +167,14 @@ thead tr th{cursor: pointer;}
 					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
 					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
 				</div>
-				<div class="form-check mb-3 ml-5">
+				<div class="form-check mb-3 ml-5 d-none">
 					<label for="">Placa de vehículo:</label>
 					<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
 				</div>
 				<div class="form-inline mt-n3 pl-3">
 				<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
-						<?php include "php/listarTodosClientes.php";?>
-					</select>
+					<?php include "php/listarTodosClientes.php";?>
+				</select>
 				</div>
 				<div class="form-inline  ml-auto">
 				<label class="pr-3 mt-n3" for=""><strong>Serie:</strong></label>
@@ -189,7 +188,7 @@ thead tr th{cursor: pointer;}
 					<option value="series" selected>Series</option>
 					<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
 					<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
-					<option><?= $rowSerieBoleta['serieOpcional']; ?></option>
+					<option id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
 				</select>
 				</div>
 
@@ -220,13 +219,13 @@ thead tr th{cursor: pointer;}
 					<div class="card-body">
 						<p class="text-muted"><strong>Productos:</strong></p>
 						<div class="row">
-							<div class="col-2"><strong>Cant.</strong></div>
-							<div class="col-1"><strong>Und</strong></div>
 							<div class="col-5"><strong>Producto</strong></div>
+							<div class="col-1"><strong>Cant.</strong></div>
+							<div class="col-2"><strong>Und</strong></div>
 							<div class="col-2"><strong>Precio Unit.</strong></div>
 							<div class="col-2"><strong>Sub-Total</strong></div>
 						</div>
-						<div class="row mb-1 cardHijoProducto" data-producto="2">
+						<!-- <div class="row mb-1 cardHijoProducto" data-producto="2">
 							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
 							<div class="col-1">Galón</div>
 							<div class="col-5 divNombProducto">Gasohol 90 Plus</div>
@@ -239,7 +238,11 @@ thead tr th{cursor: pointer;}
 							<div class="col-5 divNombProducto">Diesel D5 S-50 UV</div>
 							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0"></div>
 							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioPetroleo" value="0.00"></div>
+						</div> -->
+						<div id="divProductos">
+							<?php include "php/filaNueva.php";?>
 						</div>
+						<button class="btn btn-outline-success btn-sm" id="btnAgregarProducto"><i class="icofont-ui-add"></i></button>
 					</div>
 				</div>
 				<div class='mt-2 pr-5'>
@@ -388,7 +391,7 @@ thead tr th{cursor: pointer;}
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.3"></script>
+<script src="js/impotem.js?version=1.0.4"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
@@ -402,8 +405,6 @@ $(document).ready(function(){
 		//console.log(resp)
 		$.precios = JSON.parse(resp);
 		console.log( $.precios );
-		$('#txtPrecioGasolina').val($.precios[1].prodPrecio);
-		$('#txtPrecioPetroleo').val($.precios[0].prodPrecio);
 	});
 	$('#fechaFiltro').val( moment().format('YYYY-MM-DD'));
 	$('[data-toggle="tooltip"]').tooltip();
@@ -526,7 +527,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		$.ajax({url: 'http://127.0.0.1/estacionanry/printComprobante.php', type: 'POST', data: {
+		$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
 			tipoComprobante: $.jTicket[0].tipoComprobante,
 			rucEmisor: $.jTicket[0].rucEmisor,
 			queEs: $.jTicket[0].queSoy,
@@ -543,7 +544,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 			totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
 			productos: $.jTicket[1],
 			direccion:$.jTicket[0].direccion,
-			placa: $.jTicket[0].placa,
+			/* placa: $.jTicket[0].placa, */
 		}}).done(function(resp) {
 			console.log(resp)
 			//location.reload();
@@ -551,7 +552,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	});
 });
 $('#btnPrintTicketera').click(function() {
-	$.ajax({url: 'http://127.0.0.1/estacionanry/printComprobante.php', type: 'POST', data: {
+	$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
 				tipoComprobante: $.jTicket[0].tipoComprobante,
 				rucEmisor: $.jTicket[0].rucEmisor,
 				queEs: $.jTicket[0].queSoy,
@@ -568,7 +569,7 @@ $('#btnPrintTicketera').click(function() {
 				totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
 				productos: $.jTicket[1],
 				direccion:$.jTicket[0].direccion,
-				placa: $.jTicket[0].placa,
+				/* placa: $.jTicket[0].placa, */
 			}}).done(function(resp) {
 				console.log(resp)
 				location.reload();
@@ -642,7 +643,7 @@ $('#AEmitirBoleta').click(function() {
 	$('#btnEmitirFacturav2').addClass('d-none');
 	$('#sltSeriesBoleta option').removeAttr('selected');
 	$('#optBoleta').attr('selected', true);
-	$('#chkEstadoDni').prop('checked', true).change();
+	$('#chkEstadoDni').prop('checked', true).change().attr('disabled', false);
 	$('#modalEmisionBoleta').modal('show');
 });
 $('#AEmitirFactura').click(function() {
@@ -652,8 +653,8 @@ $('#AEmitirFactura').click(function() {
 	$('#txtRazonBoleta').attr('placeholder', 'Razón social');
 	$('#btnEmitirBoletav2').addClass('d-none');
 	$('#btnEmitirFacturav2').removeClass('d-none');
-	$('#sltSeriesBoleta').val('series');
-	$('#chkEstadoDni').prop('checked', false).change();
+	$('#optFactura').attr('selected', true);
+	$('#chkEstadoDni').prop('checked', false).change().attr('disabled', true);
 	$('#modalEmisionBoleta').modal('show');
 });
 $('#chkEstadoDni').change(function() {
@@ -665,39 +666,49 @@ $('#chkEstadoDni').change(function() {
 		$('#txtDireccionBoleta').attr('readonly', true).val('');
 		$('.selectpicker').selectpicker('val', -1);
 	}else{
-		$('#labelEstadoDni').text('Cliente con documento de identidad');
+		$('#labelEstadoDni').text('Cliente con Documento');
 		$('#divDatosCliente').removeClass('d-none');
 		$('#txtRazonBoleta').attr('readonly', false);
 		$('#txtDireccionBoleta').attr('readonly', false);
 		$('#txtDniBoleta').attr('readonly', false).focus();
 	}
 });
-$('.campoSubTotal').keyup(function() {
+$('#divProductos').on('keyup','.campoSubTotal', function() {	
 	var padre = $(this).parent().parent();
-	var subTotal = parseFloat($(this).val());
+	var subTotal = 0;
 	var precio = parseFloat(padre.find('.campoPrecioUnit').val());
 	var cantidad = 0;//parseFloat(padre.find('.campoCantidad').val());
-	
+	if($(this).val()!=''){
+		subTotal = parseFloat($(this).val());
+	}
 	cantidad = parseFloat(subTotal/precio);
-	padre.find('.campoCantidad').val( cantidad.toFixed(3) );
+	if( cantidad==Infinity ){
+		cantidad=0;
+	}
+	padre.find('.campoCantidad').val( cantidad.toFixed(2) );
 	sumaTodo();
 });
-$('.campoPrecioUnit').keyup(function() {
+$('#divProductos').on('keyup','.campoPrecioUnit', function() {
 	var padre = $(this).parent().parent();
-	var precio = parseFloat($(this).val());
+	var precio = 0;
 	var cantidad = parseFloat(padre.find('.campoCantidad').val());
 	var subTotal = 0;//parseFloat(padre.find('.campoPrecioUnit').val());
-	
+	if($(this).val()!=''){
+		precio = parseFloat($(this).val());
+	}
+
 	subTotal = parseFloat(cantidad*precio);
 	padre.find('.campoSubTotal').val( subTotal.toFixed(2) );
 	sumaTodo();
 });
-$('.campoCantidad').keyup(function() {
+	$('#divProductos').on('keyup','.campoCantidad', function() {
 	var padre = $(this).parent().parent();
-	var cantidad = parseFloat($(this).val());
+	var cantidad = 0;
+	if($(this).val()!=''){
+		cantidad = parseFloat($(this).val());
+	}
 	var precio = parseFloat(padre.find('.campoPrecioUnit').val());
 	var subTotal = 0;//parseFloat(padre.find('.campoPrecioUnit').val());
-	
 	subTotal = parseFloat(cantidad*precio);
 	padre.find('.campoSubTotal').val( subTotal.toFixed(2) );
 	sumaTodo();
@@ -706,24 +717,30 @@ function sumaTodo() {
 	var sumaTotal = 0;
 	$.each( $('.campoSubTotal'), function(i, elem){
 		//console.log( $(elem).val() );
-		sumaTotal+=parseFloat($(elem).val());
+		if( $(elem).val()!='' ){
+			sumaTotal+=parseFloat($(elem).val());
+		}
+		
 	});
-	console.log( sumaTotal );
+	//console.log( sumaTotal );
 	var costo = sumaTotal/1.18;
 	var igv=sumaTotal-costo;
 	$('#spSubTotBoleta').text(parseFloat(costo).toFixed(2));
 	$('#spIgvBoleta').text(parseFloat(igv).toFixed(2));
 	$('#spTotalBoleta').text(parseFloat(sumaTotal).toFixed(2));
 }
-$('#modalEmisionBoleta').on('shown.bs.modal', function () { 
+/* $('#modalEmisionBoleta').on('shown.bs.modal', function () { 
 	$('#txtPlacaBoleta').focus();
-});
+}); */
 $('#btnEmitirBoletav2').click(function() {
+	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
 	if( $('#sltSeriesBoleta').val()=='series'){
 		$('#sltSeriesBoleta').focus();
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
-	}else if( $('#txtCampoPrecioGasolina').val()==0 && $('#txtCampoPrecioPetroleo').val()==0 ){
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No hay ningún producto rellenado').parent().removeClass('d-none');
+	}else if( $('#spTotalBoleta').text()=='0.00' ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none');
+	}else if( $('.cardHijoProducto').first().find('.sltFiltroProductos').selectpicker('val')== null ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none');
 	}else{
 		var jsonCliente= [];
 		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
@@ -732,13 +749,19 @@ $('#btnEmitirBoletav2').click(function() {
 				direccion: $('#txtDireccionBoleta').val()
 			});
 		}
-		var jsonProductos= [];
+		var jsonProductos = [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
-			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
-				descripcionProducto: $(elem).find('.divNombProducto').text(),
-				precioProducto: $(elem).find('.campoPrecioUnit').val(),
-				subtotal: $(elem).find('.campoSubTotal').val()
-			});
+			if( $(elem).find('.sltFiltroProductos').selectpicker('val')!='' ){
+				jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
+					descripcionProducto: $(elem).find('.divNombProducto button').attr('title'),
+					precioProducto: $(elem).find('.campoPrecioUnit').val(),
+					unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
+					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
+					unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
+					subtotal: $(elem).find('.campoSubTotal').val()
+				});
+			}
+			
 		});
 		var dniRc ='', razon='';
 		if($('#txtDniBoleta').val()!=''){
@@ -748,9 +771,10 @@ $('#btnEmitirBoletav2').click(function() {
 			dniRc='00000000';
 			razon='Cliente sin documento';
 		}
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos, jsonCliente:jsonCliente }}).done(function(resp) {
+		
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(),jsonProductos: jsonProductos, jsonCliente:jsonCliente }}).done(function(resp) { //  placa: $('#txtPlacaBoleta').val(),
 			console.log(resp)
-			$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+			$.jTicket = JSON.parse(resp); console.log( $.jTicket );
 			if($.jTicket.length >=1){
 				$('#modalEmisionBoleta').modal('hide');
 				$('#modalArchivoBien').modal('show');
@@ -759,21 +783,23 @@ $('#btnEmitirBoletav2').click(function() {
 	}
 });
 $('#btnEmitirFacturav2').click(function() {
-
+	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
 	if( $('#sltSeriesBoleta').val()=='series'){
 		$('#sltSeriesBoleta').focus();
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
-	}else if( $('#txtPlacaBoleta').val()==''){
+	}/* else if( $('#txtPlacaBoleta').val()==''){
 		$('#txtPlacaBoleta').focus();
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> La placa del automóvil tiene que ser rellenado').parent().removeClass('d-none');
-	}else if( $('#txtDniBoleta').val().length!=11 ){
+	} */else if( $('#txtDniBoleta').val().length!=11 ){
 		$('#txtDniBoleta').focus();
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> El RUC del cliente, no es correcto').parent().removeClass('d-none');
 	}else if( $('#txtRazonBoleta').val()=='' ){
 		$('#txtRazonBoleta').focus();
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> La razón social no puede estar en blanco').parent().removeClass('d-none');
-	}else if( $('#txtCampoPrecioGasolina').val()==0 && $('#txtCampoPrecioPetroleo').val()==0 ){
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No hay ningún producto rellenado').parent().removeClass('d-none');
+	}else if( $('#spTotalBoleta').text()=='0.00' ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none');
+	}else if( $('.cardHijoProducto').first().find('.sltFiltroProductos').selectpicker('val')== null ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none');
 	}else{
 		var jsonCliente= [];
 		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
@@ -784,11 +810,16 @@ $('#btnEmitirFacturav2').click(function() {
 		}
 		var jsonProductos= [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
-			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
-				descripcionProducto: $(elem).find('.divNombProducto').text(),
-				precioProducto: $(elem).find('.campoPrecioUnit').val(),
-				subtotal: $(elem).find('.campoSubTotal').val()
-			});
+			if( $(elem).find('.sltFiltroProductos').selectpicker('val')!='' ){
+				jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
+					descripcionProducto: $(elem).find('.divNombProducto button').attr('title'),
+					precioProducto: $(elem).find('.campoPrecioUnit').val(),
+					unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
+					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
+					unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
+					subtotal: $(elem).find('.campoSubTotal').val()
+				});
+		}
 		});
 		var dniRc ='', razon='';
 		if($('#txtDniBoleta').val()!=''){
@@ -798,9 +829,9 @@ $('#btnEmitirFacturav2').click(function() {
 			dniRc='00000000';
 			razon='Cliente sin documento';
 		}
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), placa: $('#txtPlacaBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente }}).done(function(resp) {
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
 			console.log(resp)
-			$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+			$.jTicket = JSON.parse(resp); console.log( $.jTicket );
 			if($.jTicket.length >=1){
 				$('#modalEmisionBoleta').modal('hide');
 				$('#modalArchivoBien').modal('show');
@@ -837,11 +868,25 @@ $('#sltFiltroClientes').on('changed.bs.select', function (e, clickedIndex, isSel
   
 	var index=$('#sltFiltroClientes').val();
 	var padre = $("#sltFiltroClientes option[value="+index+"]");
-	$('#chkEstadoDni').prop('checked', false).change();
+//	$('#chkEstadoDni').prop('checked', false).change();
 	
 	$('#txtDniBoleta').val(padre.attr('data-ruc'));
 	$('#txtRazonBoleta').val(padre.attr('data-razon'));
 	$('#txtDireccionBoleta').val(padre.attr('data-direccion'));
+});
+$('#btnAgregarProducto').click(function() {
+	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
+	if( !$.isNumeric($('#divProductos .sltFiltroProductos').last().selectpicker('val')) ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Falta seleccionar un producto').parent().removeClass('d-none');
+	}else if( $('#divProductos .sltFiltroUnidad').last().selectpicker('val')==null ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidó rellenar la unidad').parent().removeClass('d-none');
+	}else{
+		$.ajax({url: 'php/filaNueva.php', type: 'POST' }).done(function(resp) {
+			//console.log(resp)
+			$('#divProductos').append(resp);
+			$('.selectpicker').selectpicker('render');
+		});
+	}
 });
 </script>
 </body>
