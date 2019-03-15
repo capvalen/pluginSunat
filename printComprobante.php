@@ -80,6 +80,7 @@ try {
     $printer -> text("--------------------------------\n");
     $printer -> bitImage($tuxQR);
     $printer -> text("--------------------------------\n");
+    $printer -> text("Contactos: 976066401\n");
     $printer -> text("Gracias por tu preferencia\n\n");
     $printer -> text("Esta es una representación impresa de la factura electrónica, generada en el Sistema de SUNAT. Puede verificarla utilizando su Clave SOL.\n");
     $printer -> cut();

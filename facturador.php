@@ -85,7 +85,7 @@ thead tr th{cursor: pointer;}
 	<div class="container-fluid mt-5 px-5">
 		<div class="row">
 		<div class="col-3">
-			<img src="bitmap.jpg?version=1.0.2" class='img-fluid'>
+			<img src="bitmap.jpg?version=1.0.3" class='img-fluid mt-3'>
 		</div>
 		<div class="col ml-4">
 			<h3 class="display-4">Facturación Electrónica</h3>
@@ -737,6 +737,10 @@ $('#btnEmitirBoletav2').click(function() {
 	if( $('#sltSeriesBoleta').val()=='series'){
 		$('#sltSeriesBoleta').focus();
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
+	}else if( $('.cardHijoProducto').first().find('#sltTemporal').selectpicker('val')==null ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un producto').parent().removeClass('d-none');
+	}else if( $('.cardHijoProducto').first().find('#sltfiltroTemporal').selectpicker('val')==null ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar una unidad').parent().removeClass('d-none');
 	}else if( $('#spTotalBoleta').text()=='0.00' ){
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none');
 	}else if( $('.cardHijoProducto').first().find('.sltFiltroProductos').selectpicker('val')== null ){
@@ -879,7 +883,7 @@ $('#btnAgregarProducto').click(function() {
 	if( !$.isNumeric($('#divProductos .sltFiltroProductos').last().selectpicker('val')) ){
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Falta seleccionar un producto').parent().removeClass('d-none');
 	}else if( $('#divProductos .sltFiltroUnidad').last().selectpicker('val')==null ){
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidó rellenar la unidad').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidó rellenar una unidad').parent().removeClass('d-none');
 	}else{
 		$.ajax({url: 'php/filaNueva.php', type: 'POST' }).done(function(resp) {
 			//console.log(resp)

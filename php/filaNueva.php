@@ -13,7 +13,7 @@ $resultadoUnd=$esclavo->query($sqlUnd);
 <div class="row mb-1 cardHijoProducto" data-producto="1">
 
 	<div class="col-5 divNombProducto">
-		<select class="selectpicker sltFiltroProductos" data-live-search="true" title="&#xed12; Productos" data-width="100%">
+		<select class="selectpicker sltFiltroProductos" id="sltTemporal" data-live-search="true" title="&#xed12; Productos" data-width="100%">
 		<?php 
 		while($row=$resultado->fetch_assoc()){ ?>
 		<option value="<?= $row['idProductos'];?>"><?= $row['prodDescripcion'];?></option>
@@ -25,7 +25,7 @@ $resultadoUnd=$esclavo->query($sqlUnd);
 	</div>
 	<div class="col-1 p-0"><input type="number" class="form-control text-center esMoneda campoCantidad" value="0" step="0.5" min="0"></div>
 	<div class="col-2 divUnidadProducto">
-		<select class="selectpicker sltFiltroUnidad" data-live-search="true" title="&#xed12; Unds." data-width="100%">
+		<select class="selectpicker sltFiltroUnidad" id="sltfiltroTemporal" data-live-search="true" title="&#xed12; Unds." data-width="100%">
 			<?php 
 			while($rowUnd=$resultadoUnd->fetch_assoc()){  ?>
 			<option value="<?= $rowUnd['undSunat'];?>" data-unidad="<?= $rowUnd['undCorto']?>"><?= $rowUnd['undDescipcion'];?></option>
