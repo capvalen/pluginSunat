@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +26,7 @@
 				<input type="password" class="form-control" id="txtlocalLog" value="">
 				<button class="btn btn-outline-dark mt-3 " id="btnAcceder"><i class="icofont-key-hole"></i> Acceder</button>
 			
-				<p class='pt-2'><small>Versión 1.14</small></p>
+				<p class='pt-2'><small>Versión 1.14c</small></p>
 			</div>
 		</div> 
 		
@@ -38,6 +38,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 <script>
+$(document).ready(function () {
+	$('#txtNegocioLog').focus();
+});
+$('#txtNegocioLog').keyup(function (e) {
+	if (e.which ==13){ $('#btnAcceder').click(); }
+})
+$('#txtlocalLog').keyup(function (e) {
+	if (e.which ==13){ $('#btnAcceder').click(); }
+})
 $('#btnAcceder').click(function() {
 	$.ajax({url: 'crearSesion.php', type: 'POST', data: { negocio: $('#txtNegocioLog').val(), local: $('#txtlocalLog').val()  }}).done(function(resp) {
 		console.log(resp)

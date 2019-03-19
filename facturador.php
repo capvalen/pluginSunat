@@ -60,7 +60,7 @@ thead tr th{cursor: pointer;}
       <a class="nav-item nav-link d-none" href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
       <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
       <a class="nav-item nav-link" href="#!" id="btnModificarSerie">Modificar serie</a>
-      <a class="nav-item nav-link" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
+      <a class="nav-item nav-link d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
       <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar sesión</a>
     </div>
   </div>
@@ -739,6 +739,8 @@ $('#btnEmitirBoletav2').click(function() {
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
 	}else if( $('.cardHijoProducto').first().find('#sltTemporal').selectpicker('val')==null ){
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un producto').parent().removeClass('d-none');
+	}else if( $('.cardHijoProducto').first().find('.esMoneda').val()=='0.00' || $('.cardHijoProducto').first().find('.esMoneda').val()==0 || $('.cardHijoProducto').first().find('.campoPrecioUnit').val()=='0.00' || $('.cardHijoProducto').first().find('.campoPrecioUnit').val()==0 ){
+		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste ingresar una cantidad / precio').parent().removeClass('d-none');
 	}else if( $('.cardHijoProducto').first().find('#sltfiltroTemporal').selectpicker('val')==null ){
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar una unidad').parent().removeClass('d-none');
 	}else if( $('#spTotalBoleta').text()=='0.00' ){
