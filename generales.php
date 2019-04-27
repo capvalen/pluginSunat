@@ -1,10 +1,13 @@
 <?php
 //Rellenar por cada Cliente:
 $directorio = 'C:\SFS_v1.2\sunat_archivos\sfs\DATA/';
-$rucEmisor ='20602337147';
-$nombreEmisor = "AGRO DISTRIBUCIONES MAYRA EIRL";
-$direccionEmisor = "Jr. Petrona Apoalaya N° 398 Pblo Chupaca Chupaca Junín";
-$nombrePrint = 'XP-58';
+$rucEmisor ='10237023698';
+$nombreEmisor = "De: Aliaga Montes Lucio";
+$direccionEmisor = "Av. Francisca De La Calle N° 241 El Tambo - Huancayo - Junín";
+$celularEmisor = "969000488 - 989535341 - (064) 412514";
+$nombrePrint = 'XP-58'; //TM-T20II
+
+$casaHost = "pluginsunat";
 
 
 

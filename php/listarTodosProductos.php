@@ -6,7 +6,7 @@ if (isset($_POST['fecha'])){ $fecha = $_POST['fecha'];}else{
 	$fecha = date('Y-m-d');
 }
 
-$sql="SELECT `idComprobante`, `idNegocio`, `idLocal`, `idTicket`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'Factura' when `factTipoDocumento`= 3 then 'Boleta' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion` FROM `fact_cabecera` WHERE  `fechaEmision` = '{$fecha}';";
+$sql="SELECT * FROM `productos` WHERE `prodActivo`=1;";
 
 $resultado=$cadena->query($sql);
 $numero = $resultado ->num_rows;
@@ -22,8 +22,7 @@ while($row=$resultado->fetch_assoc()){
 	<tr>
 		<td><?= $i; ?></td>
 		
-		<td><?= $row['queDoc']; ?></td>
-		<td><?= $row['factSerie']."-".$row['factCorrelativo']; ?></td>
+
 		<td data-sort-value="<?= $hora->format('Hi'); ?>"><?= $hora->format('h:i a'); ?></td>
 		<td class="text-capitalize"><?= $row['razonSocial']; ?></td>
 		<td><?= number_format($row['totalFinal'],2); ?></td>

@@ -7,7 +7,7 @@ include('phpqrcode/qrlib.php');
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Facturador electrónico <?= $_GET['serie']."-".$_GET['correlativo'];?> - Desarrollado por https://infocatsoluciones.com</title>
+	<title>Facturador electrónico <?= $_GET['serie']."-".$_GET['correlativo'];?> - Desarrollado por infocatsoluciones.com</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
 <body>
@@ -53,7 +53,9 @@ $rowBase=$resultadoBase->fetch_assoc();
 	
 $parteEntera = intval($rowBase['totalFinal']);
 $parteDecimal = ($rowBase['totalFinal']-$parteEntera)*100;
-
+if($parteDecimal == '0'){
+	$parteDecimal='00';
+}
 //Pedir las letras del monto facturado
 
 $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'/100 MN';

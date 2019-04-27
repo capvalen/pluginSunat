@@ -27,10 +27,13 @@ $rowBase=$resultadoBase->fetch_assoc();
 	
 $parteEntera = intval($rowBase['totalFinal']);
 $parteDecimal = ($rowBase['totalFinal']-$parteEntera)*100;
+if($parteDecimal == '0'){
+	$parteDecimal='00';
+}
 
 //Pedir las letras del monto facturado
 
-$letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'/100 MN';
+$letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES con '.$parteDecimal.'/100 MN';
 
 /* ------- Fin update sobre la table fact cabecera ---------- */
 

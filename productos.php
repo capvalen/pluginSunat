@@ -9,7 +9,7 @@ include "generales.php"; ?>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Facturador electrónico - Desarrollado por: Infocat Soluciones</title>
+	<title>Facturador electrónico</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<link rel="stylesheet" href="icofont.min.css">
 	<link rel="stylesheet" href="css/bootstrap-select.min.css">
@@ -17,22 +17,14 @@ include "generales.php"; ?>
 </head>
 <body>
 <style>
-.bg-dark {
-	background-color: #7531d4!important;
-}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
-
 input[type=number] {
     -moz-appearance:textfield; /* Firefox */
-}
-#txtPlacaBoleta::placeholder{
-	font-family:'Icofont', 'Segoe UI';
-	text-align: right;
 }
 .bootstrap-select .dropdown-toggle .filter-option{font-family:'Icofont', 'Segoe UI';}
 .close{color: #ff0202}
@@ -43,43 +35,18 @@ input[type=number] {
     border-radius: .25rem;}
 thead tr th{cursor: pointer;}
 .dropdown-item .text, .bootstrap-select button{text-transform: capitalize;}
-#divCalculosFinales span{font-size:1.1rem;}
-.btn-outline-primary {
-    color: #663cdc;
-    border-color: #663cdc;
-}
-.btn-outline-primary:hover, .btn-outline-primary:hover, .btn-outline-primary:not(:disabled):not(.disabled):active{
-	background-color: #663cdc;
-	border-color: transparent;
-}
-.btn-outline-primary:focus {
-	box-shadow: 0 0 0 0.2rem rgba(148, 102, 239, 0.5);
-}
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5">
-	<a class="navbar-brand" href="#">
-    <img src="images/VirtualCorto.png" width="60" height="60" alt="">
-  </a>
   <a class="navbar-brand" href="#">Facturador</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="icofont-newspaper"></i> Emitir comprobante
-				</a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
-					<a class="dropdown-item" href="#!" id="AEmitirFactura"><i class="icofont-ui-copy"></i> Factura</a>
-				</div>
-			</li>
-      <a class="nav-item nav-link d-none" href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
-      <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
-      <a class="nav-item nav-link" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
-      <a class="nav-item nav-link d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
-      <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar</a>
+      <a class="nav-item nav-link " href="facturador.php" id=""><i class="icofont-ebook"></i> Facturación</a>
+      <a class="nav-item nav-link active" href="productos.php" id=""><i class="icofont-cube"></i> Productos</a>
+      <a class="nav-item nav-link" href="reportes.php" id=""><i class="icofont-file-alt"></i> Reportes</a>
+      <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar sesión</a>
     </div>
   </div>
 </nav>
@@ -106,24 +73,21 @@ thead tr th{cursor: pointer;}
 			<img src="bitmap.jpg?version=1.0.3" class='img-fluid mt-3'>
 		</div>
 		<div class="col ml-4">
-			<h3 class="display-4">Facturación Electrónica</h3>
+			<h3 class="display-4">Gestión de productos</h3>
 			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckNegocio']); ?></small>
-			<div class="row d-flex justify-content-between">
-				<div class="col-sm-3"><input type="date" class="form-control text-center" id="fechaFiltro"></div>
-				<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
-			</div>
 		</div></div>
+		<div class="d-flex justify-content-end">
+			<button class="btn btn-outline-primary "><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button>
+		</div>
 		
 
 		<table class="table table-hover mt-3">
 			<thead>
 				<tr>
 					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Código</th>
-					<th data-sort="int"><i class="icofont-expand-alt"></i> Hora</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Nombre de prodcuto</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio de venta</th>
+					<th data-sort="int"><i class="icofont-expand-alt"></i> Stock</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 					<th>@</th>
 				</tr>
@@ -131,16 +95,38 @@ thead tr th{cursor: pointer;}
 			<tbody>
 				<tr>
 					<td>1</td>
-					<td>20550-88</td>
-					<td>Factura</td>
-					<td>3:05 p.m.</td>
-					<td>Cliente sin DNI</td>
-					<td>55.00</td>
-					<td>Emitido</td>
+					<td>Brocoly Hibrico Legacy</td>
+					<td>15.50</td>
+					<td>60 Unds.</td>
+					<td>Activo</td>
 					<td>
-						<button class="btn btn-outline-primary btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
-						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprmir ticket"><i class="icofont-paper"></i></button>
-						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprmir A4"><i class="icofont-print"></i></button>
+						<button class="btn btn-outline-primary btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Editar Producto"><i class="icofont-flag"></i></button>
+						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Cambiar Precio"><i class="icofont-list"></i></button>
+						<button class="btn btn-outline-dark btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Modificar Stock"><i class="icofont-magic"></i></button>
+					</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Alfalfa Moapa Suelto x 250grs.</td>
+					<td>4.90</td>
+					<td>58 Unds.</td>
+					<td>Activo</td>
+					<td>
+						<button class="btn btn-outline-primary btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Editar Producto"><i class="icofont-flag"></i></button>
+						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Cambiar Precio"><i class="icofont-list"></i></button>
+						<button class="btn btn-outline-dark btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Modificar Stock"><i class="icofont-magic"></i></button>
+					</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>baygon verde x 250cc.</td>
+					<td>14.10</td>
+					<td>50 Unds.</td>
+					<td>Activo</td>
+					<td>
+						<button class="btn btn-outline-primary btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Editar Producto"><i class="icofont-flag"></i></button>
+						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Cambiar Precio"><i class="icofont-list"></i></button>
+						<button class="btn btn-outline-dark btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Modificar Stock"><i class="icofont-magic"></i></button>
 					</td>
 				</tr>
 			</tbody>
@@ -148,263 +134,16 @@ thead tr th{cursor: pointer;}
 	</div>
 </section>
 
-<div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog" data-backdrop="static" >
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Guardado exitoso</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
-				<button class="btn btn-outline-primary" id="btnPrintTicketera"><i class="icofont-paper"></i> Imprimir en ticketera</button>
-				<button class="btn btn-outline-success" id="btnPrintA4"><i class="icofont-print"></i> Generar PDF (A4)</button>
-
-      </div>
-      <div class="modal-footer d-none">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
-<!-- Modal para Emitir Boleta -->
-<div class="modal fade" id="modalEmisionBoleta" tabindex="-1" role="dialog" data-backdrop="static">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-				</button>
-				<h5 class="pb-4"><i class="icofont-cart-alt"></i> Generar comprobante de venta</h5>
-				<div class="form-inline">
-				<div class="form-check mb-3">
-					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
-					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
-				</div>
-				<div class="form-check mb-3 ml-5 d-none">
-					<label for="">Placa de vehículo:</label>
-					<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
-				</div>
-				<div class="form-inline mt-n3 pl-3">
-				<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
-					<?php include "php/listarTodosClientes.php";?>
-				</select>
-				</div>
-				<div class="form-inline  ml-auto">
-				<label class="pr-3 mt-n3" for=""><strong>Serie:</strong></label>
-				<div class="dropdown mb-3">
-				<?php 
-					$sqlSerieBoleta="SELECT * FROM `fact_series`";
-					$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
-					$rowSerieBoleta=$resultadoSerieBoleta->fetch_assoc();
-				?>
-				<select class="form-control" id="sltSeriesBoleta">
-					<option value="series" selected>Series</option>
-					<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
-					<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
-					<option id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
-				</select>
-				</div>
-
-					
-				</div>
-				</div>
-			
-				
-				<div id="divDatosCliente" class="d-none card mb-3">
-					<div class="card-body">
-						<p class="text-muted "><strong>Datos del cliente:</strong></p>
-						<div class="row mb-3">
-							<div class="col-4">
-								<input type="text"  class="form-control ml-2 soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' readonly>
-							</div>
-							<div class="col-8">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="card">
-					<div class="card-body">
-						<p class="text-muted d-none mb-0"><strong>Detalle:</strong></p>
-						<div class="row">
-							<div class="col-5"><strong>Concepto</strong></div>
-							<div class="col-1"><strong>Cant.</strong></div>
-							<div class="col-2 d-none"><strong>Und</strong></div>
-							<div class="col-2"><strong>Precio Unit.</strong></div>
-							<div class="col-2"><strong>Sub-Total</strong></div>
-						</div>
-						<!-- <div class="row mb-1 cardHijoProducto" data-producto="2">
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
-							<div class="col-1">Galón</div>
-							<div class="col-5 divNombProducto">Gasohol 90 Plus</div>
-							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioGasolina" step='0.1' min="0"></div>
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioGasolina" value="0.00"></div>
-						</div>
-						<div class="row mb-1 cardHijoProducto" data-producto="1">
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
-							<div class="col-1">Galón</div>
-							<div class="col-5 divNombProducto">Diesel D5 S-50 UV</div>
-							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0"></div>
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioPetroleo" value="0.00"></div>
-						</div> -->
-						<div id="divProductos">
-							<?php include "php/filaNueva.php";?>
-						</div>
-						<button class="btn btn-outline-success  mt-2" id="btnAgregarProducto"><i class="icofont-ui-add"></i> Agregar más produtos</button>
-					</div>
-				</div>
-				<div class='mt-2 pr-5'>
-					<div class="d-flex justify-content-around" id="divCalculosFinales"> <!-- align-items-end flex-column -->
-						<span><span>Sub-Total:</span> <span>S/ <span id="spSubTotBoleta">0.00</span></span></span>
-						<span><span>IGV:</span> <span>S/ <span id="spIgvBoleta">0.00</span></span></span>
-						<span><span>Total:</span> <span>S/ <span id="spTotalBoleta">0.00</span></span></span>
-					</div>
-				</div>
-				
-       
-      </div>
-      <div class="modal-footer">
-				<div class="container-fluid">
-					<div class="row text-center">
-						<p for="" class="text-danger d-none"> <span class="lblError"></span></p>
-					</div>
-					<button type="button" class="btn btn-outline-success float-right d-none" id="btnEmitirFacturav2" ><i class="icofont-paper"></i> Emitir Factura</button>
-					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir Boleta</button>
-				</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal para ingresar el N° ticket -->
-<div class="modal fade" id="modalIngresoTicket" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-				</button>
-				<h5>Generar comprobante</h5>
-        <p>N° de Ticket:</p>
-				<input type="text" class="form-control text-uppercase text-center my-3 d-none" id="txtNCodNegocio" placeholder='Código de negocio' value="<?= $_COOKIE['ckNegocio'];?>" readonly>
-				<input type="text" class="form-control text-uppercase text-center my-3 d-none" id="txtCodLocal" placeholder='Código de local' value="<?= $_COOKIE['ckLocal'];?>" readonly>
-				<input type="text" class="form-control text-uppercase text-center my-3" id="txtNumTicket" placeholder='N° de Ticket' value="103420-8">
-      </div>
-      <div class="modal-footer">
-				<div class="container-fluid">
-					<div class="row">
-						<p for="" class="text-danger "><small class="lblError"></small></p>
-					</div>
-					<button type="button" class="btn btn-secondary float-right" id="btnConsultarDisponibilidad" >Consultar disponibilidad</button>
-				</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal para consultar el N° ticket -->
-<div class="modal fade" id="modalConsultaTicket" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <p>Ingrese los datos de negocio y el N° de Ticket:</p>
-				<input type="text" class="form-control text-uppercase text-center my-3" id="txtNCodNegocio2" placeholder='Código de negocio' value="113">
-				<input type="text" class="form-control text-uppercase text-center my-3" id="txtCodLocal2" placeholder='Código de local' value="12300">
-				<input type="text" class="form-control text-uppercase text-center my-3" id="txtNumTicket2" placeholder='N° de Ticket' value="103420-8">
-      </div>
-      <div class="modal-footer">
-				<div class="container-fluid">
-					<div class="row">
-						<p for="" class="text-danger "><small class="lblError"></small></p>
-					</div>
-					<button type="button" class="btn btn-secondary float-right" id="btnConsultarDisponibilidad2" >Consultar</button>
-				</div>
-      </div>
-    </div>
-  </div>
-</div>
 
 
-<!-- Modal para empezar el proceso B/v-Fact -->
-<div class="modal fade" id="modalProcesarComprobante" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <p>Procesos para el Ticket <strong class="text-uppercase"><span id="spanTicket"></span></strong>:</p>
-				<button class="btn btn-block btn-outline-primary my-3" id="btnEmitirFactura">Emitir Factura</button>
-				<button class="btn btn-block btn-outline-primary my-3" id="btnEmitirBoleta">Emitir Boleta de Venta</button>
-				<button class="btn btn-block btn-outline-primary my-3">Generar Nota de Crédito</button>
-				<button class="btn btn-block btn-outline-primary my-3">Generar Nota de Pedido</button>
-      </div>
-  	</div>
-	</div>
-</div>
 
-<!-- Modal para empezar Modificar las series -->
-<div class="modal fade" id="modalModSerie" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modificar series</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label for="">Serie de Boletas:</label>
-				<input type="text" class="form-control text-center" id="txtSerieBoleta">
-				<label for="">Serie de Facturas:</label>
-				<input type="text" class="form-control text-center" id="txtSerieFactura">
-				<label for="">Serie de Interna:</label>
-				<input type="text" class="form-control text-center" id="txtSerieInterna">
-      </div>
-      <div class="modal-footer">
-				<p class="text-danger d-none" id="pError2"></p>
-        <button type="button" class="btn btn-primary" id="btnUpdateSeries">Actualizar series</button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- Modal para empezar Modificar las precios -->
-<div class="modal fade" id="modalModPrecios" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modificar precios</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label for="">Precio de Gasohol 90 Plus:</label>
-				<input type="text" class="form-control text-center" id="txtPrecGasoholv2">
-				<label for="">Precio de Diesel D5 S-50 UV:</label>
-				<input type="text" class="form-control text-center" id="txtPrecDieselv2">
-      </div>
-      <div class="modal-footer">
-				<p class="text-danger d-none" id="pError3"></p>
-        <button type="button" class="btn btn-primary" id="btnUpdatePrecios"><i class="icofont-refresh"></i> Actualizar precios</button>
-      </div>
-    </div>
-  </div>
-</div>
+
+
+
+
 
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
@@ -426,19 +165,19 @@ $(document).ready(function(){
 	});
 	$('#fechaFiltro').val( moment().format('YYYY-MM-DD'));
 	$('[data-toggle="tooltip"]').tooltip();
-	$('tbody').children().remove();
+	//$('tbody').children().remove();
 
-	$.ajax({url: 'listarTodoPorFecha.php', type: 'POST' }).done(function(resp) {
+/* 	$.ajax({url: 'listarTodoPorFecha.php', type: 'POST' }).done(function(resp) {
 		//console.log(resp)
 		$('tbody').append(resp);
 		$('[data-toggle="tooltip"]').tooltip();
 		$("table").stupidtable();
-	});
+	}); */
 	$('#fechaFiltro').change(function() {
 		console.log( moment($('#fechaFiltro').val()).isValid() );
 		$.ajax({url: 'listarTodoPorFecha.php', type: 'POST', data:{fecha: $('#fechaFiltro').val() } }).done(function(resp) {
 			$('tbody').children().remove();
-			$('tbody').append(resp).anotherJqueryMethod;
+			$('tbody').append(resp);
 			$('[data-toggle="tooltip"]').tooltip();
 		});
 	});
@@ -545,7 +284,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/printComprobante.php', type: 'POST', data: {
+		$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
 			tipoComprobante: $.jTicket[0].tipoComprobante,
 			rucEmisor: $.jTicket[0].rucEmisor,
 			queEs: $.jTicket[0].queSoy,
@@ -570,7 +309,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	});
 });
 $('#btnPrintTicketera').click(function() {
-	$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/printComprobante.php', type: 'POST', data: {
+	$.ajax({url: 'http://127.0.0.1/pluginSunat/printComprobante.php', type: 'POST', data: {
 				tipoComprobante: $.jTicket[0].tipoComprobante,
 				rucEmisor: $.jTicket[0].rucEmisor,
 				queEs: $.jTicket[0].queSoy,
@@ -775,15 +514,9 @@ $('#btnEmitirBoletav2').click(function() {
 		}
 		var jsonProductos = [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
-			var productVariable ='';
 			if( $(elem).find('.sltFiltroProductos').selectpicker('val')!='' ){
-				if($(elem).find('.divNombProducto button').attr('title')=='Libre'){
-					productVariable = $(elem).find('.campoTextoLibre').val();
-				}else{
-					productVariable = $(elem).find('.divNombProducto button').attr('title')
-				}
 				jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
-					descripcionProducto: productVariable,
+					descripcionProducto: $(elem).find('.divNombProducto button').attr('title'),
 					precioProducto: $(elem).find('.campoPrecioUnit').val(),
 					unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
 					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
@@ -898,10 +631,7 @@ $('#sltFiltroClientes').on('changed.bs.select', function (e, clickedIndex, isSel
   
 	var index=$('#sltFiltroClientes').val();
 	var padre = $("#sltFiltroClientes option[value="+index+"]");
-	if($(this).val()!=null){
-		$('#chkEstadoDni').prop('checked', false).change();
-	}
-	
+//	$('#chkEstadoDni').prop('checked', false).change();
 	
 	$('#txtDniBoleta').val(padre.attr('data-ruc'));
 	$('#txtRazonBoleta').val(padre.attr('data-razon'));
@@ -921,45 +651,16 @@ $('#btnAgregarProducto').click(function() {
 		});
 	}
 });
-$('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, clickedIndex, isSelected, previousValue) {
-	var padre = $(this).parent().parent().parent();
-	//console.log( padre.html() );
-	if( $(this).selectpicker('val')!=null ){
-		var queProd= $(this).selectpicker('val');
-		$.each( $.precios , function(i, prodObj){
-			if(prodObj.idProductos==queProd){
-				//console.log(  prodObj.prodPrecio );
-				//padre.find('.sltFiltroUnidad').selectpicker('val', '3')
-				padre.find('.sltFiltroUnidad #sltfiltroTemporal').selectpicker('val', prodObj.undSunat ).selectpicker('refresh');;
-				padre.find('.campoPrecioUnit').val(parseFloat(prodObj.prodPrecio).toFixed(2));
-				padre.find('.campoSubTotal').val(parseFloat(prodObj.prodPrecio).toFixed(2));
-				padre.find('.campoCantidad').val(1).focus();
-
-			}
-		});
-
-		if(padre.find('.divNombProducto button').attr('title')=='Libre'){
-			padre.find('.bootstrap-select').addClass('d-none');
-			padre.find('.campoTextoLibre').removeClass('d-none').focus();
-		}
-		sumaTodo()
-	}
-});
-$('#divProductos').on('click', '.borrarFila', function (e) {
-	var padre=$(this).parent().parent();
-	if($('.cardHijoProducto').length>1){
-		padre.remove();
-	}else{
-		padre.find('.sltFiltroProductos').selectpicker('val', -1).selectpicker('refresh');
-		padre.find('.campoCantidad').val(0);
-		padre.find('.campoPrecioUnit').val('0.00');
-		padre.find('.campoSubTotal').val('0.00');
-		padre.find('.bootstrap-select').removeClass('d-none');
-		padre.find('.campoTextoLibre').addClass('d-none');
-
-	}
-});
-
 </script>
+<!-- BEGIN JIVOSITE CODE {literal} -->
+<script type='text/javascript'>
+(function(){ var widget_id = 'ucFX66lIdV';var d=document;var w=window;function l(){
+  var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true;
+  s.src = '//code.jivosite.com/script/widget/'+widget_id
+    ; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);}
+  if(d.readyState=='complete'){l();}else{if(w.attachEvent){w.attachEvent('onload',l);}
+  else{w.addEventListener('load',l,false);}}})();
+</script>
+<!-- {/literal} END JIVOSITE CODE -->
 </body>
 </html>

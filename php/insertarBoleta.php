@@ -37,9 +37,12 @@ $igvTotal = round($sumaTotal-$baseTotal,2);
 
 $parteEntera = intval($sumaTotal);
 $parteDecimal = round(($sumaTotal-$parteEntera)*100,0);
+if($parteDecimal == '0'){
+	$parteDecimal='00';
+}
 
 //Pedir las letras del monto facturado
-$letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'/100 MN';
+$letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES con '.$parteDecimal.'/100 MN';
 
 $sqlCorrelativo="SELECT LPAD(factCorrelativo+1, 8, '0') as contador  FROM `fact_cabecera` where factSerie = '{$serie}' order by factCorrelativo desc limit 1";
 $resultadoCorrelativo=$cadena->query($sqlCorrelativo);
