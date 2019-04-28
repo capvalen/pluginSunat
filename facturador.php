@@ -841,8 +841,13 @@ $('#btnEmitirFacturav2').click(function() {
 		var jsonProductos= [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
 			if( $(elem).find('.sltFiltroProductos').selectpicker('val')!='' ){
+				if($(elem).find('.divNombProducto button').attr('title')=='Libre'){
+					productVariable = $(elem).find('.campoTextoLibre').val();
+				}else{
+					productVariable = $(elem).find('.divNombProducto button').attr('title')
+				}
 				jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
-					descripcionProducto: $(elem).find('.divNombProducto button').attr('title'),
+					descripcionProducto: productVariable,
 					precioProducto: $(elem).find('.campoPrecioUnit').val(),
 					unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
 					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
