@@ -1,6 +1,6 @@
 <?php
 include 'conexion.php';
-if( !isset($_COOKIE['ckNegocio']) ){ header("Location: index.html");
+if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	die(); }
 include "generales.php"; ?>
 <!DOCTYPE html>
@@ -13,6 +13,7 @@ include "generales.php"; ?>
 	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<link rel="stylesheet" href="icofont.min.css">
 	<link rel="stylesheet" href="css/bootstrap-select.min.css">
+	<link rel="stylesheet" href="css/anksunamun.css">
 
 </head>
 <body>
@@ -78,7 +79,9 @@ thead tr th{cursor: pointer;}
       <a class="nav-item nav-link d-none" href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
       <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
       <a class="nav-item nav-link" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
+      <a class="nav-item nav-link" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
       <a class="nav-item nav-link d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
+      <a class="nav-item nav-link " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
       <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar</a>
     </div>
   </div>
@@ -107,7 +110,7 @@ thead tr th{cursor: pointer;}
 		</div>
 		<div class="col ml-4">
 			<h3 class="display-4">Facturación Electrónica</h3>
-			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckNegocio']); ?></small>
+			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 			<div class="row d-flex justify-content-between">
 				<div class="col-sm-3"><input type="date" class="form-control text-center" id="fechaFiltro"></div>
 				<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
@@ -115,7 +118,7 @@ thead tr th{cursor: pointer;}
 		</div></div>
 		
 
-		<table class="table table-hover mt-3">
+		<table class="table table-hover mt-3" id="tablaPrincipal">
 			<thead>
 				<tr>
 					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
@@ -406,10 +409,12 @@ thead tr th{cursor: pointer;}
   </div>
 </div>
 
+<?php include "php/modal.php"; ?>
+
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.4"></script>
+<script src="js/impotem.js?version=1.0.6"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
@@ -426,19 +431,19 @@ $(document).ready(function(){
 	});
 	$('#fechaFiltro').val( moment().format('YYYY-MM-DD'));
 	$('[data-toggle="tooltip"]').tooltip();
-	$('tbody').children().remove();
+	$('#tablaPrincipal tbody').children().remove();
 
 	$.ajax({url: 'listarTodoPorFecha.php', type: 'POST' }).done(function(resp) {
 		//console.log(resp)
-		$('tbody').append(resp);
+		$('#tablaPrincipal tbody').append(resp);
 		$('[data-toggle="tooltip"]').tooltip();
-		$("table").stupidtable();
+		$("#tablaPrincipal").stupidtable();
 	});
 	$('#fechaFiltro').change(function() {
 		console.log( moment($('#fechaFiltro').val()).isValid() );
 		$.ajax({url: 'listarTodoPorFecha.php', type: 'POST', data:{fecha: $('#fechaFiltro').val() } }).done(function(resp) {
-			$('tbody').children().remove();
-			$('tbody').append(resp).anotherJqueryMethod;
+			$('#tablaPrincipaltbody').children().remove();
+			$('#tablaPrincipaltbody').append(resp).anotherJqueryMethod;
 			$('[data-toggle="tooltip"]').tooltip();
 		});
 	});
@@ -964,7 +969,10 @@ $('#divProductos').on('click', '.borrarFila', function (e) {
 
 	}
 });
-
+$('#btnModificarUsuarios').click(function() {
+	$('#modalListadoPersonal').modal('show');
+});
 </script>
+<?php include "piePagina.php"; ?>
 </body>
 </html>

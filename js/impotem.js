@@ -24,3 +24,46 @@ $('.soloNumeros').keypress(function (e) {//||
         e.preventDefault();
     }
 });
+$('#btnAddNewUser').click(function() {
+	$('#modalListadoPersonal').modal('hide');
+	$('#modalNuevoPersonal').modal('show');
+});
+function removerPersonal(idEmple){
+	$.idEmple = idEmple;
+	var nombre = $(`td[data-id="${idEmple}"]`).text();
+	$('#strNombre').text(nombre);
+	$('#modalListadoPersonal').modal('hide');
+	$('#modalBorrarPersonal').modal('show');
+}
+$('#btnBorrarPersona').click(function() {
+	$.ajax({url: 'php/borrarPersonal.php', type: 'POST', data: { idUser: $.idEmple }}).done(function(resp) {
+		if($.trim(resp)=='todo ok'){
+			location.reload();
+		}
+	});
+});
+$('#btnGuardarPersona').click(function() {
+	$('#lblExito').addClass('d-none');
+	$('#lblError').addClass('d-none');
+	if( $('#txtDniPers').val()=='' || $('#txtNombrePers').val()=='' || $('#txtApellidoPers').val()=='' ){
+		$('#lblError').removeClass('d-none').find('span').text('Debe rellenar todos los campos obligatorio');
+	}else if( $('#sltFiltroNiveles').selectpicker('val') == null ){
+		$('#lblError').removeClass('d-none').find('span').text('Debe rellenar un nivel');
+	} else{
+		$('#lblExito').addClass('d-none');
+		$('#lblError').addClass('d-none');
+		$.ajax({url: 'php/crearPersonal.php', type: 'POST', data: {nick: $('#txtNickPers').val(), apellido: $('#txtApellidoPers').val(), nombre: $('#txtNombrePers').val(), passw: $('#txtPassPers').val(), poder: $('#sltFiltroNiveles').selectpicker('val') }}).done(function(resp) {
+			console.log(resp)
+			if($.trim(resp)=='todo ok'){
+				//$('#modalNuevoPersonal').modal('hide');
+				$('#modalNuevoPersonal input').val('');
+				$('#lblExito').removeClass('d-none').find('span').text('Registro guardado con éxito');
+			}else{
+				$('#lblError').removeClass('d-none').find('span').text('Hubo un error interno, comunícalo a soporte informático');
+			}
+			$('#modalNuevoPersonal').on('hidden.bs.modal', function () { 
+				location.reload();
+			});
+		});
+	}
+});

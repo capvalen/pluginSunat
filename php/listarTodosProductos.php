@@ -2,44 +2,35 @@
 date_default_timezone_set('America/Lima');
 include "conexion.php";
 
-if (isset($_POST['fecha'])){ $fecha = $_POST['fecha'];}else{
-	$fecha = date('Y-m-d');
-}
-
-$sql="SELECT * FROM `productos` WHERE `prodActivo`=1;";
+$sql="SELECT p.*, case `prodActivo` when 1 then 'Activo' else 'Inactivo'end as estActivo, g.gravDescripcion  FROM `productos` p
+inner join gravados g on p.idGravado = g.idGravado;"; // WHERE `prodActivo`=1
 
 $resultado=$cadena->query($sql);
 $numero = $resultado ->num_rows;
 if($numero==0){ ?>
 <tr>
-	<td colspan="6">No hay comprobantes emitidos en ésta fecha.</td>
+	<td colspan="6">No existen productos.</td>
 </tr>
 <?php }
 $i=1;
 while($row=$resultado->fetch_assoc()){ 
-	$hora = new DateTime($row['horaEmision']);
 	?>
 	<tr>
-		<td><?= $i; ?></td>
-		
-
-		<td data-sort-value="<?= $hora->format('Hi'); ?>"><?= $hora->format('h:i a'); ?></td>
-		<td class="text-capitalize"><?= $row['razonSocial']; ?></td>
-		<td><?= number_format($row['totalFinal'],2); ?></td>
-		<td><?php if($row['comprobanteEmitido']==0){ echo 'Sin emitir'; }else { echo "<span class='text-success'>Emitido</span>";}?></td>
-		<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" data-ticket="<?= $row['idTicket']; ?>">
-			<?php 
-			if($row['comprobanteEmitido']==0 && $fecha == date('Y-m-d')){ ?>
-			<button class="btn btn-outline-primary btn-sm border border-light btnGenComprobante" data-ticket="<?= $row['idTicket']; ?>" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
-			<?php
-			}
-			else if($row['comprobanteEmitido']==1){ ?>
-			<button class="btn btn-outline-success btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprmir ticket"><i class="icofont-paper"></i></button>
-			<button class="btn btn-outline-success btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprmir A4"><i class="icofont-print"></i></button>
-			<?php }
-			?>
-		</td>
-	</tr>
+					<td class='text-center'><?= $i; ?></td>
+					<td class='text-capitalize'><?= $row['prodDescripcion'];?></td>
+					<td class='text-center'>S/ <?= number_format($row['prodPrecio'],2); ?></td>
+					<td class='text-center'>S/ <?= number_format($row['prodPrecio'],2); ?></td>
+					<td class='text-center'>S/ <?= number_format($row['prodPrecio'],2); ?></td>
+					<td><?= $row['prodStock'];?> Unds.</td>
+					<td><?= $row['gravDescripcion']; ?></td>
+					<td><?= $row['estActivo']; ?></td>
+					<td>
+						<button class="btn btn-outline-primary btn-sm border border-light btnEditProducto" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editar Producto"><i class="icofont-flag"></i></button>
+						<button class="btn btn-outline-success btn-sm border border-light btnPreciosProducto" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cambiar Precio"><i class="icofont-list"></i></button>
+						<button class="btn btn-outline-dark btn-sm border border-light btnStockProducto" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modificar Stock"><i class="icofont-magic"></i></button>
+					</td>
+				</tr>
+	<tr>
 <?php  $i++; }
 
 ?>

@@ -25,6 +25,7 @@
 				<label for="">Contraseña</label>
 				<input type="password" class="form-control" id="txtlocalLog" value="">
 				<button class="btn btn-outline-dark mt-3 " id="btnAcceder"><i class="icofont-key-hole"></i> Acceder</button>
+				<div id="divError"><span id="spanError2"></span></div>
 			
 				<p class='pt-2'><small>Versión 1.14c</small></p>
 			</div>
@@ -48,9 +49,35 @@ $('#txtlocalLog').keyup(function (e) {
 	if (e.which ==13){ $('#btnAcceder').click(); }
 })
 $('#btnAcceder').click(function() {
-	$.ajax({url: 'crearSesion.php', type: 'POST', data: { negocio: $('#txtNegocioLog').val(), local: $('#txtlocalLog').val()  }}).done(function(resp) {
-		console.log(resp)
-		window.location.href = 'facturador.php';
+	$.ajax({
+		type:'POST',
+		url: 'php/validarSesion.php',
+		data: {user: $('#txtNegocioLog').val(), pws: $('#txtlocalLog').val()},
+		success: function(resp) { console.log( "respuesta " + resp);
+			//if (parseInt(iduser)>0){//console.log('el id es '+data)
+			if( resp=='concedido' ){
+				console.log(resp)
+				window.location="facturador.php";
+			}else if(resp=='inhabilitado'){
+				$('#spanError2').text('Tu usuario fue inhabilitado temporalmente. No inista y llame a soporte informático.');
+				$('#divError').removeClass('hidden');
+				$('#txtUser_app').select();
+				$('.fa-spin').addClass('sr-only');$('.icofont-ui-lock').removeClass('sr-only');
+				$('#txtPassw').val(''); $('#txtPassw').focus();
+				console.log('error en los datos')
+			}else {
+				$('#spanError2').text('Error interno, comunicarse con soporte.');
+				$('#divError').removeClass('hidden');
+				//var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+				// $('#btnAcceder').addClass('animated wobble' ).one(animationEnd, function() {
+				// 		$(this).removeClass('animated wobble');
+				// });
+				$('#txtUser_app').select();
+				$('.fa-spin').addClass('sr-only');$('.icofont-ui-lock').removeClass('sr-only');
+				//console.log(resp);
+				$('#txtPassw').val(''); $('#txtPassw').focus();
+				console.log('error en los datos')}
+		}
 	});
 });
 </script>
