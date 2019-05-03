@@ -14,6 +14,9 @@ include "generales.php"; ?>
 	<link rel="stylesheet" href="icofont.min.css">
 	<link rel="stylesheet" href="css/bootstrap-select.min.css">
 	<link rel="stylesheet" href="css/anksunamun.css">
+	<link rel="stylesheet" href="css/bootstrap-datepicker.min.css">
+	<link rel="stylesheet" href="css/tableexport.min.css">
+
 
 </head>
 <body>
@@ -51,14 +54,12 @@ thead tr th{cursor: pointer;}
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="nav-item nav-link " href="facturador.php" id="btnEmitirComprobante"><i class="icofont-ui-note"></i> Facturador</a>
-			<?php if($_COOKIE['ckPower']): ?>
       <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
       <a class="nav-item nav-link" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
       <a class="nav-item nav-link " href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
       <a class="nav-item nav-link d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
 			<a class="nav-item nav-link " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
       <a class="nav-item nav-link active" href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
-			<?php endif; ?>
       <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar</a>
     </div>
   </div>
@@ -71,30 +72,45 @@ thead tr th{cursor: pointer;}
 			<img src="bitmap.jpg?version=1.0.3" class='img-fluid mt-3'>
 		</div>
 		<div class="col ml-4">
-			<h3 class="display-4">Gestión de productos</h3>
+			<h3 class="display-4">Reportes</h3>
 			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 		</div></div>
-		<div class="d-flex justify-content-end">
-			<button class="btn btn-outline-primary "><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button>
+		
+		<div class="row pt-3">
+			<label class="pt-2"><strong>Filtros:</strong></label>
+			<div class="col-12 col-md-4">
+				<div class="input-daterange input-group" id="datepicker">
+					<input type="text" class="form-control input-sm" name="start" id="txtFecha1" />
+					<span class="input-group-addon pt-2 px-2">hasta</span>
+					<input type="text" class="form-control input-sm" name="end" id="txtFecha2" />
+				</div>
+			</div>
+			<div class="col">
+				<select class="selectpicker" data-live-search="false" id="sltFiltroReporte" title="&#xed12; Tipo de reporte">
+					<option value="0">Resumido</option>
+					<option value="1">Detallado</option>
+				</select>
+				<button class="btn btn-outline-primary ml-3" id="btnBuscarReporte"><i class="icofont-search-2"></i></button>
+				<button class="btn btn-outline-success ml-3 d-none" id="btnGuardarReporte"><i class="icofont-file-excel"></i> Guardar reporte</button>
+			</div>
 		</div>
 		
 
-		<table class="table table-hover mt-3">
+		<table class="table table-hover mt-3" id="tablaCabeceras" >
 			<thead>
 				<tr>
 					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Nombre de producto</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio Público</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio por Mayor</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio con Dscto.</th>
-					<th data-sort="int"><i class="icofont-expand-alt"></i> Stock</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Gravado</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Código</th>
+					<th data-sort="int"><i class="icofont-expand-alt"></i> Hora</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 					<th>@</th>
 				</tr>
 			</thead>
 			<tbody>
-				<?php include "php/listarTodosProductos.php"; ?>
+			
 			</tbody>
 		</table>
 	</div>
@@ -115,15 +131,20 @@ thead tr th{cursor: pointer;}
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.4"></script>
+<script src="js/impotem.js?version=1.0.7"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
+<script src="js/bootstrap-datepicker.js?version=1.0.1"></script>
+<script src="js/xlsx.core.min.js"></script>
+<script src="js/FileSaver.min.js"></script>
+<script src="js/tableexport.js?version=1.1"></script>
 
 <script>
 $(document).ready(function(){
 	$('.selectpicker').selectpicker('render');
 	$('.selectpicker').selectpicker('val', -1);
+	$('#sltFiltroReporte').selectpicker('val',"0");
 	$('table').stupidtable();
 	/* $.ajax({url: 'php/getPreciosProductos.php', type: 'POST' }).done(function(resp) {
 		//console.log(resp)
@@ -132,9 +153,17 @@ $(document).ready(function(){
 	}); */
 	
 	$('[data-toggle="tooltip"]').tooltip();
-	
-
+	$('.input-daterange').datepicker({
+		format: "dd/mm/yyyy",
+		todayBtn: "linked",
+    language: "es",
+		autoclose: true
+	});
+	$('.input-daterange input').val(moment().format('DD/MM/YYYY'));
 });
+$('.input-daterange input').change(function(){
+	$('#btnGuardarReporte').addClass('d-none');
+})
 /* $('#btnEmitirBoleta').click(function() {
 	$.ajax({url: 'emision.php', type: 'POST', data: { emitir: 3, factura: $('#txtCodigoFact').val() }}).done(function(resp) {
 		console.log(resp)
@@ -143,7 +172,30 @@ $(document).ready(function(){
 		}
 	});
 }); */
+$('#btnBuscarReporte').click(function() {
+	if( $('#txtFecha1').val()!='' &&  $('#txtFecha2').val()!=''){
+		if( $('#sltFiltroReporte').selectpicker('val')=='0'){
+			var fecha1 = moment($('#txtFecha1').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+			var fecha2 = moment($('#txtFecha2').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+			$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{fecha: fecha1, fecha2: fecha2 } }).done(function(resp) {
+				$('#tablaCabeceras tbody').children().remove();
+				$('#tablaCabeceras tbody').append(resp).anotherJqueryMethod;
+				$('[data-toggle="tooltip"]').tooltip();
+			});
+			$('#btnGuardarReporte').removeClass('d-none');
+		}
+	}
+});
 
+
+$('#btnGuardarReporte').click(function() {
+	var instance = new TableExport(document.getElementById('tablaCabeceras'), {
+			formats: ['xlsx'],
+			exportButtons: false
+	});
+	var exportData = instance.getExportData()['tablaCabeceras']['xlsx'];
+	instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte resumido', exportData.fileExtension);
+});
 
 </script>
 <!-- BEGIN JIVOSITE CODE {literal} -->

@@ -78,10 +78,13 @@ thead tr th{cursor: pointer;}
 			</li>
       <a class="nav-item nav-link d-none" href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
       <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
+		<?php if($_COOKIE['ckPower']): ?>
       <a class="nav-item nav-link" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
       <a class="nav-item nav-link" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
       <a class="nav-item nav-link d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
       <a class="nav-item nav-link " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
+      <a class="nav-item nav-link " href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
+		<?php endif; ?>
       <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar</a>
     </div>
   </div>
@@ -414,7 +417,7 @@ thead tr th{cursor: pointer;}
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.6"></script>
+<script src="js/impotem.js?version=1.0.7"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
@@ -433,7 +436,7 @@ $(document).ready(function(){
 	$('[data-toggle="tooltip"]').tooltip();
 	$('#tablaPrincipal tbody').children().remove();
 
-	$.ajax({url: 'listarTodoPorFecha.php', type: 'POST' }).done(function(resp) {
+	$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST' }).done(function(resp) {
 		//console.log(resp)
 		$('#tablaPrincipal tbody').append(resp);
 		$('[data-toggle="tooltip"]').tooltip();
@@ -441,9 +444,9 @@ $(document).ready(function(){
 	});
 	$('#fechaFiltro').change(function() {
 		console.log( moment($('#fechaFiltro').val()).isValid() );
-		$.ajax({url: 'listarTodoPorFecha.php', type: 'POST', data:{fecha: $('#fechaFiltro').val() } }).done(function(resp) {
-			$('#tablaPrincipaltbody').children().remove();
-			$('#tablaPrincipaltbody').append(resp).anotherJqueryMethod;
+		$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{fecha: $('#fechaFiltro').val(), fecha2:$('#fechaFiltro').val() } }).done(function(resp) {
+			$('#tablaPrincipal tbody').children().remove();
+			$('#tablaPrincipal tbody').append(resp).anotherJqueryMethod;
 			$('[data-toggle="tooltip"]').tooltip();
 		});
 	});
@@ -969,9 +972,7 @@ $('#divProductos').on('click', '.borrarFila', function (e) {
 
 	}
 });
-$('#btnModificarUsuarios').click(function() {
-	$('#modalListadoPersonal').modal('show');
-});
+
 </script>
 <?php include "piePagina.php"; ?>
 </body>

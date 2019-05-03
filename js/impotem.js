@@ -67,3 +67,6 @@ $('#btnGuardarPersona').click(function() {
 		});
 	}
 });
+$('#btnModificarUsuarios').click(function() {
+	$('#modalListadoPersonal').modal('show');
+});
