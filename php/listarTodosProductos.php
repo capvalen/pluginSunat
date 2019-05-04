@@ -17,12 +17,12 @@ while($row=$resultado->fetch_assoc()){
 	?>
 	<tr>
 					<td class='text-center'><?= $i; ?></td>
-					<td class='text-capitalize'><?= $row['prodDescripcion'];?></td>
+					<td class='text-capitalize tdProdNombre'><?= $row['prodDescripcion'];?></td>
 					<td class='text-center'>S/ <?= number_format($row['prodPrecio'],2); ?></td>
 					<td class='text-center'>S/ <?= number_format($row['prodPrecio'],2); ?></td>
 					<td class='text-center'>S/ <?= number_format($row['prodPrecio'],2); ?></td>
 					<td><?= $row['prodStock'];?> Unds.</td>
-					<td><?= $row['gravDescripcion']; ?></td>
+					<td class="tdGrabado" data-value="<?= $row['idGravado'];?>"><?= $row['gravDescripcion']; ?></td>
 					<td><?= $row['estActivo']; ?></td>
 					<td>
 						<button class="btn btn-outline-primary btn-sm border border-light btnEditProducto" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editar Producto"><i class="icofont-flag"></i></button>

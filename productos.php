@@ -14,6 +14,7 @@ include "generales.php"; ?>
 	<link rel="stylesheet" href="icofont.min.css">
 	<link rel="stylesheet" href="css/bootstrap-select.min.css">
 	<link rel="stylesheet" href="css/anksunamun.css">
+	<link rel="shortcut icon" href="images/VirtualCorto.png" type="image/png">
 
 </head>
 <body>
@@ -54,10 +55,10 @@ thead tr th{cursor: pointer;}
 			<?php if($_COOKIE['ckPower']): ?>
       <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
       <a class="nav-item nav-link" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
-      <a class="nav-item nav-link " href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
+      <a class="nav-item nav-link active" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
       <a class="nav-item nav-link d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
 			<a class="nav-item nav-link " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
-      <a class="nav-item nav-link active" href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
+      <a class="nav-item nav-link " href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
 			<?php endif; ?>
       <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar</a>
     </div>
@@ -102,7 +103,45 @@ thead tr th{cursor: pointer;}
 
 
 
-
+<!-- Modal para editar producto -->
+<div class="modal fade" id="modalEditarProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editar Producto: <span class="text-capitalize" id="spanNomProducto"></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+				<div class="form-group row">
+					<label for="txtPrecioPublico" class="col-sm-4 col-form-label">Precio al Público:</label>
+					<div class="col-sm-6"> <input type="number" class="form-control esMoneda" id="txtPrecioPublico" val="0.00"> </div>
+				</div>
+				<div class="form-group row">
+					<label for="txtPrecioMayor" class="col-sm-4 col-form-label">Precio al Mayor:</label>
+					<div class="col-sm-6"> <input type="number" class="form-control esMoneda" id="txtPrecioMayor" val="0.00"> </div>
+				</div>
+				<div class="form-group row">
+					<label for="txtPrecioDescuento" class="col-sm-4 col-form-label">Precio Mínimo:</label>
+					<div class="col-sm-6"> <input type="number" class="form-control esMoneda" id="txtPrecioDescuento" val="0.00"> </div>
+				</div>
+				<div class="form-group row">
+					<label for="txtPrecioDescuento" class="col-sm-4 col-form-label">Impuesto:</label>
+					<div class="col-sm-6">
+						<select class="selectpicker" data-live-search="false" id="sltFiltroGravado" title="&#xed12; Imposición">
+							<option value="1">Afecto</option>
+							<option value="2">Exonerado</option>
+						</select>
+					</div>
+				</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success"><i class="icofont-refresh"></i> Actualizar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -132,9 +171,16 @@ $(document).ready(function(){
 	}); */
 	
 	$('[data-toggle="tooltip"]').tooltip();
-	
 
 });
+
+$('table').on('click', '.btnEditProducto', function (e) {
+	var padre=$(this).parent().parent();
+	$('#spanNomProducto').text( padre.find('.tdProdNombre').text() );
+	(padre.find('.tdGrabado').attr('data-value'));
+	$('#modalEditarProducto').modal('show');
+});
+
 /* $('#btnEmitirBoleta').click(function() {
 	$.ajax({url: 'emision.php', type: 'POST', data: { emitir: 3, factura: $('#txtCodigoFact').val() }}).done(function(resp) {
 		console.log(resp)
@@ -147,14 +193,14 @@ $(document).ready(function(){
 
 </script>
 <!-- BEGIN JIVOSITE CODE {literal} -->
-<script type='text/javascript'>
+<!-- <script type='text/javascript'>
 (function(){ var widget_id = 'ucFX66lIdV';var d=document;var w=window;function l(){
   var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true;
   s.src = '//code.jivosite.com/script/widget/'+widget_id
     ; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);}
   if(d.readyState=='complete'){l();}else{if(w.attachEvent){w.attachEvent('onload',l);}
   else{w.addEventListener('load',l,false);}}})();
-</script>
+</script> -->
 <!-- {/literal} END JIVOSITE CODE -->
 </body>
 </html>

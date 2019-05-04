@@ -45,6 +45,9 @@ while($row=$resultado->fetch_assoc()){
 	<?php endif; ?>
 
 		<td class="text-capitalize"><?= $row['razonSocial']; ?></td>
+	<?php if( isset($_POST['fecha2'])): ?>
+		<td>S/ <?= number_format($row['IGVFinal'],2); ?></td>
+	<?php endif; ?>
 		<td>S/ <?= number_format($row['totalFinal'],2); ?></td>
 		<td><?php if($row['comprobanteEmitido']==0){ echo 'Sin emitir'; }else { echo "<span class='text-success'>Emitido</span>";}?></td>
 		<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" data-ticket="<?= $row['idTicket']; ?>">

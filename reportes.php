@@ -102,8 +102,9 @@ thead tr th{cursor: pointer;}
 					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Código</th>
-					<th data-sort="int"><i class="icofont-expand-alt"></i> Hora</th>
+					<th data-sort="int"><i class="icofont-expand-alt"></i> Fecha y Hora</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
 					<th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 					<th>@</th>
