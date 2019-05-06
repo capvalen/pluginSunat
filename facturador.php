@@ -411,6 +411,45 @@ thead tr th{cursor: pointer;}
     </div>
   </div>
 </div>
+<?php if($_COOKIE['ckPower']==1){ ?>
+<!-- Modal para confirmar la Baja -->
+<div class="modal fade" id="modalDarBajas" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Notificación de baja</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="">¿Desea realmente dar de baja el Comprobante <strong id="strComprobante"></strong>?</label>
+        <label for="">Ingrese el motivo de la baja:</label>
+				<input type="text" class="form-control text-capitalize" id="txtConceptoBaja">
+      </div>
+      <div class="modal-footer">
+				<p class="text-danger d-none" id="pError3"></p>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="icofont-close"></i> Cancelar operación</button>
+        <button type="button" class="btn btn-danger" id="btnDarbaja"><i class="icofont-download-alt"></i> Dar de Baja</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modalExitoBajas" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <label for="">Comprobante dado de baja exitosamente</label>
+				<h5 id="h5ComprobanteBaja"></h5>
+      </div>
+      <div class="modal-footer">
+				<p class="text-danger d-none" id="pError3"></p>
+        <button type="button" class="btn btn-success" id="btnDarbaja"  data-dismiss="modal"><i class="icofont-check"></i> Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+<?php } ?>
 
 <?php include "php/modal.php"; ?>
 
@@ -951,7 +990,7 @@ $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, c
 			}
 		});
 
-		if(padre.find('.divNombProducto button').attr('title')=='Libre'){
+		if($(this).selectpicker('val')==52){ //codigo de la posición libre
 			padre.find('.bootstrap-select').addClass('d-none');
 			padre.find('.campoTextoLibre').removeClass('d-none').focus();
 		}
@@ -972,7 +1011,31 @@ $('#divProductos').on('click', '.borrarFila', function (e) {
 
 	}
 });
-
+<?php if($_COOKIE['ckPower']==1){?>
+$('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {
+	$('#strComprobante').text( $(this).parent().parent().find('.tdCorrelativo').text());
+	$('#h5ComprobanteBaja').text( $('#strComprobante').text());
+	$('#btnDarbaja').attr('data-baja', $(this).attr('data-baja'));
+	$('#btnDarbaja').attr('data-boleta', $(this).attr('data-boleta'));
+	if($(this).attr('data-boleta')=='3'){
+		$('#txtConceptoBaja').addClass('d-none').prev().addClass('d-none');
+	}else{
+		$('#txtConceptoBaja').removeClass('d-none').prev().removeClass('d-none');
+	}
+	$('#modalDarBajas').modal('show');
+});
+$('#btnDarbaja').click(function() {
+	$.ajax({url: 'php/darBajas.php', type: 'POST', data: { concepto: $('#txtConceptoBaja').val(), boleta: $(this).attr('data-boleta'), id: $(this).attr('data-baja') }}).done(function(resp) {
+		if(resp=='ok'){
+			$('#modalDarBajas').modal('hide');
+			$('#modalExitoBajas').modal('show');
+			$('#modalExitoBajas').on('hidden.bs.modal', function () { 
+				location.reload();
+			});
+		}
+	});
+});
+<?php }?>
 </script>
 <?php include "piePagina.php"; ?>
 </body>
