@@ -116,22 +116,30 @@ thead tr th{cursor: pointer;}
       <div class="modal-body">
 				<div class="form-group row">
 					<label for="txtPrecioPublico" class="col-sm-4 col-form-label">Precio al Público:</label>
-					<div class="col-sm-6"> <input type="number" class="form-control esMoneda" id="txtPrecioPublico" val="0.00"> </div>
+					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioPublico" val="0.00"> </div>
 				</div>
 				<div class="form-group row">
 					<label for="txtPrecioMayor" class="col-sm-4 col-form-label">Precio al Mayor:</label>
-					<div class="col-sm-6"> <input type="number" class="form-control esMoneda" id="txtPrecioMayor" val="0.00"> </div>
+					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioMayor" val="0.00"> </div>
 				</div>
 				<div class="form-group row">
 					<label for="txtPrecioDescuento" class="col-sm-4 col-form-label">Precio Mínimo:</label>
-					<div class="col-sm-6"> <input type="number" class="form-control esMoneda" id="txtPrecioDescuento" val="0.00"> </div>
+					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioDescuento" val="0.00"> </div>
 				</div>
 				<div class="form-group row">
-					<label for="txtPrecioDescuento" class="col-sm-4 col-form-label">Impuesto:</label>
+					<label for="sltFiltroGravado" class="col-sm-4 col-form-label">Impuesto:</label>
 					<div class="col-sm-6">
 						<select class="selectpicker" data-live-search="false" id="sltFiltroGravado" title="&#xed12; Imposición">
 							<option value="1">Afecto</option>
 							<option value="2">Exonerado</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="sltFiltroUnidades" class="col-sm-4 col-form-label">Und. Medida:</label>
+					<div class="col-sm-6">
+						<select class="selectpicker" data-live-search="false" id="sltFiltroUnidades" title="&#xed12; Unidades">
+							<?php include "php/listarUnidadesOPT.php"; ?>
 						</select>
 					</div>
 				</div>
@@ -176,9 +184,30 @@ $(document).ready(function(){
 
 $('table').on('click', '.btnEditProducto', function (e) {
 	var padre=$(this).parent().parent();
-	$('#spanNomProducto').text( padre.find('.tdProdNombre').text() );
-	(padre.find('.tdGrabado').attr('data-value'));
+
+	$('#spanNomProducto').text( padre.find('.tdProdNombre').text());
+
+	$('#txtPrecioPublico').val( parseFloat(padre.find('.tdPublico').attr('data-value')).toFixed(2) );
+	$('#txtPrecioMayor').val( parseFloat(padre.find('.tdMayor').attr('data-value')).toFixed(2) );
+	$('#txtPrecioDescuento').val( parseFloat(padre.find('.tdDescuento').attr('data-value')).toFixed(2) );
+
+
+	$('#sltFiltroGravado').selectpicker('val',padre.find('.tdGrabado').attr('data-value'));
+	$('#sltFiltroUnidades').selectpicker('val',padre.attr('data-und'));
 	$('#modalEditarProducto').modal('show');
+
+	// var queProd= $(this).selectpicker('val');
+	// 	$.each( $.precios , function(i, prodObj){
+	// 		if(prodObj.idProductos==queProd){
+	// 			//console.log(  prodObj.prodPrecio );
+	// 			//padre.find('.sltFiltroUnidad').selectpicker('val', '3')
+	// 			padre.find('.sltFiltroUnidad #sltfiltroTemporal').selectpicker('val', prodObj.undSunat ).selectpicker('refresh');;
+	// 			padre.find('.campoPrecioUnit').val(parseFloat(prodObj.prodPrecio).toFixed(2));
+	// 			padre.find('.campoSubTotal').val(parseFloat(prodObj.prodPrecio).toFixed(2));
+	// 			padre.find('.campoCantidad').val(1).focus();
+
+	// 		}
+	// 	});
 });
 
 /* $('#btnEmitirBoleta').click(function() {
