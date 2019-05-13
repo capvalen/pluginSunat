@@ -70,3 +70,6 @@ $('#btnGuardarPersona').click(function() {
 $('#btnModificarUsuarios').click(function() {
 	$('#modalListadoPersonal').modal('show');
 });
+$('#modalGuardadoExitoso').on('hidden.bs.modal', function () { 
+	location.reload();
+});

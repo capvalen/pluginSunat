@@ -4,7 +4,8 @@ include "conexion.php";
 
 $sql="SELECT p.*, case `prodActivo` when 1 then 'Activo' else 'Inactivo'end as estActivo, g.gravDescripcion, u.undDescipcion, u.undSunat  FROM `productos` p
 inner join gravados g on p.idGravado = g.idGravado
-inner join unidades u on u.idUnidad = p.idUnidad;"; // WHERE `prodActivo`=1
+inner join unidades u on u.idUnidad = p.idUnidad
+order by p.prodDescripcion asc;"; // WHERE `prodActivo`=1
 
 $resultado=$cadena->query($sql);
 $numero = $resultado ->num_rows;
@@ -28,7 +29,6 @@ while($row=$resultado->fetch_assoc()){
 					<td><?= $row['estActivo']; ?></td>
 					<td>
 						<button class="btn btn-outline-primary btn-sm border border-light btnEditProducto" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editar Producto"><i class="icofont-flag"></i></button>
-						<button class="btn btn-outline-success btn-sm border border-light btnPreciosProducto" data-toggle="tooltip" data-placement="top" title="" data-original-title="Cambiar Precio"><i class="icofont-list"></i></button>
 						<button class="btn btn-outline-dark btn-sm border border-light btnStockProducto" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modificar Stock"><i class="icofont-magic"></i></button>
 					</td>
 				</tr>

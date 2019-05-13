@@ -58,8 +58,8 @@ try {
     $printer -> setEmphasis(false);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
-    $printer -> text("Fecha de emisión: ".date('d/m/Y')."\n");
-    $printer -> text("Doc. Ident.: {$_POST['docClient']}\n");
+    $printer -> text("Fecha de emisión: ". $_POST['fechaLat'] ."\n");
+    $printer -> text("Doc. Identidad: {$_POST['docClient']}\n");
     $printer -> text("Señor(es): ".strtoupper($_POST['cliente'])."\n");
     if($_POST['direccion']==''){
         $printer -> text("Dirección: ---\n");
@@ -71,6 +71,7 @@ try {
 	$printer -> text("DESCRIPCION  | CANT |  P.UNIT.  |  SUBTOTAL  |\n");
     $printer -> text("{$todoProd}\n");
     $printer -> text("--------------------------------\n");
+    $printer -> text("Exonerado: S/ {$_POST['exonerado']} \n");
     $printer -> text("Sub Total: S/ {$_POST['costoFinal']} \n");
     $printer -> text("IGV (18%): S/ {$_POST['igvFinal']} \n");
     $printer -> text("Total: S/ {$_POST['totalFinal']} \n");

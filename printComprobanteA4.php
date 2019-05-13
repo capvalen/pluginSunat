@@ -199,21 +199,21 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 <div class="col-6">
 <div class="row">
 	<div class="col text-right">
-		<p>Descuento</p>
+		<p class="d-none">Descuento</p>
 		<p>Op. Grabada</p>
 		<p>I.G.V.</p>
 		<p>Op. Gratuita</p>
 		<p>Op. Exhonerada</p>
-		<p>Op. Inafecta</p>
+		<p class="d-none">Op. Inafecta</p>
 		<h5 class="border-top pt-2 bordeAlgo">Importe Total</h5>
 	</div>
 	<div class="col">
-		<p><?= number_format($rowC['sumDescTotal'],2);?></p>
+		<p class="d-none"><?= number_format($rowC['sumDescTotal'],2);?></p>
 		<p><?= number_format($rowC['costoFinal'],2);?></p>
 		<p><?= number_format($rowC['IGVFinal'],2);?></p>
 		<p>0.00</p>
-		<p>0.00</p>
-		<p>0.00</p>
+		<p><?= number_format($rowC['factExonerados'],2);?></p>
+		<p class="d-none">0.00</p>
 		<h5 class="border-top pt-2 bordeAlgo"><?= number_format($rowC['totalFinal'],2);?></h5>
 	</div>
 </div>

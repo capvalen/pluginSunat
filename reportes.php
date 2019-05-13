@@ -16,6 +16,7 @@ include "generales.php"; ?>
 	<link rel="stylesheet" href="css/anksunamun.css">
 	<link rel="stylesheet" href="css/bootstrap-datepicker.min.css">
 	<link rel="stylesheet" href="css/tableexport.min.css">
+	<link rel="shortcut icon" href="images/VirtualCorto.png" type="image/png">
 
 
 </head>
@@ -43,7 +44,7 @@ input[type=number] {
 thead tr th{cursor: pointer;}
 .dropdown-item .text, .bootstrap-select button{text-transform: capitalize;}
 </style>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark pl-5">
 	<a class="navbar-brand" href="#">
     <img src="images/VirtualCorto.png" width="60" height="60" alt="">
   </a>
@@ -65,8 +66,8 @@ thead tr th{cursor: pointer;}
   </div>
 </nav>
 
-<section>
-	<div class="container-fluid mt-5 px-5">
+<section class="mt-5 pt-5">
+	<div class="container-fluid  px-5">
 		<div class="row">
 		<div class="col-3">
 			<img src="bitmap.jpg?version=1.0.3" class='img-fluid mt-3'>
@@ -88,7 +89,7 @@ thead tr th{cursor: pointer;}
 			<div class="col">
 				<select class="selectpicker" data-live-search="false" id="sltFiltroReporte" title="&#xed12; Tipo de reporte">
 					<option value="0">Resumido</option>
-					<option value="1">Detallado</option>
+					<!-- <option value="1">Detallado</option> -->
 				</select>
 				<button class="btn btn-outline-primary ml-3" id="btnBuscarReporte"><i class="icofont-search-2"></i></button>
 				<button class="btn btn-outline-success ml-3 d-none" id="btnGuardarReporte"><i class="icofont-file-excel"></i> Guardar reporte</button>

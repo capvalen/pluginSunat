@@ -12,7 +12,7 @@ $resultadoUnd=$esclavo->query($sqlUnd);
 
 <div class="row mb-1 cardHijoProducto" data-producto="1">
 
-	<div class="col-5 divNombProducto d-flex">
+	<div class="col-4 divNombProducto d-flex">
 		<span class="pr-2 pt-1 borrarFila" style="color: #ff0202; cursor:pointer"><i class="icofont-close"></i></span>
 		<select class="selectpicker sltFiltroProductos flex-grow-1" id="sltTemporal" data-live-search="true" title="&#xed12; Concepto" data-width="100%">
 		<?php 
@@ -26,7 +26,7 @@ $resultadoUnd=$esclavo->query($sqlUnd);
 		<input type="text" class="d-none form-control campoTextoLibre text-capitalize" value="" placeholder='Concepto de venta' >
 	</div>
 	<div class="col-1 p-0"><input type="number" class="form-control text-center esMoneda campoCantidad" value="0" step="0.5" min="0"></div>
-	<div class="col-2 divUnidadProducto d-none">
+	<div class="col-1 p-0 divUnidadProducto ">
 		<select class="selectpicker sltFiltroUnidad" id="sltfiltroTemporal" data-live-search="true" title="&#xed12; Unds." data-width="100%">
 			<?php 
 			while($rowUnd=$resultadoUnd->fetch_assoc()){  ?>
@@ -36,6 +36,20 @@ $resultadoUnd=$esclavo->query($sqlUnd);
 			?>
 			</select>
 	</div>
-	<div class="col-2"><input type="number" class="form-control text-center esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0" value="0.00"></div>
-	<div class="col-2"><input type="number" class="form-control text-center esMoneda campoSubTotal" readonly id="txtCampoPrecioPetroleo" value="0.00"></div>
+	<div class="col-2">
+		<select class="selectpicker" data-live-search="false" id="sltFiltroGravado" title="&#xed12; Imposición" data-width="100%" disabled>
+			<option value="1">Afecto</option>
+			<option value="2">Exonerado</option>
+		</select>
+	</div>
+	<div class="col-2">
+		<select class="selectpicker sltFiltroPrecios" data-live-search="false" id="sltFiltroPrecios" title="&#xed12; Precios" data-width="100%" >
+			<option class="optPrecios" value="0">Libre</option>
+			<option class="optPrecios" value="1">Público</option>
+			<option class="optPrecios" value="2">Mayorista</option>
+			<option class="optPrecios" value="3">Descuento</option>
+		</select>
+	</div>
+	<div class="col-2"><input type="number" class="form-control text-center esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0" value="0.00" ></div>
+	<div class="col-2 d-none"><input type="number" class="form-control text-center esMoneda campoSubTotal" readonly id="txtCampoPrecioPetroleo" value="0.00" data-Exonerado="1"></div>
 </div>

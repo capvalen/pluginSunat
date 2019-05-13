@@ -15,6 +15,8 @@ include "generales.php"; ?>
 	<link rel="stylesheet" href="css/bootstrap-select.min.css">
 	<link rel="stylesheet" href="css/anksunamun.css">
 	<link rel="shortcut icon" href="images/VirtualCorto.png" type="image/png">
+	<link rel="stylesheet" href="css/colorsmaterial.css">
+
 
 </head>
 <body>
@@ -76,7 +78,7 @@ thead tr th{cursor: pointer;}
 			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 		</div></div>
 		<div class="d-flex justify-content-end">
-			<button class="btn btn-outline-primary "><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button>
+			<button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button>
 		</div>
 		
 
@@ -103,6 +105,59 @@ thead tr th{cursor: pointer;}
 
 
 
+<!-- Modal para un nuevo producto -->
+<div class="modal fade" id="modalNuevoProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >Nuevo Producto <span class="text-capitalize" ></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+				<div class="form-group row">
+					<label for="txtPrecioNuevo" class="col-sm-4 col-form-label"><span class="text-danger">*</span> Descripción:</label>
+					<div class="col-sm-8"> <input type="text" class="form-control text-capitalize" id="txtDescripcionNuevo" > </div>
+				</div>
+				<div class="form-group row">
+					<label for="txtPrecioNuevo" class="col-sm-4 col-form-label"><span class="text-danger">*</span> Precio al Público:</label>
+					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioNuevo" value="0.00"> </div>
+				</div>
+				<div class="form-group row">
+					<label for="txtPrecioMayorNuevo" class="col-sm-4 col-form-label">Precio al Mayor:</label>
+					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioMayorNuevo" value="0.00"> </div>
+				</div>
+				<div class="form-group row">
+					<label for="txtPrecioDescuentoNuevo" class="col-sm-4 col-form-label">Precio Mínimo:</label>
+					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioDescuentoNuevo" value="0.00"> </div>
+				</div>
+				<div class="form-group row">
+					<label for="sltFiltroGravadoNuevo" class="col-sm-4 col-form-label"><span class="text-danger">*</span> Impuesto:</label>
+					<div class="col-sm-6">
+						<select class="selectpicker" data-live-search="false" id="sltFiltroGravadoNuevo" title="&#xed12; Imposición">
+							<option value="1">Afecto</option>
+							<option value="2">Exonerado</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="sltFiltroUnidadesNuevo" class="col-sm-4 col-form-label"><span class="text-danger">*</span> Und. Medida:</label>
+					<div class="col-sm-6">
+						<select class="selectpicker" data-live-search="false" id="sltFiltroUnidadesNuevo" title="&#xed12; Unidades">
+							<?php include "php/listarUnidadesOPT.php"; ?>
+						</select>
+					</div>
+				</div>
+      </div>
+      <div class="modal-footer d-flex flex-column">
+				<label class="text-danger	d-none" for=""></label>
+        <button type="button" class="btn btn-outline-success" id="btnNuevoProduct"><i class="icofont-ui-add"></i> Crear nuevo producto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal para editar producto -->
 <div class="modal fade" id="modalEditarProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -114,6 +169,10 @@ thead tr th{cursor: pointer;}
         </button>
       </div>
       <div class="modal-body">
+				<div class="form-group row">
+					<label for="txtPrecioPublico" class="col-sm-4 col-form-label">Descripción:</label>
+					<div class="col-sm-8"> <input type="text" class="form-control text-capitalize" id="txtDescripcionPub" > </div>
+				</div>
 				<div class="form-group row">
 					<label for="txtPrecioPublico" class="col-sm-4 col-form-label">Precio al Público:</label>
 					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioPublico" val="0.00"> </div>
@@ -145,7 +204,7 @@ thead tr th{cursor: pointer;}
 				</div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-success"><i class="icofont-refresh"></i> Actualizar</button>
+        <button type="button" class="btn btn-outline-success" id="btnUpdateProduct"><i class="icofont-refresh"></i> Actualizar datos</button>
       </div>
     </div>
   </div>
@@ -153,6 +212,7 @@ thead tr th{cursor: pointer;}
 
 
 
+<?php include 'php/modals.php'; ?>
 
 
 
@@ -162,7 +222,7 @@ thead tr th{cursor: pointer;}
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.4"></script>
+<script src="js/impotem.js?version=1.0.8"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
@@ -171,13 +231,13 @@ thead tr th{cursor: pointer;}
 $(document).ready(function(){
 	$('.selectpicker').selectpicker('render');
 	$('.selectpicker').selectpicker('val', -1);
-	$('table').stupidtable();
+	//$('table').stupidtable();
 	/* $.ajax({url: 'php/getPreciosProductos.php', type: 'POST' }).done(function(resp) {
 		//console.log(resp)
 		$.precios = JSON.parse(resp);
 		console.log( $.precios );
 	}); */
-	
+	//$("table").stupidtable();
 	$('[data-toggle="tooltip"]').tooltip();
 
 });
@@ -186,6 +246,7 @@ $('table').on('click', '.btnEditProducto', function (e) {
 	var padre=$(this).parent().parent();
 
 	$('#spanNomProducto').text( padre.find('.tdProdNombre').text());
+	$('#txtDescripcionPub').val(padre.find('.tdProdNombre').text());
 
 	$('#txtPrecioPublico').val( parseFloat(padre.find('.tdPublico').attr('data-value')).toFixed(2) );
 	$('#txtPrecioMayor').val( parseFloat(padre.find('.tdMayor').attr('data-value')).toFixed(2) );
@@ -194,6 +255,7 @@ $('table').on('click', '.btnEditProducto', function (e) {
 
 	$('#sltFiltroGravado').selectpicker('val',padre.find('.tdGrabado').attr('data-value'));
 	$('#sltFiltroUnidades').selectpicker('val',padre.attr('data-und'));
+	$('#btnUpdateProduct').attr('data-id', padre.attr('data-id'));
 	$('#modalEditarProducto').modal('show');
 
 	// var queProd= $(this).selectpicker('val');
@@ -209,7 +271,27 @@ $('table').on('click', '.btnEditProducto', function (e) {
 	// 		}
 	// 	});
 });
+$('#btnUpdateProduct').click(function() {
+	//console.log( $('#sltFiltroUnidades').selectpicker('val') );
+	var pPublico=0, pMayor=0, pDescuento=0;
+	if( $('#txtPrecioPublico').val()!='' ){ pPublico=$('#txtPrecioPublico').val(); }
+	if( $('#txtPrecioMayor').val()!='' ){ pMayor=$('#txtPrecioMayor').val(); }
+	if( $('#txtPrecioDescuento').val()!='' ){ pDescuento=$('#txtPrecioDescuento').val(); }
 
+	$.ajax({url: 'php/updateProducto.php', type: 'POST', data: { idProd: $('#btnUpdateProduct').attr('data-id'), pNombre: $('#txtDescripcionPub').val(), pPublico: pPublico, pMayor: pMayor, pDescuento: pDescuento, pImpuesto: $('#sltFiltroGravado').selectpicker('val'), pUnidad: $('#sltFiltroUnidades').selectpicker('val') }}).done(function(resp) {
+		if(resp=='ok'){
+			$('#h5Detalle').text('Producto Actualizado');
+			$('#modalEditarProducto').modal('hide');
+			$('#modalGuardadoExitoso').modal('show');
+		}
+	});
+});
+$('#modalNuevoProducto').on('shown.bs.modal', function () { 
+	$('#txtDescripcionNuevo').focus();
+});
+$('#btnAgregarProducto').click(function() {
+	$('#modalNuevoProducto').modal('show');
+});
 /* $('#btnEmitirBoleta').click(function() {
 	$.ajax({url: 'emision.php', type: 'POST', data: { emitir: 3, factura: $('#txtCodigoFact').val() }}).done(function(resp) {
 		console.log(resp)
@@ -218,7 +300,15 @@ $('table').on('click', '.btnEditProducto', function (e) {
 		}
 	});
 }); */
+$('#btnNuevoProduct').click(function() {
+	if( $('#txtDescripcionNuevo').val()=='' || $('#txtPrecioNuevo').val()=='' || $('#sltFiltroGravadoNuevo').selectpicker('val')==null || $('#sltFiltroUnidadesNuevo').val()==null  ){
+		$('#modalNuevoProducto .text-danger').removeClass('d-none').html('<i class="icofont-cat-alt-3"></i> Debe rellenar todos los campos olbigatorios');
+	}else{
+		
+	}
+	
 
+});
 
 </script>
 <!-- BEGIN JIVOSITE CODE {literal} -->

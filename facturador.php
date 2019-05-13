@@ -14,6 +14,7 @@ include "generales.php"; ?>
 	<link rel="stylesheet" href="icofont.min.css">
 	<link rel="stylesheet" href="css/bootstrap-select.min.css">
 	<link rel="stylesheet" href="css/anksunamun.css">
+	<link rel="shortcut icon" href="images/VirtualCorto.png" type="image/png">
 
 </head>
 <body>
@@ -145,8 +146,8 @@ thead tr th{cursor: pointer;}
 					<td>Emitido</td>
 					<td>
 						<button class="btn btn-outline-primary btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
-						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprmir ticket"><i class="icofont-paper"></i></button>
-						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprmir A4"><i class="icofont-print"></i></button>
+						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
+						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
 					</td>
 				</tr>
 			</tbody>
@@ -243,26 +244,14 @@ thead tr th{cursor: pointer;}
 					<div class="card-body">
 						<p class="text-muted d-none mb-0"><strong>Detalle:</strong></p>
 						<div class="row">
-							<div class="col-5"><strong>Concepto</strong></div>
+							<div class="col-4"><strong>Concepto</strong></div>
 							<div class="col-1"><strong>Cant.</strong></div>
-							<div class="col-2 d-none"><strong>Und</strong></div>
+							<div class="col-1"><strong>Und</strong></div>
+							<div class="col-2"><strong>Gravado.</strong></div>
+							<div class="col-2"><strong>Precio</strong></div>
 							<div class="col-2"><strong>Precio Unit.</strong></div>
-							<div class="col-2"><strong>Sub-Total</strong></div>
+							<div class="col-2 d-none"><strong>Sub-Total</strong></div>
 						</div>
-						<!-- <div class="row mb-1 cardHijoProducto" data-producto="2">
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
-							<div class="col-1">Galón</div>
-							<div class="col-5 divNombProducto">Gasohol 90 Plus</div>
-							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioGasolina" step='0.1' min="0"></div>
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioGasolina" value="0.00"></div>
-						</div>
-						<div class="row mb-1 cardHijoProducto" data-producto="1">
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esGalon campoCantidad" value="0.00" step="0.5" min="0"></div>
-							<div class="col-1">Galón</div>
-							<div class="col-5 divNombProducto">Diesel D5 S-50 UV</div>
-							<div class="col-2"><input type="number" class="form-control esMoneda campoPrecioUnit" id="txtPrecioPetroleo" step='0.1' min="0"></div>
-							<div class="col-2"><input type="number" class="form-control form-control-sm text-center esMoneda campoSubTotal" id="txtCampoPrecioPetroleo" value="0.00"></div>
-						</div> -->
 						<div id="divProductos">
 							<?php include "php/filaNueva.php";?>
 						</div>
@@ -271,6 +260,7 @@ thead tr th{cursor: pointer;}
 				</div>
 				<div class='mt-2 pr-5'>
 					<div class="d-flex justify-content-around" id="divCalculosFinales"> <!-- align-items-end flex-column -->
+						<span><span>Exonerado:</span> <span>S/ <span id="spExoneradoBoleta">0.00</span></span></span>
 						<span><span>Sub-Total:</span> <span>S/ <span id="spSubTotBoleta">0.00</span></span></span>
 						<span><span>IGV:</span> <span>S/ <span id="spIgvBoleta">0.00</span></span></span>
 						<span><span>Total:</span> <span>S/ <span id="spTotalBoleta">0.00</span></span></span>
@@ -456,7 +446,7 @@ thead tr th{cursor: pointer;}
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.7"></script>
+<script src="js/impotem.js?version=1.0.8"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
@@ -545,6 +535,7 @@ $('#btnConsultarDisponibilidad2').click(function() {
 				});
 				$('#modalConsultaTicket').modal('hide');
 				$('#modalArchivoBien').modal('show');
+				
 			}else if(resp =='sin coincidencia'){
 				$('#modalConsultaTicket .lblError').text('Datos errados, no coinciden con ningún local y ticket.');
 			}else{
@@ -581,6 +572,9 @@ $('#btnEmitirBoleta').click(function() {
 		//if(resp=='fin'){	} 
 	});
 });
+$('#modalArchivoBien').on('hidden.bs.modal', function () { 
+	location.reload();
+});
 $('tbody').on('click', '.imprTicketFuera', function (e) {
 	var padre= $(this).parent()
 
@@ -600,6 +594,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 			correlativo: $.jTicket[0].correlativo,
 			tipoCliente: $.jTicket[0].tipoCliente,
 			fecha: $.jTicket[0].fechaEmision,
+			fechaLat: moment($.jTicket[0].fechaEmision, 'YYYY-MM-DD').format('DD/MM/YYYY'),
 			cliente: $.jTicket[0].razonSocial,
 			docClient: $.jTicket[0].ruc,
 			monedas: $.jTicket[0].letras,
@@ -609,6 +604,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 			totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
 			productos: $.jTicket[1],
 			direccion:$.jTicket[0].direccion,
+			exonerado: parseFloat($.jTicket[0].exonerado).toFixed(2),
 			/* placa: $.jTicket[0].placa, */
 		}}).done(function(resp) {
 			console.log(resp)
@@ -625,6 +621,7 @@ $('#btnPrintTicketera').click(function() {
 				correlativo: $.jTicket[0].correlativo,
 				tipoCliente: $.jTicket[0].tipoCliente,
 				fecha: $.jTicket[0].fechaEmision,
+				fechaLat: moment($.jTicket[0].fechaEmision, 'YYYY-MM-DD').format('DD/MM/YYYY'),
 				cliente: $.jTicket[0].razonSocial,
 				docClient: $.jTicket[0].ruc,
 				monedas: $.jTicket[0].letras,
@@ -634,6 +631,7 @@ $('#btnPrintTicketera').click(function() {
 				totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
 				productos: $.jTicket[1],
 				direccion:$.jTicket[0].direccion,
+				exonerado: parseFloat($.jTicket[0].exonerado).toFixed(2),
 				/* placa: $.jTicket[0].placa, */
 			}}).done(function(resp) {
 				console.log(resp)
@@ -779,17 +777,23 @@ $('#divProductos').on('keyup','.campoPrecioUnit', function() {
 	sumaTodo();
 });
 function sumaTodo() {
-	var sumaTotal = 0;
+	var sumaTotal=0, afectos = 0, exonerados = 0;
+	
 	$.each( $('.campoSubTotal'), function(i, elem){
-		//console.log( $(elem).val() );
 		if( $(elem).val()!='' ){
-			sumaTotal+=parseFloat($(elem).val());
+			if( $(elem).attr('data-exonerado')=='1' ){
+				afectos+=parseFloat($(elem).val());
+			}else{
+				exonerados+=parseFloat($(elem).val());
+			}
 		}
 		
 	});
 	//console.log( sumaTotal );
-	var costo = sumaTotal/1.18;
-	var igv=sumaTotal-costo;
+	sumaTotal=afectos+exonerados;
+	var costo = afectos/1.18;
+	var igv=afectos-costo;
+	$('#spExoneradoBoleta').text(parseFloat(exonerados).toFixed(2));
 	$('#spSubTotBoleta').text(parseFloat(costo).toFixed(2));
 	$('#spIgvBoleta').text(parseFloat(igv).toFixed(2));
 	$('#spTotalBoleta').text(parseFloat(sumaTotal).toFixed(2));
@@ -835,7 +839,8 @@ $('#btnEmitirBoletav2').click(function() {
 					unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
 					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
 					unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
-					subtotal: $(elem).find('.campoSubTotal').val()
+					subtotal: $(elem).find('.campoSubTotal').val(),
+					afecto: $(elem).find('#sltFiltroGravado').selectpicker('val')
 				});
 			}
 			
@@ -899,7 +904,8 @@ $('#btnEmitirFacturav2').click(function() {
 					unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
 					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
 					unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
-					subtotal: $(elem).find('.campoSubTotal').val()
+					subtotal: $(elem).find('.campoSubTotal').val(),
+					afecto: $(elem).find('#sltFiltroGravado').selectpicker('val')
 				});
 		}
 		});
@@ -976,22 +982,29 @@ $('#btnAgregarProducto').click(function() {
 $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, clickedIndex, isSelected, previousValue) {
 	var padre = $(this).parent().parent().parent();
 	//console.log( padre.html() );
+	
 	if( $(this).selectpicker('val')!=null ){
 		var queProd= $(this).selectpicker('val');
 		$.each( $.precios , function(i, prodObj){
 			if(prodObj.idProductos==queProd){
 				//console.log(  prodObj.prodPrecio );
 				//padre.find('.sltFiltroUnidad').selectpicker('val', '3')
+				padre.attr('data-producto', prodObj.idProductos );
 				padre.find('.sltFiltroUnidad #sltfiltroTemporal').selectpicker('val', prodObj.undSunat ).selectpicker('refresh');;
+				padre.find('#sltFiltroGravado').selectpicker('val', prodObj.idGravado ).selectpicker('refresh');;
 				padre.find('.campoPrecioUnit').val(parseFloat(prodObj.prodPrecio).toFixed(2));
-				padre.find('.campoSubTotal').val(parseFloat(prodObj.prodPrecio).toFixed(2));
+				padre.find('.campoSubTotal').val(parseFloat(prodObj.prodPrecio).toFixed(2)).attr('data-exonerado', padre.find('#sltFiltroGravado').selectpicker('val'));
 				padre.find('.campoCantidad').val(1).focus();
 
 			}
 		});
+		padre.find('.sltFiltroPrecios').selectpicker('val', '1');
+		padre.find('.campoPrecioUnit').prop('readonly',true);
 
-		if($(this).selectpicker('val')==52){ //codigo de la posición libre
-			padre.find('.bootstrap-select').addClass('d-none');
+		if($(this).selectpicker('val')==0){ //codigo de la posición libre -> Antes #52
+			padre.find('#sltFiltroGravado').prop('disabled', false).selectpicker('refresh');
+			
+			padre.find('.sltFiltroProductos').addClass('d-none');
 			padre.find('.campoTextoLibre').removeClass('d-none').focus();
 		}
 		sumaTodo()
@@ -999,6 +1012,8 @@ $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, c
 });
 $('#divProductos').on('click', '.borrarFila', function (e) {
 	var padre=$(this).parent().parent();
+	padre.find('.campoPrecioUnit').prop('readonly',true);
+	padre.find('#sltFiltroGravado').prop('disabled', true).selectpicker('refresh');
 	if($('.cardHijoProducto').length>1){
 		padre.remove();
 	}else{
@@ -1008,7 +1023,40 @@ $('#divProductos').on('click', '.borrarFila', function (e) {
 		padre.find('.campoSubTotal').val('0.00');
 		padre.find('.bootstrap-select').removeClass('d-none');
 		padre.find('.campoTextoLibre').addClass('d-none');
+	}
+	sumaTodo();
+});
 
+$('#divProductos').on('click', '.optPrecios', function (e) {
+	var padre = $(this).parent().parent().parent().parent().parent().parent().parent();
+	padre.find('.campoPrecioUnit').prop('readonly',true);
+	
+	switch ( padre.find('#sltFiltroPrecios').selectpicker('val')) {
+		case "0":
+			padre.find('.campoPrecioUnit').prop('readonly',false).focus().val('0.00');
+		case "1":
+			$.each( $.precios , function(i, prodObj){
+				if(prodObj.idProductos == padre.attr('data-producto') ){
+					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecio).toFixed(2) ); return false;
+				}
+			});
+			break;
+		case "2":
+			$.each( $.precios , function(i, prodObj){
+				if(prodObj.idProductos == padre.attr('data-producto') ){
+					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecioMayor).toFixed(2) ); return false;
+				}
+			});
+			break;
+		case "3":
+			$.each( $.precios , function(i, prodObj){
+				if(prodObj.idProductos == padre.attr('data-producto') ){
+					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecioDescto).toFixed(2) ); return false;
+				}
+			});
+			break;
+		default:
+			break;
 	}
 });
 <?php if($_COOKIE['ckPower']==1){?>

@@ -26,13 +26,18 @@ $serie = $_POST['queSerie'];
 
 
 $productos= $_POST['jsonProductos'];
+$afectos=0; $exonerados=0;
 $sumaTotal =0;
 for ($i=0; $i < count($productos) ; $i++) { 
-	$sumaTotal = $sumaTotal + ( $productos[$i]['cantidad']*$productos[$i]['precioProducto'] );
+	if( $productos[$i]['afecto']=='1' ){
+		$afectos = $afectos + ( $productos[$i]['cantidad']*$productos[$i]['precioProducto'] );
+	}else{
+		$exonerados= $exonerados + ( $productos[$i]['cantidad']*$productos[$i]['precioProducto'] );
+	}
 }
-$sumaTotal = round($sumaTotal,2);
-$baseTotal = round($sumaTotal/1.18,2);
-$igvTotal = round($sumaTotal-$baseTotal,2);
+$sumaTotal = round($afectos+$exonerados,2);
+$baseTotal = round($afectos/1.18,2);
+$igvTotal = round($afectos-$baseTotal,2);
 
 
 $parteEntera = intval($sumaTotal);
@@ -69,29 +74,43 @@ if(strlen($_POST['dniRUC'])==11){
 
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
- `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
+ `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
   `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`) 
 VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',curdate(),curtime(),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
-	{$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
+	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
 	1,now(), '{$_POST['cliDireccion']}', '' )";
 $resultado=$cadena->query($sql);
 
-$sqlProd  ='';
+$sqlProd  =''; 
 for ($i=0; $i < count($productos) ; $i++) { 
 	if( $productos[$i]['subtotal']<>0){
 		$canti = $productos[$i]['cantidad'];
 		$prec = $productos[$i]['precioProducto'];
-		$subTo = round($canti*$prec,2);
-		$costoUnit = round($prec/1.18,2);
-		$igvUnit= round($prec-$costoUnit,2);
-		$valorUnit = round($costoUnit*$canti,2);
-		$igvCant=round($igvUnit*$canti,2);
+		if( $productos[$i]['afecto']=='1'  ){
+			$subTo = round($canti*$prec,2);
+			$costoUnit = round($prec/1.18,2);
+			$igvUnit= round($prec-$costoUnit,2);
+			$valorUnit = round($costoUnit*$canti,2);
+			$igvCant=round($igvUnit*$canti,2);
+			$exonerado=0;
+			$codigoIGV='1000'; $nomTributo ='IGV'; $tipAfecto=10;
+		}else{
+			$exonerado = round($prec,2);
+			$subTo = $exonerado;
+			$costoUnit = $exonerado;
+			$igvUnit= 0;
+			$valorUnit = round($costoUnit*$canti,2);
+			$igvCant= 0;
+			$codigoIGV='9997'; $nomTributo ='EXO'; $tipAfecto=20;
+		}
+		
 		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
-		`valorUnitario`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `fechaEmision`) VALUES
+		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`) VALUES
 		 (null,  concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['descripcionProducto']}',
-		 {$costoUnit}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, now());";
+		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']});";
 		 $cadena->query($sqlProd);
+		// echo $sqlProd;
 	}
 }
 
@@ -104,7 +123,7 @@ if($filasCabeza==1){
 	$rowC=$resultadoCabeza->fetch_assoc();
 
 	$descuento = $rowC['sumDescTotal'];
-	$costo= str_replace (',', '',number_format($rowC['costoFinal'],2));
+	$costo= str_replace (',', '',number_format($rowC['costoFinal'] ,2));
 	$igvFin = str_replace (',', '',number_format($rowC['IGVFinal'],2));
 	$totFin = str_replace (',', '',number_format($rowC['totalFinal'],2));
 	
@@ -130,9 +149,15 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 	$valorFin = str_replace (',', '',number_format($rowD['valorUnitario'],2));
 	$igvSubFin = str_replace (',', '',number_format($rowD['igvUnitario'],2));
 	$valorSubFin = str_replace (',', '',number_format($rowD['valorItem'],2));
-	$precProducto = number_format($rowD['valorUnitario']+$rowD['igvUnitario'],2);
+	$precProducto = round($rowD['valorUnitario']+$rowD['igvUnitario'],2);
 
-	$lineaDetalle =  $lineaDetalle . $unidad.$separador.$rowD['cantidadItem']. $separador.$i.$separador. $rowD['codProductoSUNAT'].$separador.$rowD['descripcionItem'].$separador. $valorFin.$separador.  round($igvSubFin*$rowD['cantidadItem'],2) .$separador. $rowD['codTriIGV'] .$separador. $rowD['mtoIgvItem'].$separador. $valorSubFin.$separador. $rowD['nomTributoIgvItem'].$separador. $rowD['codTipTributoIgvItem'] .$separador.$rowD['tipAfeIGV']. $separador. $rowD['porIgvItem'] .$separador. $rowD['codTriISC'] . $separador. $rowD['mtoIscItem'] . $separador. $rowD['mtoBaseIscItem'] . $separador. $rowD['nomTributoIscItem'] .$separador . $rowD['codTipTributoIscItem'] .$separador . $rowD['tipSisISC'] .$separador. $rowD['porIscItem']. $separador. $rowD['codTriOtroItem']. $separador. $tributoOtro .$separador. $tributoOtroItem .$separador.$baseOtroItem .$separador.$rowD['codTipTributoIOtroItem'] . $separador. $rowD['porTriOtroItem'] .$separador. round($rowD['mtoPrecioVenta']/$rowD['cantidadItem'],2) . $separador. $rowD['mtoValorVenta']. $separador. $rowD['mtoValorReferencialUnitario']. $separador."\n";
+	if( $rowD['idGravado']=='1' ){
+		$lineaDetalle =  $lineaDetalle . $unidad.$separador.$rowD['cantidadItem']. $separador.$i.$separador. $rowD['codProductoSUNAT'].$separador.$rowD['descripcionItem'].$separador. $valorFin. $separador. round($igvSubFin*$rowD['cantidadItem'],2) .$separador. $rowD['codTriIGV'] .$separador. $rowD['mtoIgvItem'].$separador. $valorSubFin.$separador. $rowD['nomTributoIgvItem'].$separador. $rowD['codTipTributoIgvItem'] .$separador.$rowD['tipAfeIGV']. $separador. $rowD['porIgvItem'] .$separador. $rowD['codTriISC'] . $separador. $rowD['mtoIscItem'] . $separador. $rowD['mtoBaseIscItem'] . $separador. $rowD['nomTributoIscItem'] .$separador . $rowD['codTipTributoIscItem'] .$separador . $rowD['tipSisISC'] .$separador. $rowD['porIscItem']. $separador. $rowD['codTriOtroItem']. $separador. $tributoOtro .$separador. $tributoOtroItem .$separador.$baseOtroItem .$separador.$rowD['codTipTributoIOtroItem'] . $separador. $rowD['porTriOtroItem'] .$separador. round($rowD['mtoPrecioVenta']/$rowD['cantidadItem'],2) . $separador. $rowD['mtoValorVenta']. $separador. $rowD['mtoValorReferencialUnitario']. $separador."\n";
+	}else{
+		$lineaDetalle =  $lineaDetalle . $unidad.$separador.$rowD['cantidadItem']. $separador.$i.$separador. $rowD['codProductoSUNAT'].$separador.$rowD['descripcionItem'].$separador. $valorFin. $separador. "0.00" .$separador. $rowD['codTriIGV'] .$separador. $rowD['mtoIgvItem'].$separador. "0.00" .$separador. $rowD['nomTributoIgvItem'].$separador. $rowD['codTipTributoIgvItem'] .$separador.$rowD['tipAfeIGV']. $separador. $rowD['porIgvItem'] .$separador. $rowD['codTriISC'] . $separador. $rowD['mtoIscItem'] . $separador. $rowD['mtoBaseIscItem'] . $separador. $rowD['nomTributoIscItem'] .$separador . $rowD['codTipTributoIscItem'] .$separador . $rowD['tipSisISC'] .$separador. $rowD['porIscItem']. $separador. $rowD['codTriOtroItem']. $separador. $tributoOtro .$separador. $tributoOtroItem .$separador.$baseOtroItem .$separador.$rowD['codTipTributoIOtroItem'] . $separador. $rowD['porTriOtroItem'] .$separador. $precProducto . $separador. $rowD['valorItem']. $separador. $rowD['mtoValorReferencialUnitario']. $separador."\n";
+		
+	}
+
 
 	$rowProductos[$i] = array( 'cantidad'=>$rowD['cantidadItem'], 'descripcion'=> $rowD['descripcionItem'], 'precio'=> $rowD['mtoPrecioVenta'], 'costo'=> $rowD['valorUnitario'], 'preProducto'=> $precProducto , 'undCorto'=> $rowD['undCorto'] );
 	$i++;
@@ -154,6 +179,9 @@ fclose($fLeyenda);
 
 
 $tributo = $rowC['ideTributo'] . $separador . $rowC['nomTributo'] . $separador .  $rowC['codTipTributo']  . $separador . $rowC['mtoBaseImponible'] . $separador . $rowC['mtoTributo'] . $separador;
+if( $exonerados >0 ){
+	$tributo = $tributo . "\n9997|EXO|VAT|".round($exonerados,2)."|0.00|";
+}
 
 $fTributo = fopen("{$directorio}{$nombreArchivo}.tri", "w");
 fwrite($fTributo, "{$tributo}");
@@ -166,7 +194,7 @@ fclose($fTributo);
 
 //echo $serie."-".$correlativo."-OK";
 $filas=array();
-$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $_POST['emitir'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion'], "placa"=> '' ));
+$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $_POST['emitir'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'exonerado'=> $exonerados,  'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion'], "placa"=> '' ));
 
 array_push ( $filas, $rowProductos);
 
