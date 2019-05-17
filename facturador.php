@@ -1083,6 +1083,8 @@ $('#btnDarbaja').click(function() {
 		}
 	});
 });
+
+
 <?php }?>
 </script>
 <?php include "piePagina.php"; ?>

@@ -211,9 +211,42 @@ thead tr th{cursor: pointer;}
 </div>
 
 
+<!-- Modal para modificar stock-->
+<div class="modal fade" id="modalModificarStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modificar stock: <span class="text-capitalize" id="spanNomProducto"></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+				<div class="form-group row">
+					<label for="sltFiltroGravado" class="col-sm-4 col-form-label">Proceso:</label>
+					<div class="col-sm-6">
+						<select class="selectpicker" data-live-search="false" id="sltTipoModStock" title="&#xed12; ¿Qué proceso es?">
+							<option value="1">Aumento directo</option>
+							<option value="2">Disminución directa</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="txtPrecioPublico" class="col-sm-4 col-form-label">Cantidad:</label>
+					<div class="col-sm-4"> <input type="number" class="form-control " min="0" id="txtCantidadStock" > </div>
+				</div>
+				<div class="form-group row">
+					<label for="txtPrecioPublico" class="col-sm-4 col-form-label">Observaciones:</label>
+					<div class="col-sm-8"> <input type="text" class="form-control text-capitalize" id="txtObservacionStock" > </div>
+				</div>
 
-<?php include 'php/modals.php'; ?>
-
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success" id="btnUpdateStock"><i class="icofont-refresh"></i> Actualizar stock</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -304,12 +337,48 @@ $('#btnNuevoProduct').click(function() {
 	if( $('#txtDescripcionNuevo').val()=='' || $('#txtPrecioNuevo').val()=='' || $('#sltFiltroGravadoNuevo').selectpicker('val')==null || $('#sltFiltroUnidadesNuevo').val()==null  ){
 		$('#modalNuevoProducto .text-danger').removeClass('d-none').html('<i class="icofont-cat-alt-3"></i> Debe rellenar todos los campos olbigatorios');
 	}else{
-		
+		$.ajax({url: 'php/insertarProducto.php', type: 'POST', data: {nombre: $('#txtDescripcionNuevo').val(), precio: $('#txtPrecioNuevo').val(), mayor: $('#txtPrecioMayorNuevo').val(), descuento: $('#txtPrecioDescuentoNuevo').val(), gravado: $('#sltFiltroGravadoNuevo').selectpicker('val'), unidad: $('#sltFiltroUnidadesNuevo').selectpicker('val') }}).done(function(resp) {
+			//console.log(resp)
+			if( resp =='ok'){
+				$('#h5Detalle').text('Producto guardado');
+				$('#modalNuevoProducto').modal('hide');
+				$('#modalGuardadoExitoso').modal('show');
+			}
+		});
 	}
 	
 
 });
-
+$('table').on('click', '.btnBorrarProducto', function (e) {
+	var idProd = $(this).parent().parent().attr('data-id');
+	$.ajax({url: 'php/borrarProducto.php', type: 'POST', data: {idProd:idProd }}).done(function(resp) {
+		if( resp =='ok'){
+			$('#h5Detalle').text('Producto borrado');
+			$('#modalGuardadoExitoso').modal('show');
+		}
+	});
+});
+$('table').on('click', '.btnStockProducto', function (e) {
+	var idProd = $(this).parent().parent().attr('data-id');
+	//console.log( idProd );
+	$('#btnUpdateStock').attr('data-id', idProd)
+	$('#modalModificarStock').modal('show');
+});
+$('#btnUpdateStock').click(function() {
+	$.ajax({url: 'php/updateStock.php', type: 'POST', data: {idProd: $('#btnUpdateStock').attr('data-id'), proceso: $('#sltTipoModStock').val(), cantidad: $('#txtCantidadStock').val(), obs: $('#txtObservacionStock').val() }}).done(function(resp) {
+		$('#modalModificarStock').modal('hide');
+		//console.log(resp)
+		if(resp=='ok'){var padre = $('tr[data-id="'+$('#btnUpdateStock').attr('data-id')+'"]');
+		var cantInicial = parseFloat(padre.find('.tdStock').text());
+		var cantFinal = parseFloat($('#txtCantidadStock').val());
+		if( $('#sltTipoModStock').val() =='1'){
+			padre.find('.tdStock').text(cantInicial + cantFinal);
+		}
+		if( $('#sltTipoModStock').val() =='2'){
+			padre.find('.tdStock').text(cantInicial - cantFinal);
+		}}
+	});
+});
 </script>
 <!-- BEGIN JIVOSITE CODE {literal} -->
 <!-- <script type='text/javascript'>
