@@ -89,6 +89,7 @@ thead tr th{cursor: pointer;}
 			<div class="col">
 				<select class="selectpicker" data-live-search="false" id="sltFiltroReporte" title="&#xed12; Tipo de reporte">
 					<option value="0">Resumido</option>
+					<option value="1">Contable</option>
 					<!-- <option value="1">Detallado</option> -->
 				</select>
 				<button class="btn btn-outline-primary ml-3" id="btnBuscarReporte"><i class="icofont-search-2"></i></button>
@@ -115,6 +116,8 @@ thead tr th{cursor: pointer;}
 			
 			</tbody>
 		</table>
+		<div class="d-none" id="tablaSysCont"></div>
+
 	</div>
 </section>
 
@@ -175,28 +178,63 @@ $('.input-daterange input').change(function(){
 	});
 }); */
 $('#btnBuscarReporte').click(function() {
+	$('#tablaCabeceras').removeClass('d-none');
+	$('#tablaSysCont').addClass('d-none');
 	if( $('#txtFecha1').val()!='' &&  $('#txtFecha2').val()!=''){
-		if( $('#sltFiltroReporte').selectpicker('val')=='0'){
-			var fecha1 = moment($('#txtFecha1').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-			var fecha2 = moment($('#txtFecha2').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
-			$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{fecha: fecha1, fecha2: fecha2 } }).done(function(resp) {
-				$('#tablaCabeceras tbody').children().remove();
-				$('#tablaCabeceras tbody').append(resp).anotherJqueryMethod;
-				$('[data-toggle="tooltip"]').tooltip();
-			});
-			$('#btnGuardarReporte').removeClass('d-none');
+		
+
+		switch ($('#sltFiltroReporte').selectpicker('val')) {
+			case "0":
+				var fecha1 = moment($('#txtFecha1').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+				var fecha2 = moment($('#txtFecha2').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+				$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{fecha: fecha1, fecha2: fecha2 } }).done(function(resp) {
+					$('#tablaCabeceras tbody').children().remove();
+					$('#tablaCabeceras tbody').append(resp).anotherJqueryMethod;
+				});
+				break;
+			case "1":
+				$('#tablaSysCont').removeClass('d-none');
+				$('#tablaCabeceras').addClass('d-none');
+				var fecha1 = moment($('#txtFecha1').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+				var fecha2 = moment($('#txtFecha2').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+				$.ajax({url: 'php/reporteSysConta.php', type: 'POST', data:{fecha1: fecha1, fecha2: fecha2 } }).done(function(resp) {
+					$('#tablaSysCont').children().remove();
+					$('#tablaSysCont').append(resp).anotherJqueryMethod;
+				});
+				break;
+			default:
+				break;
 		}
+		$('[data-toggle="tooltip"]').tooltip();
+		$('#btnGuardarReporte').removeClass('d-none');
+
 	}
 });
 
 
 $('#btnGuardarReporte').click(function() {
-	var instance = new TableExport(document.getElementById('tablaCabeceras'), {
-			formats: ['xlsx'],
-			exportButtons: false
-	});
-	var exportData = instance.getExportData()['tablaCabeceras']['xlsx'];
-	instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte resumido', exportData.fileExtension);
+	switch ($('#sltFiltroReporte').selectpicker('val')) {
+		case "0":
+			var instance = new TableExport(document.getElementById('tablaCabeceras'), {
+				formats: ['xlsx'],
+				exportButtons: false
+			});
+			var exportData = instance.getExportData()['tablaCabeceras']['xlsx'];
+			instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte resumido', exportData.fileExtension);
+		break;
+		case "1":
+		var instance = new TableExport(document.getElementById('tablaSysCont'), {
+				formats: ['xlsx'],
+				exportButtons: false
+			});
+			var exportData = instance.getExportData()['tablaSysCont']['xlsx'];
+			instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte contable', exportData.fileExtension);
+		break;
+		default:
+		break;
+
+	}
+	
 });
 
 </script>

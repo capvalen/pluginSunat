@@ -49,7 +49,7 @@ while($row=$resultado->fetch_assoc()){
 	<?php endif; ?>
 		<td>S/ <?= number_format($row['totalFinal'],2); ?></td>
 		<td class="text-capitalize"><?php if($row['comprobanteEmitido']==0){ echo $row['comprobanteEmitidoDescr']; } else if($row['comprobanteEmitido']==2){ echo "<span class='text-danger'>".$row['comprobanteEmitidoDescr']." ".$row['motivoBaja']."</span>";} else { echo "<span class='text-success'>".$row['comprobanteEmitidoDescr']."</span>";}?></td>
-		<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" data-ticket="<?= $row['idTicket']; ?>">
+		<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" >
 			<?php 
 			if($row['comprobanteEmitido']==0 && $fecha == date('Y-m-d')){ ?>
 			<button class="btn btn-outline-primary btn-sm border border-light btnGenComprobante" data-ticket="<?= $row['idTicket']; ?>" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>

@@ -62,7 +62,7 @@ thead tr th{cursor: pointer;}
 	<a class="navbar-brand" href="#">
     <img src="images/VirtualCorto.png" width="60" height="60" alt="">
   </a>
-  <a class="navbar-brand" href="#">Facturador</a>
+  <a class="navbar-brand" href="#">Facturador Infocat </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -70,23 +70,37 @@ thead tr th{cursor: pointer;}
     <div class="navbar-nav">
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="icofont-newspaper"></i> Emitir comprobante
+					<i class="icofont-newspaper"></i> Emitir
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
 					<a class="dropdown-item" href="#!" id="AEmitirFactura"><i class="icofont-ui-copy"></i> Factura</a>
+					<a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de crédto</a>
+					<a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de débito</a>
 				</div>
 			</li>
+		<?php if($_COOKIE['ckPower']): ?>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="icofont-newspaper"></i> Configuraciones
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    		  <a class="dropdown-item" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
+					<a class="dropdown-item" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
+					<a class="dropdown-item d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
+					<a class="dropdown-item " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
+					
+				</div>
+			</li>
+			<a class="nav-item nav-link " href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
+
       <a class="nav-item nav-link d-none" href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
       <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
-		<?php if($_COOKIE['ckPower']): ?>
-      <a class="nav-item nav-link" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
-      <a class="nav-item nav-link" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
-      <a class="nav-item nav-link d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
-      <a class="nav-item nav-link " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
-      <a class="nav-item nav-link " href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
+
+      
+    
 		<?php endif; ?>
-      <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar</a>
+      <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Salir del sistema</a>
     </div>
   </div>
 </nav>
@@ -276,6 +290,96 @@ thead tr th{cursor: pointer;}
 					</div>
 					<button type="button" class="btn btn-outline-success float-right d-none" id="btnEmitirFacturav2" ><i class="icofont-paper"></i> Emitir Factura</button>
 					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir Boleta</button>
+				</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal para Notas de crédito -->
+<div class="modal fade" id="modalEmisionNotas" tabindex="-1" role="dialog" data-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+				</button>
+				<h5 class="pb-4"><i class="icofont-cart-alt"></i> Generar Notas</h5>
+				<div class="form-inline">
+				<div class="form-check mb-3">
+					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDniNot" >
+					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDniNot" >Cliente anónimo</label>
+				</div>
+				<div class="form-check mb-3 ml-5 d-none">
+					<label for="">Placa de vehículo:</label>
+					<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoletaNot">
+				</div>
+				<div class="form-inline mt-n3 pl-3">
+				<select class="selectpicker" data-live-search="true" id="sltFiltroClientesNot" title="&#xed12; Filtro de clientes">
+					<?php include "php/listarTodosClientes.php";?>
+				</select>
+				</div>
+					
+				</div>
+				
+			
+				
+				<div id="divDatosCliente" class="d-none card mb-3">
+					<div class="card-body">
+						<p class="text-muted "><strong>Datos del cliente:</strong></p>
+						<div class="row mb-3">
+							<div class="col-4">
+								<input type="text"  class="form-control ml-2 soloNumeros" id="txtDniBoletaNot" value="" placeholder='Dni' readonly>
+							</div>
+							<div class="col-8">
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoletaNot" value="" placeholder='Razón social o Apellidos y Nombres' readonly>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoletaNot" value="" placeholder='Dirección' readonly>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-body">
+						<p class="text-muted d-none mb-0"><strong>Detalle:</strong></p>
+						<div class="row">
+							<div class="col-4"><strong>Concepto</strong></div>
+							<div class="col-1"><strong>Cant.</strong></div>
+							<div class="col-1"><strong>Und</strong></div>
+							<div class="col-2"><strong>Gravado.</strong></div>
+							<div class="col-2"><strong>Precio</strong></div>
+							<div class="col-2"><strong>Precio Unit.</strong></div>
+							<div class="col-2 d-none"><strong>Sub-Total</strong></div>
+						</div>
+						<div id="divProductosNot">
+							<?php include "php/filaNueva.php";?>
+						</div>
+						<button class="btn btn-outline-success  mt-2" id="btnAgregarProductoNot"><i class="icofont-ui-add"></i> Agregar más produtos</button>
+					</div>
+				</div>
+				<div class='mt-2 pr-5'>
+					<div class="d-flex justify-content-around" id="divCalculosFinales"> <!-- align-items-end flex-column -->
+						<span><span>Exonerado:</span> <span>S/ <span id="spExoneradoBoletaNot">0.00</span></span></span>
+						<span><span>Sub-Total:</span> <span>S/ <span id="spSubTotBoletaNot">0.00</span></span></span>
+						<span><span>IGV:</span> <span>S/ <span id="spIgvBoletaNot">0.00</span></span></span>
+						<span><span>Total:</span> <span>S/ <span id="spTotalBoletaNot">0.00</span></span></span>
+					</div>
+				</div>
+				
+       
+      </div>
+      <div class="modal-footer">
+				<div class="container-fluid">
+					<div class="row text-center">
+						<p for="" class="text-danger d-none"> <span class="lblError"></span></p>
+					</div>
+					
+					<button type="button" class="btn btn-outline-danger float-right" id="btnEmitirBoletav2Not" ><i class="icofont-paper"></i> Emitir Nota</button>
 				</div>
       </div>
     </div>
@@ -720,6 +824,9 @@ $('#AEmitirFactura').click(function() {
 	$('#chkEstadoDni').prop('checked', false).change().attr('disabled', true);
 	$('#modalEmisionBoleta').modal('show');
 });
+$('.AEmitirNotas').click(function() {
+	$('#modalEmisionNotas').modal('show');
+});
 $('#chkEstadoDni').change(function() {
 	if($('#chkEstadoDni').prop('checked')	){
 		$('#labelEstadoDni').text('Cliente anónimo');
@@ -764,7 +871,7 @@ $('#divProductos').on('keyup','.campoPrecioUnit', function() {
 	padre.find('.campoSubTotal').val( subTotal.toFixed(2) );
 	sumaTodo();
 });
-	$('#divProductos').on('keyup','.campoCantidad', function() {
+$('#divProductos').on('keyup','.campoCantidad', function() {
 	var padre = $(this).parent().parent();
 	var cantidad = 0;
 	if($(this).val()!=''){
@@ -1007,7 +1114,7 @@ $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, c
 			padre.find('.sltFiltroProductos').addClass('d-none');
 			padre.find('.campoTextoLibre').removeClass('d-none').focus();
 		}
-		sumaTodo()
+		sumaTodo();
 	}
 });
 $('#divProductos').on('click', '.borrarFila', function (e) {
@@ -1037,27 +1144,28 @@ $('#divProductos').on('click', '.optPrecios', function (e) {
 		case "1":
 			$.each( $.precios , function(i, prodObj){
 				if(prodObj.idProductos == padre.attr('data-producto') ){
-					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecio).toFixed(2) ); return false;
+					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecio).toFixed(2) ).keyup(); sumaTodo(); return false;
 				}
 			});
 			break;
 		case "2":
 			$.each( $.precios , function(i, prodObj){
 				if(prodObj.idProductos == padre.attr('data-producto') ){
-					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecioMayor).toFixed(2) ); return false;
+					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecioMayor).toFixed(2) ).keyup(); sumaTodo(); return false;
 				}
 			});
 			break;
 		case "3":
 			$.each( $.precios , function(i, prodObj){
 				if(prodObj.idProductos == padre.attr('data-producto') ){
-					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecioDescto).toFixed(2) ); return false;
+					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecioDescto).toFixed(2) ).keyup(); sumaTodo(); return false;
 				}
 			});
 			break;
 		default:
 			break;
 	}
+	
 });
 <?php if($_COOKIE['ckPower']==1){?>
 $('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {
