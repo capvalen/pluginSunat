@@ -365,7 +365,7 @@ $('table').on('click', '.btnStockProducto', function (e) {
 	$('#modalModificarStock').modal('show');
 });
 $('#btnUpdateStock').click(function() {
-	$.ajax({url: 'php/updateStock.php', type: 'POST', data: {idProd: $('#btnUpdateStock').attr('data-id'), proceso: $('#sltTipoModStock').val(), cantidad: $('#txtCantidadStock').val(), obs: $('#txtObservacionStock').val() }}).done(function(resp) {
+	$.ajax({url: 'php/updateStockR.php', type: 'POST', data: {idProd: $('#btnUpdateStock').attr('data-id'), proceso: $('#sltTipoModStock').val(), cantidad: $('#txtCantidadStock').val(), obs: $('#txtObservacionStock').val() }}).done(function(resp) { console.log(resp)
 		$('#modalModificarStock').modal('hide');
 		//console.log(resp)
 		if(resp=='ok'){var padre = $('tr[data-id="'+$('#btnUpdateStock').attr('data-id')+'"]');

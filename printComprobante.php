@@ -33,7 +33,7 @@ $qrCode->writeFile(__DIR__.'/qrcode.png');
 $productos=$_POST['productos'];
 $todoProd= '';
 foreach ($productos as $variable) {
-    $todoProd = $todoProd .  ucwords($variable['descripcion'])."\n              ".$variable['cantidad']." ".$variable['undCorto']."   ". "S/ ". $variable['preProducto'].'   S/ '. number_format($variable['precio'],2)."\n";
+    $todoProd = $todoProd .  ucwords($variable['descripcion'])."\n              ".$variable['cantidad']." ".$variable['undCorto']."   ". "S/ ". number_format($variable['preProducto'],2).'   S/ '. number_format($variable['precio'],2)."\n";
 }
 //echo $todoProd;
 
