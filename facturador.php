@@ -57,6 +57,37 @@ thead tr th{cursor: pointer;}
 .btn-outline-primary:focus {
 	box-shadow: 0 0 0 0.2rem rgba(148, 102, 239, 0.5);
 }
+#overlay {
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.75); /* Black background with opacity */
+    z-index: 1051; /* Specify a stack order in case you're using a different order for other elements */
+   /* Add a pointer on hover */
+}
+#overlay .text{position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 18px;
+    color: white;
+    user-select: none;
+    transform: translate(-50%,-50%);
+}
+#hojita{font-size: 36px; display: inline; animation: cargaData 6s ease infinite;}
+#pFrase{ display: inline; }
+#pFrase span{ font-size: 13px;}
+@keyframes cargaData {
+    0%  {color: #96f368;}
+    25%  {color: #f3dd68;}
+    50% {color: #f54239;}
+    75% {color: #c173ce;}
+    100% {color: #33dbdb;}
+}
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5">
 	<a class="navbar-brand" href="#">
@@ -298,93 +329,7 @@ thead tr th{cursor: pointer;}
 
 
 
-<!-- Modal para Notas de crédito -->
-<div class="modal fade" id="modalEmisionNotas" tabindex="-1" role="dialog" data-backdrop="static">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-				</button>
-				<h5 class="pb-4"><i class="icofont-cart-alt"></i> Generar Notas</h5>
-				<div class="form-inline">
-				<div class="form-check mb-3">
-					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDniNot" >
-					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDniNot" >Cliente anónimo</label>
-				</div>
-				<div class="form-check mb-3 ml-5 d-none">
-					<label for="">Placa de vehículo:</label>
-					<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoletaNot">
-				</div>
-				<div class="form-inline mt-n3 pl-3">
-				<select class="selectpicker" data-live-search="true" id="sltFiltroClientesNot" title="&#xed12; Filtro de clientes">
-					<?php include "php/listarTodosClientes.php";?>
-				</select>
-				</div>
-					
-				</div>
-				
-			
-				
-				<div id="divDatosCliente" class="d-none card mb-3">
-					<div class="card-body">
-						<p class="text-muted "><strong>Datos del cliente:</strong></p>
-						<div class="row mb-3">
-							<div class="col-4">
-								<input type="text"  class="form-control ml-2 soloNumeros" id="txtDniBoletaNot" value="" placeholder='Dni' readonly>
-							</div>
-							<div class="col-8">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoletaNot" value="" placeholder='Razón social o Apellidos y Nombres' readonly>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoletaNot" value="" placeholder='Dirección' readonly>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="card">
-					<div class="card-body">
-						<p class="text-muted d-none mb-0"><strong>Detalle:</strong></p>
-						<div class="row">
-							<div class="col-4"><strong>Concepto</strong></div>
-							<div class="col-1"><strong>Cant.</strong></div>
-							<div class="col-1"><strong>Und</strong></div>
-							<div class="col-2"><strong>Gravado.</strong></div>
-							<div class="col-2"><strong>Precio</strong></div>
-							<div class="col-2"><strong>Precio Unit.</strong></div>
-							<div class="col-2 d-none"><strong>Sub-Total</strong></div>
-						</div>
-						<div id="divProductosNot">
-							<?php include "php/filaNueva.php";?>
-						</div>
-						<button class="btn btn-outline-success  mt-2" id="btnAgregarProductoNot"><i class="icofont-ui-add"></i> Agregar más produtos</button>
-					</div>
-				</div>
-				<div class='mt-2 pr-5'>
-					<div class="d-flex justify-content-around" id="divCalculosFinales"> <!-- align-items-end flex-column -->
-						<span><span>Exonerado:</span> <span>S/ <span id="spExoneradoBoletaNot">0.00</span></span></span>
-						<span><span>Sub-Total:</span> <span>S/ <span id="spSubTotBoletaNot">0.00</span></span></span>
-						<span><span>IGV:</span> <span>S/ <span id="spIgvBoletaNot">0.00</span></span></span>
-						<span><span>Total:</span> <span>S/ <span id="spTotalBoletaNot">0.00</span></span></span>
-					</div>
-				</div>
-				
-       
-      </div>
-      <div class="modal-footer">
-				<div class="container-fluid">
-					<div class="row text-center">
-						<p for="" class="text-danger d-none"> <span class="lblError"></span></p>
-					</div>
-					
-					<button type="button" class="btn btn-outline-danger float-right" id="btnEmitirBoletav2Not" ><i class="icofont-paper"></i> Emitir Nota</button>
-				</div>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <!-- Modal para ingresar el N° ticket -->
 <div class="modal fade" id="modalIngresoTicket" tabindex="-1" role="dialog">
@@ -544,6 +489,9 @@ thead tr th{cursor: pointer;}
   </div>
 </div>
 <?php } ?>
+
+<div id="overlay">
+	<div class="text"><span id="hojita"><i class="icofont icofont-leaf"></i></span> <p id="pFrase"> Solicitando los datos a Sunat... <br> <span>«Pregúntate si lo que estás haciendo hoy <br> te acerca al lugar en el que quieres estar mañana» <br> Walt Disney</span></p></div>
 
 <?php include "php/modal.php"; ?>
 
@@ -824,9 +772,7 @@ $('#AEmitirFactura').click(function() {
 	$('#chkEstadoDni').prop('checked', false).change().attr('disabled', true);
 	$('#modalEmisionBoleta').modal('show');
 });
-$('.AEmitirNotas').click(function() {
-	$('#modalEmisionNotas').modal('show');
-});
+
 $('#chkEstadoDni').change(function() {
 	if($('#chkEstadoDni').prop('checked')	){
 		$('#labelEstadoDni').text('Cliente anónimo');
@@ -947,7 +893,8 @@ $('#btnEmitirBoletav2').click(function() {
 					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
 					unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
 					subtotal: $(elem).find('.campoSubTotal').val(),
-					afecto: $(elem).find('#sltFiltroGravado').selectpicker('val')
+					afecto: $(elem).find('#sltFiltroGravado').selectpicker('val'),
+					idProd: $(elem).attr('data-producto')
 				});
 			}
 			
@@ -1012,7 +959,8 @@ $('#btnEmitirFacturav2').click(function() {
 					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
 					unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
 					subtotal: $(elem).find('.campoSubTotal').val(),
-					afecto: $(elem).find('#sltFiltroGravado').selectpicker('val')
+					afecto: $(elem).find('#sltFiltroGravado').selectpicker('val'),
+					idProd: $(elem).attr('data-producto')
 				});
 		}
 		});
@@ -1167,6 +1115,36 @@ $('#divProductos').on('click', '.optPrecios', function (e) {
 	}
 	
 });
+
+$("#txtDniBoleta").keyup(function(e){
+    var code = e.which; 
+    if( code==13 ){ e.preventDefault(); // console.log( 'enter' );
+		pantallaOver(true);
+		if( $("#txtDniBoleta").val().length>0 ){
+			$.ajax({url: 'php/dataSunat.php', type: 'POST', data: { ruc: $('#txtDniBoleta').val() }}).done(function(resp) {
+				//console.log(resp)
+				try {
+					dato = JSON.parse(resp);
+					if(dato.length=!0){	
+						//console.log( dato.razon_social );
+						$('#txtRazonBoleta').val( dato.razon_social);
+						$('#txtDireccionBoleta').val( dato.domicilio_fiscal);
+					}
+				} catch (error) {
+					
+				}
+				
+				$('#txtRazonBoleta').focus();
+				pantallaOver(false);
+			});
+   	 }
+		}
+});
+function pantallaOver(tipo) {
+	if(tipo){$('#overlay').css('display', 'initial');}
+	else{ $('#overlay').css('display', 'none'); }
+}
+
 <?php if($_COOKIE['ckPower']==1){?>
 $('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {
 	$('#strComprobante').text( $(this).parent().parent().find('.tdCorrelativo').text());
