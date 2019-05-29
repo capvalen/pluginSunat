@@ -43,34 +43,13 @@ input[type=number] {
 thead tr th{cursor: pointer;}
 .dropdown-item .text, .bootstrap-select button{text-transform: capitalize;}
 </style>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5">
-	<a class="navbar-brand" href="#">
-    <img src="images/VirtualCorto.png" width="60" height="60" alt="">
-  </a>
-  <a class="navbar-brand" href="#">Facturador</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link " href="facturador.php" id="btnEmitirComprobante"><i class="icofont-ui-note"></i> Facturador</a>
-			<?php if($_COOKIE['ckPower']): ?>
-      <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
-      <a class="nav-item nav-link" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
-      <a class="nav-item nav-link active" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
-      <a class="nav-item nav-link d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
-			<a class="nav-item nav-link " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
-      <a class="nav-item nav-link " href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
-			<?php endif; ?>
-      <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Cerrar</a>
-    </div>
-  </div>
-</nav>
+
+<?php include 'menu-wrapper.php'; ?>
 
 <section>
 	<div class="container-fluid mt-5 px-5">
 		<div class="row">
-		<div class="col-3">
+		<div class="col-md-3">
 			<img src="bitmap.jpg?version=1.0.3" class='img-fluid mt-3'>
 		</div>
 		<div class="col ml-4">

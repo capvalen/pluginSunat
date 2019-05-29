@@ -89,52 +89,8 @@ thead tr th{cursor: pointer;}
     100% {color: #33dbdb;}
 }
 </style>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5">
-	<a class="navbar-brand" href="#">
-    <img src="images/VirtualCorto.png" width="60" height="60" alt="">
-  </a>
-  <a class="navbar-brand" href="#">Facturador Infocat </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="icofont-newspaper"></i> Emitir
-				</a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
-					<a class="dropdown-item" href="#!" id="AEmitirFactura"><i class="icofont-ui-copy"></i> Factura</a>
-					<a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de crédto</a>
-					<a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de débito</a>
-				</div>
-			</li>
-		<?php if($_COOKIE['ckPower']): ?>
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="icofont-newspaper"></i> Configuraciones
-				</a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-    		  <a class="dropdown-item" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
-					<a class="dropdown-item" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
-					<a class="dropdown-item d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
-					<a class="dropdown-item " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
-					
-				</div>
-			</li>
-			<a class="nav-item nav-link " href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
+<?php include 'menu-wrapper.php'; ?>
 
-      <a class="nav-item nav-link d-none" href="#!" id="btnEmitirComprobante">Emitir comprobante</a>
-      <a class="nav-item nav-link d-none" href="#!" id="btnConsultarComprobante">Consultar comprobante</a>
-
-      
-    
-		<?php endif; ?>
-      <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Salir del sistema</a>
-    </div>
-  </div>
-</nav>
 <div class="container d-none">
 	<section>
 		<h1 class="text-center my-4">Sistema de emisión de comprobantes 1.0</h1>
@@ -154,7 +110,7 @@ thead tr th{cursor: pointer;}
 <section>
 	<div class="container-fluid mt-5 px-5">
 		<div class="row">
-		<div class="col-3">
+		<div class="col-md-3">
 			<img src="bitmap.jpg?version=1.0.3" class='img-fluid mt-3'>
 		</div>
 		<div class="col ml-4">
