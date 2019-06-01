@@ -9,7 +9,7 @@ include "generales.php"; ?>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Facturador electrónico</title>
+	<title>Compras - Facturador electrónico</title>
 	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<link rel="stylesheet" href="icofont.min.css">
 	<link rel="stylesheet" href="css/bootstrap-select.min.css">
@@ -48,6 +48,8 @@ thead tr th{cursor: pointer;}
  */
 #tblProductosResultados th{border-top-color: transparent!important;     border-bottom: 2px solid #1f8fff;}
 #tblProductosResultados td{border-top: 1px solid #d2e9ff;}
+.inputValido{border-color: #45c763!important;}
+.inputInvalido{border-color: #ff1d1d!important;}
 </style>
 
 <?php include 'menu-wrapper.php'; ?>
@@ -62,10 +64,12 @@ thead tr th{cursor: pointer;}
 			<h3 class="display-4">Gestión de compras</h3>
 			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 		</div></div>
+		<?php if(!isset($_GET['nuevaCompra'])): ?>
 		<div class="d-flex justify-content-end">
 			<!-- <button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="icofont-shopping-cart"></i> Agregar nueva compra</button> -->
 			<a class="btn btn-outline-primary " href="compras.php?nuevaCompra"><i class="icofont-shopping-cart"></i> Generar nueva compra</a>
 		</div>
+		<?php endif; ?>
 
 		<?php if(isset($_GET['nuevaCompra'])){ ?>
 		<h3>Nueva compra</h3>
@@ -75,15 +79,19 @@ thead tr th{cursor: pointer;}
 		
 				<div class="row">
 					<div class="col-sm-6 form-group row">
-						<label for="sltFiltroMoneda" class="col-lg-3 col-form-label">Documento:</label>
+						<label for="sltFiltroDocumento" class="col-lg-3 col-form-label">Documento:</label>
 						<div class="col-lg-4"> 
-						<select class="selectpicker" data-live-search="false" id="sltFiltroMoneda" title="&#xed12; Documentos">
+						<select class="selectpicker" data-live-search="false" id="sltFiltroDocumento" title="&#xed12; Documentos">
 							<option value="1">Factura</option>
 							<option value="3">Boleta de venta</option>
 							<option value="7">Nota de crédito</option>
 							<option value="12">Ticket de máquina registradora</option>
 						</select>
 						</div>
+					</div>
+					<div class="col-sm-6 form-group row">
+						<label for="txtCompraSerie" class="col-lg-3 col-form-label">Serie:</label>
+						<div class="col-lg-6"><input type="text" class="form-control" id="txtCompraSerie" > </div>
 					</div>
 					<div class="col-sm-6 form-group row">
 						<label for="txtCompraFecha" class="col-lg-3 col-form-label">Fecha de compra:</label>
@@ -98,9 +106,9 @@ thead tr th{cursor: pointer;}
 						</select>
 						</div>
 					</div>
-					<div class="col-sm-6 form-group row">
+					<div class="col-sm-6 form-group row d-none">
 						<label for="txtCompraValorDolar" class="col-lg-3 col-form-label">Tipo de cambio:</label>
-						<div class="col-lg-3"><input type="text" class="form-control soloNumeros" id="txtCompraValorDolar" > </div>
+						<div class="col-lg-3"><input type="text" class="form-control esMoneda" id="txtCompraValorDolar" value='0.00' > </div>
 					</div>
 				</div>
 
@@ -111,20 +119,19 @@ thead tr th{cursor: pointer;}
 					</div>
 					<div class="col-sm-6 form-group row">
 						<label for="txtProviderRazon" class="col-lg-3 col-form-label">Razon Social:</label>
-						<div class="col-lg-9"> <input type="text" class="form-control soloNumeros" id="txtProviderRazon" autocomplete='nope'> </div>
+						<div class="col-lg-9"> <input type="text" class="form-control" id="txtProviderRazon" autocomplete='nope'> </div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-6 form-group row">
 						<label for="txtProviderDireccion" class="col-lg-3 col-form-label">Dirección:</label>
-						<div class="col-lg-6"> <input type="text" class="form-control soloNumeros" id="txtProviderDireccion" autocomplete='nope'> </div>
+						<div class="col-lg-6"> <input type="text" class="form-control " id="txtProviderDireccion" autocomplete='nope'> </div>
 					</div>
 					<div class="col-sm-6 form-group row">
 						<label for="txtProviderRuc" class="col-lg-3 col-form-label">Observaciones:</label>
-						<div class="col-lg-9"> <input type="text" class="form-control soloNumeros" id="txtProviderObs" autocomplete='nope'> </div>
+						<div class="col-lg-9"> <input type="text" class="form-control " id="txtProviderObs" autocomplete='nope'> </div>
 					</div>					
 				</div>
-
 
 			</div>
 		</div>
@@ -143,27 +150,44 @@ thead tr th{cursor: pointer;}
 					</div>
 				</div>
 			</div>
-			<div class="table-responsive">
+			<div class="">
 			<table class="table table-hover">
 			<thead>
 			<tr>
 				<th>N°</th>
 				<th>Cant.</th>
-				<th>Descripción</th>
 				<th>Unidad</th>
+				<th>Descripción</th>
 				<th>Afecto</th>
 				<th>Precio Unit.</th>
 				<th>Valor de venta</th>
 			</tr>
 			</thead>
+			<tbody id="tbodyCesta">
+				
+			</tbody>
 			</table>
+			<p >Utilice el filtro de búsqueda para agregar sus productos.</p>
+			<p >Ingrese sus productos ya con IGV incluido en cada producto.</p>
 			</div>
-			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis eveniet ipsa corporis, fuga debitis eligendi corrupti necessitatibus officiis accusantium officia rerum repellat vel nesciunt, deleniti perspiciatis incidunt maxime quis quaerat.</p>
+			
 		</div>
 		</div>
-		<div class="card mt-3">
+		<div class="card my-3">
 		<div class="card-body">
-		<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis, iste, architecto aut ipsum consequatur ad error, quasi molestiae tenetur doloremque vero accusamus eligendi nesciunt? Repudiandae velit placeat tempora natus quia.</p>
+			<div class="ml-5 pl-5">
+				<p>Exoneradas: <strong><span class="spanTMonedaR"></span> <span id="spExoneradasFin">0.00</span></strong></p>
+				<p>Gravadas: <strong><span class="spanTMonedaR"></span> <span id="spGravadasFin">0.00</span></strong></p>
+				<p>Sub Total: <strong><span class="spanTMonedaR"></span> <span id="spSubTotalFin">0.00</span></strong></p>
+				<p>I.G.V.: <strong><span class="spanTMonedaR"></span> <span id="spIGVFin">0.00</span></strong></p>
+				<p>Total: <strong><span class="spanTMonedaR"></span> <span id="spTotalFin">0.00</span></strong></p>
+				
+			</div>
+		
+			<div class="text-center">
+				<button class="btn btn-outline-primary " id="btnValidarCesta"><i class="icofont-save"></i> Validar cesta</button>
+				<button class="btn btn-outline-primary d-none" id="btnGuardarCompraTodo"><i class="icofont-save"></i> Guardar compra</button>
+			</div>
 		</div>
 		</div>
 
@@ -213,7 +237,7 @@ thead tr th{cursor: pointer;}
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.8"></script>
+<script src="js/impotem.js?version=1.0.14"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
@@ -236,12 +260,203 @@ $(document).ready(function(){
 $('#btnAgregarProducto').click(function() {
 	$('.modalProductosEncontrados').modal('show');
 });
+$('#txtFiltroProducto').keypress(function (e) { 
+	if(e.keyCode == 13){ 
+		$('#btnRealizarBusqueda').click();
+	}
+});
+$('#sltFiltroMoneda').on('changed.bs.select', function (e) {
+	if( $('#sltFiltroMoneda').selectpicker('val')!=null ){
+		switch ($('#sltFiltroMoneda').selectpicker('val')) {
+			case "1": $('.spanTMonedaR').text('S/'); $('#txtCompraValorDolar').parent().parent().addClass('d-none'); break;
+			case "2": $('.spanTMonedaR').text('$'); $('#txtCompraValorDolar').parent().parent().removeClass('d-none'); $('#txtCompraValorDolar').focus(); break;
+			default: break;
+		}
+	}
+});
+$('#tbodyCesta').on('changed.bs.select', '.sltFiltroAfectoCesta .selectpicker', function (e) {
+	var padre = $(this).parent().parent().parent();
+	if( $(this).selectpicker('val')==3 || $(this).selectpicker('val')==4 ){
+		padre.find('.txtPrecUnitCesta').attr('readonly', true).val('0.00');
+		padre.find('.txtValorUnitCesta').attr('readonly', true).val('0.00');
+	}else{
+		padre.find('.txtPrecUnitCesta').attr('readonly', false);
+		padre.find('.txtValorUnitCesta').attr('readonly', false);
+	}
+	$('#btnGuardarCompraTodo').addClass('d-none');
+	calcularFinales();
+});
+
 $('#btnRealizarBusqueda').click(function() {
-	$('#modalProductosEncontrados').modal('show');
+	if( $('#txtFiltroProducto').val().length>=3 ){
 	$.ajax({url: 'php/filtroProductos.php', type: 'POST', data: { texto: $('#txtFiltroProducto').val() }}).done(function(resp) {
-		console.log(resp)
+		//console.log(resp)
 		$('#divResultadoProd').html(resp);
+		$('[data-toggle="tooltip"]').tooltip();
 	});
+	$('#modalProductosEncontrados').modal('show');
+	}
+});
+$('#tbodyCesta').on('click', '.btnBorrarFila', function (e) {
+	$(this).parent().parent().remove();
+});
+$('#divResultadoProd').on('click', '.btnAgregarProdCesta', function (e) {
+	var padre = $(this).parent().parent();
+
+	$('#tbodyCesta').append(`<tr class="cardHijoProducto" data-id="${padre.attr('data-id')}">
+					<td class="px-0"><button class="btn btn-outline-danger border-0 btn-sm p-1 float-left btnBorrarFila"><i class="icofont-close"></i></button> ${$('#tbodyCesta tr').length+1}.</td>
+					<td><input type="number" class="form-control txtCantidadCesta text-center" value="1"></td>
+					<td><select class="selectpicker" data-live-search="false" id="sltFiltroUnidadCesta" title="&#xed12; Unidades">
+							<?php include 'php/listarUnidadesOPT.php';?>
+						</select></td>
+					<td class="text-capitalize">${padre.find('.tdNombreProd').text()}</td>
+					<td><select class="selectpicker sltFiltroAfectoCesta" data-live-search="false" id="sltFiltroAfectoCesta" title="&#xed12; Afecto">
+							<?php include 'php/optAfectos.php';?>
+						</select></td>
+					<td><input type="number" class="form-control txtPrecUnitCesta esMoneda text-center" value="0.00"></td>
+					<td><input type="number" class="form-control txtValorUnitCesta esMoneda text-center" value="0.00"></td>
+				</tr>`);
+		$('.selectpicker').selectpicker('render');
+		
+		$(`tr[data-id="${padre.attr('data-id')}"]`).find('#sltFiltroUnidadCesta').selectpicker('val', padre.find('.tdUnidad').attr('data-und')).selectpicker('refresh');
+		$(`tr[data-id="${padre.attr('data-id')}"]`).find('#sltFiltroAfectoCesta').selectpicker('val', padre.find('.tdGravado').attr('data-gravado')).selectpicker('refresh');
+		$('#modalProductosEncontrados').modal('hide');
+});
+$('#tbodyCesta').on('keyup', '.txtCantidadCesta', function (e) { 
+	var padre = $(this).parent().parent();
+	var precUnit = padre.find('.txtPrecUnitCesta').val();
+	var cant =  $(this).val();
+	var gravado = padre.find('#sltFiltroAfectoCesta').selectpicker('val');
+	
+	if(gravado ==1 || gravado ==2 ){
+		padre.find('.txtValorUnitCesta').val( parseFloat(precUnit*cant).toFixed(2) );
+	}else{ //bonifaciones y gratis
+		padre.find('.txtPrecUnitCesta').val( parseFloat(0).toFixed(2) );
+		padre.find('.txtValorUnitCesta').val( parseFloat(0).toFixed(2) );
+	}
+	$('#btnGuardarCompraTodo').addClass('d-none');
+	calcularFinales();
+});
+$('#tbodyCesta').on('keyup', '.txtPrecUnitCesta', function (e) { 
+	var padre = $(this).parent().parent();
+	var precUnit = $(this).val();
+	var cant = padre.find('.txtCantidadCesta').val();
+	var gravado = padre.find('#sltFiltroAfectoCesta').selectpicker('val');
+	
+	padre.find('.txtValorUnitCesta').val( parseFloat(precUnit*cant).toFixed(2) );
+	
+	$('#btnGuardarCompraTodo').addClass('d-none');
+	calcularFinales();
+});
+$('#tbodyCesta').on('keyup', '.txtValorUnitCesta', function (e) { 
+	var padre = $(this).parent().parent();
+	var precValor = $(this).val();
+	var cant = padre.find('.txtCantidadCesta').val();
+	var gravado = padre.find('#sltFiltroAfectoCesta').selectpicker('val');
+	
+	padre.find('.txtPrecUnitCesta').val( parseFloat(precValor/cant).toFixed(2) );
+	
+	$('#btnGuardarCompraTodo').addClass('d-none');
+	calcularFinales();
+});
+function calcularFinales(){
+	var sumSubs=0, sumExonerado=0, sumGravado=0, sumIgv=0, sumTotal=0 ;
+	$.each( $('.cardHijoProducto') , function(i, objeto){
+
+		if( $(objeto).find('#sltFiltroAfectoCesta').selectpicker('val')==1 ){
+			sumGravado+= parseFloat( $(objeto).find('.txtValorUnitCesta').val() );
+		}else if( $(objeto).find('#sltFiltroAfectoCesta').selectpicker('val')==2 ){
+			sumExonerado+= parseFloat( $(objeto).find('.txtValorUnitCesta').val() );
+		}
+
+	});
+	sumTotal = sumGravado + sumExonerado;
+	sumSubs = sumGravado/1.18;
+	sumIgv = sumGravado-sumSubs;
+	$('#spExoneradasFin').text(sumExonerado.toFixed(2));
+	$('#spGravadasFin').text(sumGravado.toFixed(2));
+	$('#spSubTotalFin').text(sumSubs.toFixed(2));
+	$('#spIGVFin').text(sumIgv.toFixed(2));
+	$('#spTotalFin').text(sumTotal.toFixed(2));
+}
+
+$('#btnGuardarCompraTodo').click(function() {
+	if( $('#sltFiltroDocumento').selectpicker('val')==null ){
+		$('#h5DetalleFaltan').text('Debe seleccionar un tipo de documento');
+		$('#modalFaltaDatos').modal('show');
+	}else if( $('#txtCompraFecha').val()=='' ){
+		$('#h5DetalleFaltan').text('La fecha de compra no puede estar vacío');
+		$('#modalFaltaDatos').modal('show');
+	}else if( $('#txtCompraSerie').val()=='' ){
+		$('#h5DetalleFaltan').text('La ingresar la serie del comprobante de compra');
+		$('#modalFaltaDatos').modal('show');
+	}else if( $('#sltFiltroMoneda').selectpicker('val')==null ){
+		$('#h5DetalleFaltan').text('Debe seleccionar un tipo de moneda');
+		$('#modalFaltaDatos').modal('show');
+	}else if( $('#sltFiltroMoneda').selectpicker('val')=='2' && $('#txtCompraValorDolar').val()=='0.00' ){
+		$('#h5DetalleFaltan').text('El tipo de moneda debe ser mayor que cero');
+		$('#modalFaltaDatos').modal('show');
+	}else if( $('#txtProviderRuc').val()=='' ){
+		$('#h5DetalleFaltan').text('Se olvidó ingresar el R.U.C. del proveedor');
+		$('#modalFaltaDatos').modal('show');
+	}else if( $('#txtProviderRazon').val()=='' ){
+		$('#h5DetalleFaltan').text('Se olvidó ingresar la razón social del proveedor');
+		$('#modalFaltaDatos').modal('show');
+	}else if( $('#tbodyCesta tr').length==0 ){
+		$('#h5DetalleFaltan').text('No se puede guardar una compra con una lista vacía');
+		$('#modalFaltaDatos').modal('show');
+	}else if( $('#tbodyCesta tr').length == $('#tbodyCesta .tieneDefectos').length ){
+		$('#h5DetalleFaltan').text('Su lista tiene defectos, como mínimo debe haber un producto bien registrado');
+		$('#modalFaltaDatos').modal('show');
+	}{
+		$.ajax({url: 'php/insertarCompra.php', type: 'POST', data: { ruc: $('#txtProviderRuc').val(), razonSocial: $('#txtProviderRazon').val(), domicilio: $('#txtProviderDireccion').val(), 
+			idComprobante: $('#sltFiltroDocumento').selectpicker('val'), compFecha: $('#txtCompraFecha').val(), serie: $('#txtCompraSerie').val(), idMoneda: $('#sltFiltroMoneda').selectpicker('val'), 
+			monedaCambio: $('#txtCompraValorDolar').val(), sumExonerado: $('#spExoneradasFin').text(), sumSubtotal: $('#spSubTotalFin').text(), sumIgv: $('#spIGVFin').text(), sumTotal: $('#spTotalFin').text(), compObs: $('#txtProviderObs').val()
+ }}).done(function(resp) {
+			console.log(resp)
+		});
+	}
+
+});
+$('#btnValidarCesta').click(function() {
+	var tieneDefectos = false;
+		$.each( $('.cardHijoProducto'), function (i, elem) {
+			$(elem).removeClass('tieneDefectos');
+			$(elem).find('input').removeClass('inputInvalido').removeClass('inputValido');
+			$(elem).find('.filter-option').removeClass('inputInvalido').removeClass('inputValido');
+			if($(elem).find('.txtCantidadCesta').val()==0 || $(elem).find('.txtCantidadCesta').val()=='' ){
+				$(elem).find('.txtCantidadCesta').addClass('inputInvalido'); 	$(elem).addClass('tieneDefectos'); tieneDefectos =true;
+			}else{
+				$(elem).find('.txtCantidadCesta').addClass('inputValido');
+			}
+			if($(elem).find('#sltFiltroUnidadCesta').selectpicker('val')==null ){
+				$(elem).find('#sltFiltroUnidadCesta ').parent().find('.filter-option').addClass('inputInvalido'); $(elem).addClass('tieneDefectos'); tieneDefectos =true;
+			}else{
+				$(elem).find('#sltFiltroUnidadCesta ').parent().find('.filter-option').addClass('inputValido');
+			}
+			if($(elem).find('#sltFiltroAfectoCesta').selectpicker('val')==null ){
+				$(elem).find('#sltFiltroAfectoCesta ').parent().find('.filter-option').addClass('inputInvalido'); $(elem).addClass('tieneDefectos'); tieneDefectos =true;
+			}else{
+				$(elem).find('#sltFiltroAfectoCesta ').parent().find('.filter-option').addClass('inputValido');
+			}
+			if( parseFloat($(elem).find('.txtPrecUnitCesta').val())==0 && $.inArray( $(elem).find('#sltFiltroAfectoCesta').selectpicker('val') , ["3","4"])==-1  ){
+				$(elem).find('.txtPrecUnitCesta').addClass('inputInvalido'); $(elem).addClass('tieneDefectos'); tieneDefectos =true;
+			}else{
+				$(elem).find('.txtPrecUnitCesta').addClass('inputValido');
+			}
+			if( parseFloat($(elem).find('.txtValorUnitCesta').val())==0 && $.inArray( $(elem).find('#sltFiltroAfectoCesta').selectpicker('val') , ["3","4"])==-1 ){
+				$(elem).find('.txtValorUnitCesta').addClass('inputInvalido'); $(elem).addClass('tieneDefectos'); tieneDefectos =true;
+			}else{
+				$(elem).find('.txtValorUnitCesta').addClass('inputValido');
+			}
+		});
+		if(tieneDefectos==true){
+			$('#h5DetalleFaltan').text('Tiene registros que no tienen los datos completos, si desea guardar, éstos no se considerarán. Por favor corríjalos. ');
+			$('#modalFaltaDatos').modal('show');
+		}
+		$('#btnGuardarCompraTodo').removeClass('d-none');
+
+
 });
 
 </script>
