@@ -19,7 +19,7 @@ include "generales.php"; ?>
 
 
 </head>
-<body>
+<body class="pb-5">
 <style>
 .bg-dark {
 	background-color: #7531d4!important;
@@ -50,6 +50,37 @@ thead tr th{cursor: pointer;}
 #tblProductosResultados td{border-top: 1px solid #d2e9ff;}
 .inputValido{border-color: #45c763!important;}
 .inputInvalido{border-color: #ff1d1d!important;}
+#overlay {
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.75); /* Black background with opacity */
+    z-index: 1051; /* Specify a stack order in case you're using a different order for other elements */
+   /* Add a pointer on hover */
+}
+#overlay .text{position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 18px;
+    color: white;
+    user-select: none;
+    transform: translate(-50%,-50%);
+}
+#hojita{font-size: 36px; display: inline; animation: cargaData 6s ease infinite;}
+#pFrase{ display: inline; }
+#pFrase span{ font-size: 13px;}
+@keyframes cargaData {
+    0%  {color: #96f368;}
+    25%  {color: #f3dd68;}
+    50% {color: #f54239;}
+    75% {color: #c173ce;}
+    100% {color: #33dbdb;}
+}
 </style>
 
 <?php include 'menu-wrapper.php'; ?>
@@ -65,8 +96,30 @@ thead tr th{cursor: pointer;}
 			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 		</div></div>
 		<?php if(!isset($_GET['nuevaCompra'])): ?>
-		<div class="d-flex justify-content-end">
-			<!-- <button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="icofont-shopping-cart"></i> Agregar nueva compra</button> -->
+		<div class="d-flex justify-content-between">
+		<div>
+			<span><i class="icofont-filter"></i> Filtro: </span>
+			<select class="selectpicker" data-live-search="false" id="sltFiltroMes" title="&#xed12; Mes">
+					<option value="01">Enero</option>
+					<option value="02">Febrero</option>
+					<option value="03">Marzo</option>
+					<option value="04">Abril</option>
+					<option value="05">Mayo</option>
+					<option value="06">Junio</option>
+					<option value="07">Julio</option>
+					<option value="08">Agosto</option>
+					<option value="09">Septiembre</option>
+					<option value="10">Octubre</option>
+					<option value="11">Noviembre</option>
+					<option value="12">Diciembre</option>
+				</select>
+				<select class="selectpicker" data-live-search="false" id="sltFiltroAnio" title="&#xed12; Año">
+				<?php for($i=2019; $i<= date('Y'); $i++ ){ ?>
+					<option value="<?= $i; ?>"><?= $i; ?></option>
+				<?php } ?>
+				</select>
+				<button class="btn btn-outline-primary " id="buscarCompraFecha" ><i class="icofont-search-2"></i> </button>
+		</div>
 			<a class="btn btn-outline-primary " href="compras.php?nuevaCompra"><i class="icofont-shopping-cart"></i> Generar nueva compra</a>
 		</div>
 		<?php endif; ?>
@@ -196,18 +249,43 @@ thead tr th{cursor: pointer;}
 			<thead>
 				<tr>
 					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Nombre de producto</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio Público</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio por Mayor</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio con Dscto.</th>
-					<th data-sort="int"><i class="icofont-expand-alt"></i> Stock</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Gravado</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
-					<th>@</th>
+					<th data-sort="int"><i class="icofont-expand-alt"></i> Proveedor</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> Serie</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> Fecha</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> Exonerado</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> SubTotal</th>
+					<th data-sort="int"><i class="icofont-expand-alt"></i> I.G.V.</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Total</th>
+					
 				</tr>
 			</thead>
 			<tbody>
-				
+			<?php 
+			if(!isset($_GET['fecha'])){$fecha = "date_format(now(), '%Y-%m')";}else{ $fecha = "'".$_GET['fecha']."'";}
+				$i=1;
+				$sqlCompr="SELECT `idCompra`, cli.cliRazonSocial, co.compDescripcion, date_format(`compFecha`, '%d/%m/%Y') as compFecha, `compSerie`, `compFechaRegistro`, c.`idMoneda`, `compCambioMoneda`, `idProveedor`, `comObs`, `idUsuario`, `compActivo`,
+				concat(m.monSimbolo, ' ', round(`compExonerado`,2)) as compExonerado, concat(m.monSimbolo, ' ',round(`compSubTotal`,2)) as compSubTotal, concat(m.monSimbolo, ' ', round(`compIgv`,2)) as compIgv, concat(m.monSimbolo, ' ', round(`compTotal`,2)) as compTotal
+				FROM `compras` c inner join moneda m on m.idMoneda = c.`idMoneda`
+				inner join comprobante co on co.idComprobante = c.idComprobante
+				inner join clientes cli on cli.idCliente = c.idProveedor
+				where date_format(compFecha, '%Y-%m') = $fecha
+				order by compFechaRegistro; ";
+				$resultadoCompr=$cadena->query($sqlCompr);
+				while($rowCompr=$resultadoCompr->fetch_assoc()){ ?>
+					<tr>
+						<td><?= $i;?></td>
+						<td class="text-capitalize"><?= $rowCompr['cliRazonSocial']; ?></td>
+						<td><?= $rowCompr['compDescripcion']; ?></td>
+						<td><?= $rowCompr['compSerie']; ?></td>
+						<td><?= $rowCompr['compFecha']; ?></td>
+						<td><?= $rowCompr['compExonerado']; ?></td>
+						<td><?= $rowCompr['compSubTotal']; ?></td>
+						<td><?= $rowCompr['compIgv']; ?></td>
+						<td><?= $rowCompr['compTotal']; ?></td>
+					</tr>
+				<?php $i++; }
+			?>
 			</tbody>
 		</table>
 		<?php } //fin de else parametros ?>
@@ -231,13 +309,16 @@ thead tr th{cursor: pointer;}
 
 
 
+<div id="overlay">
+	<div class="text"><span id="hojita"><i class="icofont icofont-leaf"></i></span> <p id="pFrase"> Solicitando los datos a Sunat... <br> <span>«Pregúntate si lo que estás haciendo hoy <br> te acerca al lugar en el que quieres estar mañana» <br> Walt Disney</span></p></div>
+</div>
 
 <?php include "php/modal.php"; ?>
 
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.14"></script>
+<script src="js/impotem.js?version=1.0.15"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
@@ -255,6 +336,7 @@ $(document).ready(function(){
 	}); */
 	//$("table").stupidtable();
 	$('[data-toggle="tooltip"]').tooltip();
+	$.jsonProductos = [];
 
 });
 $('#btnAgregarProducto').click(function() {
@@ -381,6 +463,7 @@ function calcularFinales(){
 }
 
 $('#btnGuardarCompraTodo').click(function() {
+	pantallaOver(true);
 	if( $('#sltFiltroDocumento').selectpicker('val')==null ){
 		$('#h5DetalleFaltan').text('Debe seleccionar un tipo de documento');
 		$('#modalFaltaDatos').modal('show');
@@ -408,18 +491,27 @@ $('#btnGuardarCompraTodo').click(function() {
 	}else if( $('#tbodyCesta tr').length == $('#tbodyCesta .tieneDefectos').length ){
 		$('#h5DetalleFaltan').text('Su lista tiene defectos, como mínimo debe haber un producto bien registrado');
 		$('#modalFaltaDatos').modal('show');
-	}{
+	}else{
+
 		$.ajax({url: 'php/insertarCompra.php', type: 'POST', data: { ruc: $('#txtProviderRuc').val(), razonSocial: $('#txtProviderRazon').val(), domicilio: $('#txtProviderDireccion').val(), 
 			idComprobante: $('#sltFiltroDocumento').selectpicker('val'), compFecha: $('#txtCompraFecha').val(), serie: $('#txtCompraSerie').val(), idMoneda: $('#sltFiltroMoneda').selectpicker('val'), 
-			monedaCambio: $('#txtCompraValorDolar').val(), sumExonerado: $('#spExoneradasFin').text(), sumSubtotal: $('#spSubTotalFin').text(), sumIgv: $('#spIGVFin').text(), sumTotal: $('#spTotalFin').text(), compObs: $('#txtProviderObs').val()
+			monedaCambio: $('#txtCompraValorDolar').val(), sumExonerado: $('#spExoneradasFin').text(), sumSubtotal: $('#spSubTotalFin').text(), sumIgv: $('#spIGVFin').text(), sumTotal: $('#spTotalFin').text(), compObs: $('#txtProviderObs').val(), jsonProductos: $.jsonProductos
  }}).done(function(resp) {
-			console.log(resp)
+			if(resp=='ok'){
+				$('#h5Detalle').text('su compra se guardó correctamente');
+				$('#modalGuardadoExitoso').modal('show');
+				$('#myModal').on('hidden.bs.modal', function () { 
+					window.location.href = 'compras.php';
+				});
+			}
 		});
 	}
+	pantallaOver(false);
 
 });
 $('#btnValidarCesta').click(function() {
 	var tieneDefectos = false;
+	$.jsonProductos=[];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
 			$(elem).removeClass('tieneDefectos');
 			$(elem).find('input').removeClass('inputInvalido').removeClass('inputValido');
@@ -448,16 +540,24 @@ $('#btnValidarCesta').click(function() {
 				$(elem).find('.txtValorUnitCesta').addClass('inputInvalido'); $(elem).addClass('tieneDefectos'); tieneDefectos =true;
 			}else{
 				$(elem).find('.txtValorUnitCesta').addClass('inputValido');
+				
+				$.jsonProductos.push({ idProd: $(elem).attr('data-id') , cantidad: $(elem).find('.txtCantidadCesta').val(), precUnit: $(elem).find('.txtPrecUnitCesta').val(), afecto: $(elem).find('#sltFiltroAfectoCesta').selectpicker('val'), unidad: $(elem).find('#sltFiltroUnidadCesta').selectpicker('val') });
 			}
 		});
 		if(tieneDefectos==true){
 			$('#h5DetalleFaltan').text('Tiene registros que no tienen los datos completos, si desea guardar, éstos no se considerarán. Por favor corríjalos. ');
 			$('#modalFaltaDatos').modal('show');
 		}
+		//console.log($.jsonProductos)
 		$('#btnGuardarCompraTodo').removeClass('d-none');
 
 
 });
+$('#buscarCompraFecha').click(()=>{
+	var mes = $('#sltFiltroMes').selectpicker('val');
+	var anio = $('#sltFiltroAnio').selectpicker('val');
+	window.location.href = 'compras.php?fecha='+anio+'-'+mes;
+})
 
 </script>
 <!-- BEGIN JIVOSITE CODE {literal} -->

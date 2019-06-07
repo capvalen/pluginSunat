@@ -3,6 +3,10 @@
 date_default_timezone_set('America/Lima');
 include 'conexion.php';
 
+
+$productos= $_POST['jsonProductos'];
+
+
 $sqlEProveedor="SELECT * FROM `clientes` where cliRuc = '{$_POST['ruc']}' and esProveedor=1; ";
 
 $resultadoEProveedor=$cadena->query($sqlEProveedor);
@@ -25,5 +29,34 @@ $idCompra= $cadena->insert_id;
 
 
 /**********  Proceso de compra detalle insert  ******** */
+
+$sqlProd  =''; 
+for ($i=0; $i < count($productos) ; $i++) { 
+	$sqlProd = $sqlProd. " INSERT INTO `compras_detalle`(`idCompra`, `idProducto`, `comdCantidad`, `comdPrecioUnit`, `comdSubTotal`, `idGravado`, `idUnidad`) select
+		{$idCompra},  {$productos[$i]['idProd']}, {$productos[$i]['cantidad']}, {$productos[$i]['precUnit']}, {$productos[$i]['cantidad']} * {$productos[$i]['precUnit']},
+		{$productos[$i]['afecto']}, u.idUnidad  from unidades u where undSunat = '{$productos[$i]['unidad']}' and undActivo=1;";
+	
+
+	$_POST['idProd']=$productos[$i]['idProd'];
+	switch( $productos[$i]['afecto'] ){
+		case "1": case "2": $_POST['proceso']='4'; break;
+		case "3": $_POST['proceso']='6'; break;
+		case "4": $_POST['proceso']='5'; break;
+	}
+	
+	$_POST['cantidad']=$productos[$i]['cantidad'];
+	$_POST['obs']='';
+	require 'updateStock.php';
+	
+
+}
+
+//echo $sqlProd;
+$cadena->multi_query($sqlProd);
+if($cadena){
+	echo 'ok';
+}else{
+	echo 'Error interno';
+}
 
 ?>

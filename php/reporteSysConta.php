@@ -26,6 +26,7 @@
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Dólares</th>
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Fecha Vencimiento</th>
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Condición</th>
+			<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -36,7 +37,7 @@ include "conexion.php";
 
 
 $sql= "SELECT date_format(`fechaEmision`, '%d/%m/%Y') as fechaEmision, `factTipoDocumento`, FORMAT(totalFinal,2) as totalFinal, `factSerie`,`factCorrelativo`, `tipDocUsuario`, `dniRUC`, upper(`razonSocial`) as `razonSocial`, 
-`totalFinal`, `factExonerados`, `costoFinal`, `IGVFinal`
+`totalFinal`, `factExonerados`, `costoFinal`, `IGVFinal`, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2' then 'De baja' end as comprobanteEmitidoDescr
 FROM `fact_cabecera` WHERE `fechaEmision` BETWEEN '{$_POST['fecha1']}' and '{$_POST['fecha2']}'; ";
 $resultado=$cadena->query($sql);
 if($resultado->num_rows>=1){
@@ -70,6 +71,7 @@ while($row=$resultado->fetch_assoc()){ ?>
 	<td> 0.00 </td>
 	<td> 00/00/0000 </td>
 	<td> - </td>
+	<td> <?= $row['comprobanteEmitidoDescr']; ?> </td>
 </tr>
 <?php 
 }

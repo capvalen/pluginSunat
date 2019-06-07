@@ -82,3 +82,7 @@ $('#btnModificarUsuarios').click(function() {
 $('#modalGuardadoExitoso').on('hidden.bs.modal', function () { 
 	location.reload();
 });
+function pantallaOver(tipo) {
+	if(tipo){$('#overlay').css('display', 'initial');}
+	else{ $('#overlay').css('display', 'none'); }
+}

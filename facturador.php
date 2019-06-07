@@ -455,7 +455,7 @@ thead tr th{cursor: pointer;}
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
-<script src="js/impotem.js?version=1.0.8"></script>
+<script src="js/impotem.js?version=1.0.15"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
@@ -1097,10 +1097,7 @@ $("#txtDniBoleta").keyup(function(e){
    	 }
 		}
 });
-function pantallaOver(tipo) {
-	if(tipo){$('#overlay').css('display', 'initial');}
-	else{ $('#overlay').css('display', 'none'); }
-}
+
 
 <?php if($_COOKIE['ckPower']==1){?>
 $('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {

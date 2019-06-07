@@ -70,7 +70,21 @@ thead tr th{cursor: pointer;}
 				<select class="selectpicker" data-live-search="false" id="sltFiltroReporte" title="&#xed12; Tipo de reporte">
 					<option value="0">Resumido</option>
 					<option value="1">Contable</option>
+					<option value="2">Kardex</option>
 					<!-- <option value="1">Detallado</option> -->
+				</select>
+				<select class="selectpicker" data-live-search="false" id="sltFiltroProducto" title="&#xed12; Productos">
+					<?php 
+					$sqlProd="SELECT `idProductos`, `prodDescripcion`, p.`idUnidad`, `prodPrecio`, `prodActivo`, u.undDescipcion
+					FROM `productos` p inner join unidades u on u.idUnidad = p.idUnidad 
+					WHERE `prodActivo`=1 and idProductos<>0";
+					$resultadoProd=$cadena->query($sqlProd);
+					while($rowProd=$resultadoProd->fetch_assoc()){ ?>
+					<option value="<?= $rowProd['idProductos'];?>"><?= $rowProd['prodDescripcion'];?></option>
+				
+					<?php 
+					}	
+						?>
 				</select>
 				<button class="btn btn-outline-primary ml-3" id="btnBuscarReporte"><i class="icofont-search-2"></i></button>
 				<button class="btn btn-outline-success ml-3 d-none" id="btnGuardarReporte"><i class="icofont-file-excel"></i> Guardar reporte</button>
@@ -182,6 +196,14 @@ $('#btnBuscarReporte').click(function() {
 					$('#tablaSysCont').append(resp).anotherJqueryMethod;
 				});
 				break;
+			case "2":
+				$('#tablaSysCont').removeClass('d-none');
+				$('#tablaCabeceras').addClass('d-none');
+				$.ajax({url: 'php/reporteKardex.php', type: 'POST', data: { }}).done(function(resp) { console.log( resp );
+					$('#tablaSysCont').children().remove();
+					$('#tablaSysCont').append(resp).anotherJqueryMethod;
+				});
+			break;
 			default:
 				break;
 		}
