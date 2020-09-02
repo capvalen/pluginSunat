@@ -15,7 +15,7 @@ if($resultado->num_rows>=1){
 	echo json_encode($fila);
 
 }else{
-	$json = file_get_contents("https://infocatsoluciones.com/app/hospedajeBahamas/dataSunat.php?ruc={$_POST['ruc']}");
+	$json = file_get_contents("https://infocatsoluciones.com/app/consorcioSoriano/dataSunat.php?ruc={$_POST['ruc']}");
 	$obj = json_decode($json);
 	//echo $obj->access_token;
 	//var_dump($obj->ruc);

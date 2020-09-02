@@ -1,6 +1,6 @@
 <?php 
 $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5" id="menuInfocat">
 	<a class="navbar-brand" href="#">
     <img src="images/VirtualCorto.png" width="60" height="60" alt="">
   </a>
@@ -17,7 +17,7 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
-					<a class="dropdown-item" href="Compras" id=""><i class="icofont-ui-copy"></i> Factura</a>
+					<a class="dropdown-item" href="#!" id="AEmitirFactura"><i class="icofont-ui-copy"></i> Factura</a>
 					<a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de crédto</a>
 					<a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de débito</a>
 				</div>

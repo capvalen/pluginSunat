@@ -24,6 +24,12 @@ switch ($_POST['emitir']) {
 }
 $serie = $_POST['queSerie'];
 
+$hoy = new DateTime();
+if( $_POST['fecha']== $hoy->format('Y-m-d') ){
+	$fecha = 'curdate()';
+}else{
+	$fecha = "'".$_POST['fecha']."'";
+}
 
 $productos= $_POST['jsonProductos'];
 $afectos=0; $exonerados=0;
@@ -76,7 +82,7 @@ $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSer
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
   `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`) 
-VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',curdate(),curtime(),{$tipoDoc},
+VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
 	1,now(), '{$_POST['cliDireccion']}', '' )";
@@ -144,7 +150,7 @@ if($filasCabeza==1){
 }
 
 //Actualización Facturador v3
-$bolsas = '|-|0|0|||';
+$bolsas = '|-|0|0||';
 
 $rowProductos = array();
 

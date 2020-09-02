@@ -10,7 +10,7 @@ include "generales.php"; ?>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Facturador electrónico - Desarrollado por: Infocat Soluciones</title>
-	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="" crossorigin="anonymous">
 	<link rel="stylesheet" href="icofont.min.css">
 	<link rel="stylesheet" href="css/bootstrap-select.min.css">
 	<link rel="stylesheet" href="css/anksunamun.css">
@@ -20,17 +20,17 @@ include "generales.php"; ?>
 <body>
 <style>
 .bg-dark {
-	background-color: #7531d4!important;
+	background-color: #7030a0!important;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+		/* display: none; <- Crashes Chrome on hover */
+		-webkit-appearance: none;
+		margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
 input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+		-moz-appearance:textfield; /* Firefox */
 }
 #txtPlacaBoleta::placeholder{
 	font-family:'Icofont', 'Segoe UI';
@@ -42,13 +42,13 @@ input[type=number] {
 #imgLogo{max-width:250px;}
 .bootstrap-select .btn-light{background-color: #ffffff;}
 .bootstrap-select .dropdown-toggle .filter-option{    border: 1px solid #ced4da;
-    border-radius: .25rem;}
+		border-radius: .25rem;}
 thead tr th{cursor: pointer;}
 .dropdown-item .text, .bootstrap-select button{text-transform: capitalize;}
 #divCalculosFinales span{font-size:1.1rem;}
 .btn-outline-primary {
-    color: #663cdc;
-    border-color: #663cdc;
+		color: #663cdc;
+		border-color: #663cdc;
 }
 .btn-outline-primary:hover, .btn-outline-primary:hover, .btn-outline-primary:not(:disabled):not(.disabled):active{
 	background-color: #663cdc;
@@ -58,35 +58,35 @@ thead tr th{cursor: pointer;}
 	box-shadow: 0 0 0 0.2rem rgba(148, 102, 239, 0.5);
 }
 #overlay {
-    position: fixed; /* Sit on top of the page content */
-    display: none; /* Hidden by default */
-    width: 100%; /* Full width (cover the whole page) */
-    height: 100%; /* Full height (cover the whole page) */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.75); /* Black background with opacity */
-    z-index: 1051; /* Specify a stack order in case you're using a different order for other elements */
-   /* Add a pointer on hover */
+		position: fixed; /* Sit on top of the page content */
+		display: none; /* Hidden by default */
+		width: 100%; /* Full width (cover the whole page) */
+		height: 100%; /* Full height (cover the whole page) */
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0,0,0,0.75); /* Black background with opacity */
+		z-index: 1051; /* Specify a stack order in case you're using a different order for other elements */
+	 /* Add a pointer on hover */
 }
 #overlay .text{position: absolute;
-    top: 50%;
-    left: 50%;
-    font-size: 18px;
-    color: white;
-    user-select: none;
-    transform: translate(-50%,-50%);
+		top: 50%;
+		left: 50%;
+		font-size: 18px;
+		color: white;
+		user-select: none;
+		transform: translate(-50%,-50%);
 }
 #hojita{font-size: 36px; display: inline; animation: cargaData 6s ease infinite;}
 #pFrase{ display: inline; }
 #pFrase span{ font-size: 13px;}
 @keyframes cargaData {
-    0%  {color: #96f368;}
-    25%  {color: #f3dd68;}
-    50% {color: #f54239;}
-    75% {color: #c173ce;}
-    100% {color: #33dbdb;}
+		0%  {color: #96f368;}
+		25%  {color: #f3dd68;}
+		50% {color: #f54239;}
+		75% {color: #c173ce;}
+		100% {color: #33dbdb;}
 }
 </style>
 <?php include 'menu-wrapper.php'; ?>
@@ -111,7 +111,7 @@ thead tr th{cursor: pointer;}
 	<div class="container-fluid mt-5 px-5">
 		<div class="row">
 		<div class="col-md-3">
-			<img src="bitmap.jpg?version=1.0.3" class='img-fluid mt-3'>
+			<img src="images/infocat.png?v=1.0" class='img-fluid mt-3'>
 		</div>
 		<div class="col ml-4">
 			<h3 class="display-4">Facturación Electrónica</h3>
@@ -131,6 +131,7 @@ thead tr th{cursor: pointer;}
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Código</th>
 					<th data-sort="int"><i class="icofont-expand-alt"></i> Hora</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
 					<th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 					<th>@</th>
@@ -157,37 +158,37 @@ thead tr th{cursor: pointer;}
 </section>
 
 <div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog" data-backdrop="static" >
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Guardado exitoso</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Guardado exitoso</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
 				<button class="btn btn-outline-primary" id="btnPrintTicketera"><i class="icofont-paper"></i> Imprimir en ticketera</button>
 				<button class="btn btn-outline-success" id="btnPrintA4"><i class="icofont-print"></i> Generar PDF (A4)</button>
 
-      </div>
-      <div class="modal-footer d-none">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
-      </div>
-    </div>
-  </div>
+			</div>
+			<div class="modal-footer d-none">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 
 <!-- Modal para Emitir Boleta -->
 <div class="modal fade" id="modalEmisionBoleta" tabindex="-1" role="dialog" data-backdrop="static">
-  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+				<i class="icofont-close-circled"></i>
 				</button>
-				<h5 class="pb-4"><i class="icofont-cart-alt"></i> Generar comprobante de venta</h5>
+				<h4 class="py-3 hTitulo"><i class="icofont-paper"></i> Generar: <span id="queGenero"></span></h4>
 				<div class="form-inline">
 				<div class="form-check mb-3">
 					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
@@ -203,22 +204,23 @@ thead tr th{cursor: pointer;}
 				</select>
 				</div>
 				<div class="form-inline  ml-auto">
-				<label class="pr-3 mt-n3" for=""><strong>Serie:</strong></label>
-				<div class="dropdown mb-3">
-				<?php 
-					$sqlSerieBoleta="SELECT * FROM `fact_series`";
-					$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
-					$rowSerieBoleta=$resultadoSerieBoleta->fetch_assoc();
-				?>
-				<select class="form-control" id="sltSeriesBoleta">
-					<option value="series" selected>Series</option>
-					<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
-					<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
-					<option id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
-				</select>
-				</div>
+					<label class="pr-3 mt-n3 text-muted" for=""><strong>Fecha:</strong></label>
+					<input type="date" class="form-control mt-n3 mr-2" id="txtFechaComprobante">
+					<label class="pr-3 mt-n3 text-muted" for=""><strong>Serie:</strong></label>
+					<div class="dropdown mb-3">
+					<?php 
+						$sqlSerieBoleta="SELECT * FROM `fact_series`";
+						$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
+						$rowSerieBoleta=$resultadoSerieBoleta->fetch_assoc();
+					?>
+					<select class="form-control" id="sltSeriesBoleta">
+						<option value="series" selected>Series</option>
+						<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
+						<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
+						<option id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
+					</select>
+					</div>
 
-					
 				</div>
 				</div>
 			
@@ -244,7 +246,7 @@ thead tr th{cursor: pointer;}
 				<div class="card">
 					<div class="card-body">
 						<p class="text-muted d-none mb-0"><strong>Detalle:</strong></p>
-						<div class="row">
+						<div class="row text-muted">
 							<div class="col-4"><strong>Concepto</strong></div>
 							<div class="col-1"><strong>Cant.</strong></div>
 							<div class="col-1"><strong>Und</strong></div>
@@ -256,31 +258,28 @@ thead tr th{cursor: pointer;}
 						<div id="divProductos">
 							<?php include "php/filaNueva.php";?>
 						</div>
-						<button class="btn btn-outline-success  mt-2" id="btnAgregarProducto"><i class="icofont-ui-add"></i> Agregar más produtos</button>
+						<button class="btn btn-outline-success btn-sm mt-2" id="btnAgregarProducto"><i class="icofont-ui-add"></i> Agregar más produtos</button>
 					</div>
 				</div>
-				<div class='mt-2 pr-5'>
+				<div class='my-3 '>
 					<div class="d-flex justify-content-around" id="divCalculosFinales"> <!-- align-items-end flex-column -->
-						<span><span>Exonerado:</span> <span>S/ <span id="spExoneradoBoleta">0.00</span></span></span>
-						<span><span>Sub-Total:</span> <span>S/ <span id="spSubTotBoleta">0.00</span></span></span>
-						<span><span>IGV:</span> <span>S/ <span id="spIgvBoleta">0.00</span></span></span>
-						<span><span>Total:</span> <span>S/ <span id="spTotalBoleta">0.00</span></span></span>
+						<span><small>Exonerado:</small> <span>S/ <span id="spExoneradoBoleta">0.00</span></span></span>
+						<span><small>Sub-Total:</small> <span>S/ <span id="spSubTotBoleta">0.00</span></span></span>
+						<span><small>IGV:</small> <span>S/ <span id="spIgvBoleta">0.00</span></span></span>
+						<span><small>Total:</small> <strong>S/ <span id="spTotalBoleta">0.00</span></strong></span>
 					</div>
 				</div>
 				
-       
-      </div>
-      <div class="modal-footer">
-				<div class="container-fluid">
+			 <div class="container-fluid mt-3">
 					<div class="row text-center">
 						<p for="" class="text-danger d-none"> <span class="lblError"></span></p>
 					</div>
 					<button type="button" class="btn btn-outline-success float-right d-none" id="btnEmitirFacturav2" ><i class="icofont-paper"></i> Emitir Factura</button>
 					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir Boleta</button>
 				</div>
-      </div>
-    </div>
-  </div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -289,160 +288,160 @@ thead tr th{cursor: pointer;}
 
 <!-- Modal para ingresar el N° ticket -->
 <div class="modal fade" id="modalIngresoTicket" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+					<span aria-hidden="true">&times;</span>
 				</button>
 				<h5>Generar comprobante</h5>
-        <p>N° de Ticket:</p>
+				<p>N° de Ticket:</p>
 				<input type="text" class="form-control text-uppercase text-center my-3 d-none" id="txtNCodNegocio" placeholder='Código de negocio' value="<?= $_COOKIE['ckNegocio'];?>" readonly>
 				<input type="text" class="form-control text-uppercase text-center my-3 d-none" id="txtCodLocal" placeholder='Código de local' value="<?= $_COOKIE['ckLocal'];?>" readonly>
 				<input type="text" class="form-control text-uppercase text-center my-3" id="txtNumTicket" placeholder='N° de Ticket' value="103420-8">
-      </div>
-      <div class="modal-footer">
+			</div>
+			<div class="modal-footer">
 				<div class="container-fluid">
 					<div class="row">
 						<p for="" class="text-danger "><small class="lblError"></small></p>
 					</div>
 					<button type="button" class="btn btn-secondary float-right" id="btnConsultarDisponibilidad" >Consultar disponibilidad</button>
 				</div>
-      </div>
-    </div>
-  </div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Modal para consultar el N° ticket -->
 <div class="modal fade" id="modalConsultaTicket" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <p>Ingrese los datos de negocio y el N° de Ticket:</p>
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<p>Ingrese los datos de negocio y el N° de Ticket:</p>
 				<input type="text" class="form-control text-uppercase text-center my-3" id="txtNCodNegocio2" placeholder='Código de negocio' value="113">
 				<input type="text" class="form-control text-uppercase text-center my-3" id="txtCodLocal2" placeholder='Código de local' value="12300">
 				<input type="text" class="form-control text-uppercase text-center my-3" id="txtNumTicket2" placeholder='N° de Ticket' value="103420-8">
-      </div>
-      <div class="modal-footer">
+			</div>
+			<div class="modal-footer">
 				<div class="container-fluid">
 					<div class="row">
 						<p for="" class="text-danger "><small class="lblError"></small></p>
 					</div>
 					<button type="button" class="btn btn-secondary float-right" id="btnConsultarDisponibilidad2" >Consultar</button>
 				</div>
-      </div>
-    </div>
-  </div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
 <!-- Modal para empezar el proceso B/v-Fact -->
 <div class="modal fade" id="modalProcesarComprobante" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <p>Procesos para el Ticket <strong class="text-uppercase"><span id="spanTicket"></span></strong>:</p>
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<p>Procesos para el Ticket <strong class="text-uppercase"><span id="spanTicket"></span></strong>:</p>
 				<button class="btn btn-block btn-outline-primary my-3" id="btnEmitirFactura">Emitir Factura</button>
 				<button class="btn btn-block btn-outline-primary my-3" id="btnEmitirBoleta">Emitir Boleta de Venta</button>
 				<button class="btn btn-block btn-outline-primary my-3">Generar Nota de Crédito</button>
 				<button class="btn btn-block btn-outline-primary my-3">Generar Nota de Pedido</button>
-      </div>
-  	</div>
+			</div>
+		</div>
 	</div>
 </div>
 
 <!-- Modal para empezar Modificar las series -->
 <div class="modal fade" id="modalModSerie" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modificar series</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label for="">Serie de Boletas:</label>
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Modificar series</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<label for="">Serie de Boletas:</label>
 				<input type="text" class="form-control text-center" id="txtSerieBoleta">
 				<label for="">Serie de Facturas:</label>
 				<input type="text" class="form-control text-center" id="txtSerieFactura">
 				<label for="">Serie de Interna:</label>
 				<input type="text" class="form-control text-center" id="txtSerieInterna">
-      </div>
-      <div class="modal-footer">
+			</div>
+			<div class="modal-footer">
 				<p class="text-danger d-none" id="pError2"></p>
-        <button type="button" class="btn btn-primary" id="btnUpdateSeries">Actualizar series</button>
-      </div>
-    </div>
-  </div>
+				<button type="button" class="btn btn-primary" id="btnUpdateSeries">Actualizar series</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Modal para empezar Modificar las precios -->
 <div class="modal fade" id="modalModPrecios" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modificar precios</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label for="">Precio de Gasohol 90 Plus:</label>
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Modificar precios</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<label for="">Precio de Gasohol 90 Plus:</label>
 				<input type="text" class="form-control text-center" id="txtPrecGasoholv2">
 				<label for="">Precio de Diesel D5 S-50 UV:</label>
 				<input type="text" class="form-control text-center" id="txtPrecDieselv2">
-      </div>
-      <div class="modal-footer">
+			</div>
+			<div class="modal-footer">
 				<p class="text-danger d-none" id="pError3"></p>
-        <button type="button" class="btn btn-primary" id="btnUpdatePrecios"><i class="icofont-refresh"></i> Actualizar precios</button>
-      </div>
-    </div>
-  </div>
+				<button type="button" class="btn btn-primary" id="btnUpdatePrecios"><i class="icofont-refresh"></i> Actualizar precios</button>
+			</div>
+		</div>
+	</div>
 </div>
 <?php if($_COOKIE['ckPower']==1){ ?>
 <!-- Modal para confirmar la Baja -->
 <div class="modal fade" id="modalDarBajas" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Notificación de baja</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label for="">¿Desea realmente dar de baja el Comprobante <strong id="strComprobante"></strong>?</label>
-        <label for="">Ingrese el motivo de la baja:</label>
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Notificación de baja</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<label for="">¿Desea realmente dar de baja el Comprobante <strong id="strComprobante"></strong>?</label>
+				<label for="">Ingrese el motivo de la baja:</label>
 				<input type="text" class="form-control text-capitalize" id="txtConceptoBaja">
-      </div>
-      <div class="modal-footer">
+			</div>
+			<div class="modal-footer">
 				<p class="text-danger d-none" id="pError3"></p>
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="icofont-close"></i> Cancelar operación</button>
-        <button type="button" class="btn btn-danger" id="btnDarbaja"><i class="icofont-download-alt"></i> Dar de Baja</button>
-      </div>
-    </div>
-  </div>
+				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="icofont-close"></i> Cancelar operación</button>
+				<button type="button" class="btn btn-danger" id="btnDarbaja"><i class="icofont-download-alt"></i> Dar de Baja</button>
+			</div>
+		</div>
+	</div>
 </div>
 <div class="modal fade" id="modalExitoBajas" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <label for="">Comprobante dado de baja exitosamente</label>
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<label for="">Comprobante dado de baja exitosamente</label>
 				<h5 id="h5ComprobanteBaja"></h5>
-      </div>
-      <div class="modal-footer">
+			</div>
+			<div class="modal-footer">
 				<p class="text-danger d-none" id="pError3"></p>
-        <button type="button" class="btn btn-success" id="btnDarbaja"  data-dismiss="modal"><i class="icofont-check"></i> Ok</button>
-      </div>
-    </div>
-  </div>
+				<button type="button" class="btn btn-success" id="btnDarbaja"  data-dismiss="modal"><i class="icofont-check"></i> Ok</button>
+			</div>
+		</div>
+	</div>
 </div>
 <?php } ?>
 
@@ -453,8 +452,8 @@ thead tr th{cursor: pointer;}
 <?php include "php/modal.php"; ?>
 
 <script src="js/jquery.min.js"></script>
-<script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-<script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <script src="js/impotem.js?version=1.0.15"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
@@ -716,6 +715,8 @@ $('#AEmitirBoleta').click(function() {
 	$('#sltSeriesBoleta option').removeAttr('selected');
 	$('#optBoleta').attr('selected', true);
 	$('#chkEstadoDni').prop('checked', true).change().attr('disabled', false);
+	$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'));
+	$('#queGenero').text('Boleta de venta');
 	$('#modalEmisionBoleta').modal('show');
 });
 $('#AEmitirFactura').click(function() {
@@ -727,6 +728,8 @@ $('#AEmitirFactura').click(function() {
 	$('#btnEmitirFacturav2').removeClass('d-none');
 	$('#optFactura').attr('selected', true);
 	$('#chkEstadoDni').prop('checked', false).change().attr('disabled', true);
+	$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'));
+	$('#queGenero').text('Factura');
 	$('#modalEmisionBoleta').modal('show');
 });
 
@@ -865,7 +868,7 @@ $('#btnEmitirBoletav2').click(function() {
 			razon='Cliente sin documento';
 		}
 		
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(),jsonProductos: jsonProductos, jsonCliente:jsonCliente }}).done(function(resp) { //  placa: $('#txtPlacaBoleta').val(),
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(),jsonProductos: jsonProductos, jsonCliente:jsonCliente, fecha: $('#txtFechaComprobante').val() }}).done(function(resp) { //  placa: $('#txtPlacaBoleta').val(),
 			console.log(resp)
 			$.jTicket = JSON.parse(resp); console.log( $.jTicket );
 			if($.jTicket.length >=1){
@@ -929,7 +932,7 @@ $('#btnEmitirFacturav2').click(function() {
 			dniRc='00000000';
 			razon='Cliente sin documento';
 		}
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon	, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val() }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
 			console.log(resp)
 			$.jTicket = JSON.parse(resp); console.log( $.jTicket );
 			if($.jTicket.length >=1){
@@ -965,7 +968,7 @@ $('#btnUpdatePrecios').click(function() {
 	}
 });
 $('#sltFiltroClientes').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-  
+	
 	var index=$('#sltFiltroClientes').val();
 	var padre = $("#sltFiltroClientes option[value="+index+"]");
 	if($(this).val()!=null){
@@ -1013,7 +1016,7 @@ $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, c
 		padre.find('.sltFiltroPrecios').selectpicker('val', '1');
 		padre.find('.campoPrecioUnit').prop('readonly',true);
 
-		if($(this).selectpicker('val')==0){ //codigo de la posición libre -> Antes #52
+		if($(this).selectpicker('val')==1){ //codigo de la posición libre -> Antes #52
 			padre.find('#sltFiltroGravado').prop('disabled', false).selectpicker('refresh');
 			
 			padre.find('.sltFiltroProductos').addClass('d-none');
@@ -1074,8 +1077,8 @@ $('#divProductos').on('click', '.optPrecios', function (e) {
 });
 
 $("#txtDniBoleta").keyup(function(e){
-    var code = e.which; 
-    if( code==13 ){ e.preventDefault(); // console.log( 'enter' );
+		var code = e.which; 
+		if( code==13 ){ e.preventDefault(); // console.log( 'enter' );
 		pantallaOver(true);
 		if( $("#txtDniBoleta").val().length>0 ){
 			$.ajax({url: 'php/dataSunat.php', type: 'POST', data: { ruc: $('#txtDniBoleta').val() }}).done(function(resp) {
@@ -1094,7 +1097,7 @@ $("#txtDniBoleta").keyup(function(e){
 				$('#txtRazonBoleta').focus();
 				pantallaOver(false);
 			});
-   	 }
+	 	 }
 		}
 });
 
@@ -1122,6 +1125,18 @@ $('#btnDarbaja').click(function() {
 			});
 		}
 	});
+});
+$('#txtFechaComprobante').focusout(function() {
+	let hoy = moment( moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')
+	let comprobante = moment($('#txtFechaComprobante').val(), 'YYYY-MM-DD')
+	let diferencia = hoy.diff(comprobante, 'days')
+	if( diferencia<0 ){
+		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
+	}else if(diferencia>4){
+		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
+	}else if( isNaN(diferencia)){
+		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
+	}
 });
 
 
