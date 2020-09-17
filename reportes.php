@@ -71,7 +71,7 @@ thead tr th{cursor: pointer;}
 					<option value="0">Resumido</option>
 					<option value="1">Contable</option>
 					<option value="2">Kardex</option>
-					<!-- <option value="1">Detallado</option> -->
+					<option value="3">Detallado</option>
 				</select>
 				<select class="selectpicker" data-live-search="false" id="sltFiltroProducto" title="&#xed12; Productos">
 					<?php 
@@ -204,6 +204,16 @@ $('#btnBuscarReporte').click(function() {
 					$('#tablaSysCont').append(resp).anotherJqueryMethod;
 				});
 			break;
+			case '3':
+				$('#tablaSysCont').removeClass('d-none');
+				$('#tablaCabeceras').addClass('d-none');
+				var fecha1 = moment($('#txtFecha1').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+				var fecha2 = moment($('#txtFecha2').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
+				$.ajax({url: 'php/reporteC34.php', type: 'POST', data: {fecha: fecha1, fecha2: fecha2 }}).done(function(resp) { console.log( resp );
+					$('#tablaSysCont').children().remove();
+					$('#tablaSysCont').append(resp).anotherJqueryMethod;
+				});
+			break;
 			default:
 				break;
 		}
@@ -224,7 +234,7 @@ $('#btnGuardarReporte').click(function() {
 			var exportData = instance.getExportData()['tablaCabeceras']['xlsx'];
 			instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte resumido', exportData.fileExtension);
 		break;
-		case "1":
+		case "1", '3':
 		var instance = new TableExport(document.getElementById('tablaSysCont'), {
 				formats: ['xlsx'],
 				exportButtons: false

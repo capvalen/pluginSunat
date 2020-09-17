@@ -10,8 +10,8 @@
 <tbody>
 <?php 
 $_POST['fecha1']= '2019-05-28';
-$_POST['fecha2']= '2019-06-07';
-$_POST['idProd']= 7;
+$_POST['fecha2']= '2019-06-07'; 
+$_POST['idProd']= 1;
 
 date_default_timezone_set('America/Lima');
 include "conexion.php";
