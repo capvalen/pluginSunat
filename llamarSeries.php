@@ -1,5 +1,6 @@
 <?php
-include "conexion.php";
+include "php/conexion.php";
+include "generales.php";
 
 $filas = array();
 $sql="SELECT * FROM `fact_series`";

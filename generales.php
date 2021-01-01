@@ -1,7 +1,7 @@
 <?php
 //Rellenar por cada Cliente:
-$directorio = 'C:\SFS_v1.3.2\sunat_archivos\sfs\DATA/';
-$rucEmisor ='10237023698';
+$directorio = 'C:\SFS_v1.3.4.2\sunat_archivos\sfs\DATA/';
+$rucEmisor ='10198436670';
 $nombreEmisor = "De: Aliaga Montes Lucio";
 $direccionEmisor = "Av. Francisca De La Calle N° 241 El Tambo - Huancayo - Junín";
 $celularEmisor = "969000488 - 989535341 - (064) 412514";

@@ -36,6 +36,14 @@ if ($row['idUsuario']>=1){
 }else{
 	echo 'nada';
 }
+
+
+$sqlConf = "SELECT `idConf`, `confVariable`, `confValor` FROM `configuracion` where 1;";
+$resultadoConf=$cadena->query($sqlConf);
+while($rowConf=$resultadoConf->fetch_assoc()){ 
+	setcookie($rowConf['confVariable'], $rowConf['confValor'], $expira, $local);
+}
+
 /* liberar la serie de resultados */
 mysqli_free_result($log);
 /* cerrar la conexión */

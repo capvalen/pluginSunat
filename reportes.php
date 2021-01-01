@@ -1,5 +1,7 @@
 <?php
-include 'conexion.php';
+include 'php/conexion.php';
+include "generales.php";
+
 if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	die(); }
 include "generales.php"; ?>

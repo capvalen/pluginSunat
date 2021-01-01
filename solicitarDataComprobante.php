@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set('America/Lima');
 
-include 'conexion.php';
+include 'php/conexion.php';
 include 'generales.php';
 require "NumeroALetras.php";
 

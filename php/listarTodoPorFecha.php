@@ -45,9 +45,10 @@ while($row=$resultado->fetch_assoc()){
 
 		<td class="text-capitalize"><?= $row['razonSocial']; ?></td>
 	<?php if( isset($_POST['fecha2'])): ?>
-		<td>S/ <?= number_format($row['IGVFinal'],2); ?></td>
+		<td>S/ <span class="spTotalPac"><?= number_format($row['IGVFinal'],2); ?></span></td>
 	<?php endif; ?>
-		<td>S/ <?= number_format($row['totalFinal'],2); ?></td>
+		<td>S/ <?= number_format($row['IGVFinal'],2); ?></td>
+		<td>S/ <span class="spTotalPac"><?= number_format($row['totalFinal'],2); ?></span></td>
 		<td class="text-capitalize"><?php if($row['comprobanteEmitido']==0){ echo $row['comprobanteEmitidoDescr']; } else if($row['comprobanteEmitido']==2){ echo "<span class='text-danger'>".$row['comprobanteEmitidoDescr']." ".$row['motivoBaja']."</span>";} else { echo "<span class='text-success'>".$row['comprobanteEmitidoDescr']."</span>";}?></td>
 		<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" >
 			<?php 

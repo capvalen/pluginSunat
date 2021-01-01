@@ -1,5 +1,9 @@
 <?php
 include('phpqrcode/qrlib.php'); 
+
+include 'php/conexion.php';
+include 'generales.php';
+require "NumeroALetras.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +12,7 @@ include('phpqrcode/qrlib.php');
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Facturador electrónico <?= $_GET['serie']."-".$_GET['correlativo'];?> - Desarrollado por infocatsoluciones.com</title>
-	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/bootstrap.min.css" >
 </head>
 <body>
 <style>
@@ -26,9 +30,6 @@ include('phpqrcode/qrlib.php');
 
 <?php
 
-include 'conexion.php';
-include 'generales.php';
-require "NumeroALetras.php";
 
 
 $sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
@@ -224,8 +225,8 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 
 </div> <!-- Fin de contariner 1 -->
 <script src="js/jquery.min.js"></script>
-<script src="js/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-<script src="js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script src="js/popper.min.js" ></script>
+<script src="js/bootstrap.min.js" ></script>
 
 <script>
 $(document).ready(function () {

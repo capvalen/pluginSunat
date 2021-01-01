@@ -1,6 +1,6 @@
 <?php
 
-include 'conexion.php';
+include 'php/conexion.php';
 include 'generales.php';
 require "NumeroALetras.php";
 

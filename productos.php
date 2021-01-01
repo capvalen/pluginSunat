@@ -1,5 +1,7 @@
 <?php
-include 'conexion.php';
+include 'php/conexion.php';
+include "generales.php";
+
 if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	die(); }
 include "generales.php"; ?>
@@ -96,18 +98,22 @@ thead tr th{cursor: pointer;}
       </div>
       <div class="modal-body">
 				<div class="form-group row">
-					<label for="txtPrecioNuevo" class="col-sm-4 col-form-label"><span class="text-danger">*</span> Descripción:</label>
+					<label for="txtDescripcionNuevo" class="col-sm-4 col-form-label"><span class="text-danger">*</span> Descripción:</label>
 					<div class="col-sm-8"> <input type="text" class="form-control text-capitalize" id="txtDescripcionNuevo" > </div>
 				</div>
 				<div class="form-group row">
+					<label for="txtCodeSunat" class="col-sm-4 col-form-label">Código Sunat:</label>
+					<div class="col-sm-8"> <input type="text" class="form-control text-capitalize" id="txtCodeSunat" > </div>
+				</div>
+				<div class="form-group row <?= ( $_COOKIE['precioPublico']==1 ? '': 'd-none' )?>">
 					<label for="txtPrecioNuevo" class="col-sm-4 col-form-label"><span class="text-danger">*</span> Precio al Público:</label>
 					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioNuevo" value="0.00"> </div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group row <?= ( $_COOKIE['precioMayorista']==1 ? '': 'd-none' )?>">
 					<label for="txtPrecioMayorNuevo" class="col-sm-4 col-form-label">Precio al Mayor:</label>
 					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioMayorNuevo" value="0.00"> </div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group row <?= ( $_COOKIE['precioDescuento']==1 ? '': 'd-none' )?>">
 					<label for="txtPrecioDescuentoNuevo" class="col-sm-4 col-form-label">Precio Mínimo:</label>
 					<div class="col-sm-6"> <input type="number" class="form-control esMoneda text-center" id="txtPrecioDescuentoNuevo" value="0.00"> </div>
 				</div>
@@ -302,6 +308,8 @@ $('#modalNuevoProducto').on('shown.bs.modal', function () {
 	$('#txtDescripcionNuevo').focus();
 });
 $('#btnAgregarProducto').click(function() {
+	$('#sltFiltroGravadoNuevo').selectpicker('val', '1')
+	$('#sltFiltroUnidadesNuevo').selectpicker('val', 'NIU')
 	$('#modalNuevoProducto').modal('show');
 });
 /* $('#btnEmitirBoleta').click(function() {
@@ -316,7 +324,7 @@ $('#btnNuevoProduct').click(function() {
 	if( $('#txtDescripcionNuevo').val()=='' || $('#txtPrecioNuevo').val()=='' || $('#sltFiltroGravadoNuevo').selectpicker('val')==null || $('#sltFiltroUnidadesNuevo').val()==null  ){
 		$('#modalNuevoProducto .text-danger').removeClass('d-none').html('<i class="icofont-cat-alt-3"></i> Debe rellenar todos los campos olbigatorios');
 	}else{
-		$.ajax({url: 'php/insertarProducto.php', type: 'POST', data: {nombre: $('#txtDescripcionNuevo').val(), precio: $('#txtPrecioNuevo').val(), mayor: $('#txtPrecioMayorNuevo').val(), descuento: $('#txtPrecioDescuentoNuevo').val(), gravado: $('#sltFiltroGravadoNuevo').selectpicker('val'), unidad: $('#sltFiltroUnidadesNuevo').selectpicker('val') }}).done(function(resp) {
+		$.ajax({url: 'php/insertarProducto.php', type: 'POST', data: {nombre: $('#txtDescripcionNuevo').val(), precio: $('#txtPrecioNuevo').val(), mayor: $('#txtPrecioMayorNuevo').val(), descuento: $('#txtPrecioDescuentoNuevo').val(), gravado: $('#sltFiltroGravadoNuevo').selectpicker('val'), unidad: $('#sltFiltroUnidadesNuevo').selectpicker('val'), codeSunat: $('#txtCodeSunat').val() }}).done(function(resp) {
 			//console.log(resp)
 			if( resp =='ok'){
 				$('#h5Detalle').text('Producto guardado');

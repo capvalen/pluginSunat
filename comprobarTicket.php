@@ -1,6 +1,7 @@
 <?php
 
-include("conexion.php");
+include("php/conexion.php");
+include "generales.php";
 
 $sql="select idTicket from `fact_cabecera` where 	idNegocio = '{$_POST['negocio']}' and idLocal='{$_POST['local']}' and idTicket='{$_POST['ticket']} and fechaEmision = curdate()'; ";
 //echo $sql;
