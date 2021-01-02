@@ -511,7 +511,7 @@ $(document).ready(function(){
 		$("#tablaPrincipal").stupidtable();
 		var sumaDia =0;
 		$.each( $('#tablaPrincipal tbody tr'), function(index, obj){
-			sumaDia+= parseFloat($(obj).find('.spTotalPac').text());
+			sumaDia+= parseFloat($(obj).find('.spTotalPac').text().replace(',',''));
 		});
 		$('#strCantdad').text( $('#tablaPrincipal tbody tr').length );
 		$('#strTotal').text( parseFloat(sumaDia).toFixed(2) );
@@ -537,8 +537,14 @@ $(document).ready(function(){
 }); */
 function limiteVentas(){
 	//console.log( 'limite' );
-	if( parseFloat($.sumaDia) >= parseFloat(<?= $_COOKIE['limiteFacurado']?>)){
-		$('#spanLimiteSobrepasado').parent().removeClass('d-none');		
+	$('#spanLimiteSobrepasado').parent().addClass('d-none');
+	$('#spanLimiteSobrepasado').parent().removeClass('d-flex');
+	if(isNaN($.sumaDia)){
+	}else{
+		if( parseFloat($.sumaDia) >= parseFloat(<?= $_COOKIE['limiteFacurado']?>)){
+			$('#spanLimiteSobrepasado').parent().removeClass('d-none');	
+			$('#spanLimiteSobrepasado').parent().addClass('d-flex');
+		}
 	}
 }
 
@@ -584,6 +590,7 @@ $('#btnConsultarDisponibilidad2').click(function() {
 					if($.jTicket.length >=1){
 						$('#modalProcesarComprobante').modal('hide');
 						$('#modalArchivoBien').modal('show');
+						$('#btnPrintTicketera').click();
 					}
 				});
 				$('#modalConsultaTicket').modal('hide');
