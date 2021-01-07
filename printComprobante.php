@@ -1,6 +1,5 @@
 <?php
 include('phpqrcode/qrlib.php'); 
-include "php/generales.php";
 include "generales.php";
 
 require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';

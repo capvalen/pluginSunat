@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('America/Lima');
 include "../generales.php";
 include "conexion.php";
 
@@ -47,12 +48,17 @@ if( $_POST['boleta']=="3" ){ //Bajas para boletas
 	$resultadoC=$cadena->query($sqlC);
 	$rowC=$resultadoC->fetch_assoc();
 
-	$lineaBaja = $lineaBaja . $rowC['fechaEmision']. "|". date('Y-m-d') ."|03|".$rowC['facCorre']."|".$rowC['tipDocUsuario']."|".$rowC['dniRUC']."|PEN|".$rowC['costoFinal']."|0|0|0|0|0|". $rowC['IGVFinal']."|0|".$rowC['totalFinal']."||||||0|0|0|3|";
+	$lineaBaja = $lineaBaja . $rowC['fechaEmision']. "|". date('Y-m-d') ."|03|".$rowC['facCorre']."|".$rowC['tipDocUsuario']."|".$rowC['dniRUC']."|PEN|".$rowC['costoFinal']."|0|0|0|0|0|". $rowC['totalFinal']."|||||||||3|";
 	//echo $nombreArchivo;
 	
 	$baja = fopen("{$directorio}{$nombreArchivo}.RDI", "w");
 	fwrite($baja, "{$lineaBaja}");
 	fclose($baja);
+
+	$lineaTributo = '1|1000|IGV|VAT|'.$rowC['costoFinal'].'|'.$rowC['IGVFinal'].'|';
+	$tributo = fopen("{$directorio}{$nombreArchivo}.TRD", "w");
+	fwrite($tributo, "{$lineaTributo}");
+	fclose($tributo);
 	
 
 	$sql="UPDATE `fact_cabecera` SET 

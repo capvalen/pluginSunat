@@ -10,11 +10,11 @@ if( isset($_POST['fecha'])){
 		$fecha2 = $_POST['fecha'];
 	}
 
-	$sql="SELECT `idComprobante`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'Factura' when `factTipoDocumento`= 3 then 'Boleta' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2' then 'De baja' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja` FROM `fact_cabecera` WHERE  `fechaEmision` between '{$fecha}' and '{$fecha2}';";
+	$sql="SELECT `idComprobante`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'Factura' when `factTipoDocumento`= 3 then 'Boleta' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2' then 'De baja' when '3' then 'Enviado a SUNAT' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja` FROM `fact_cabecera` WHERE  `fechaEmision` between '{$fecha}' and '{$fecha2}';";
 }else{
 	$fecha = date('Y-m-d');
 
-	$sql="SELECT `idComprobante`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'Factura' when `factTipoDocumento`= 3 then 'Boleta' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2' then 'De baja' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja` FROM `fact_cabecera` WHERE  `fechaEmision` = '{$fecha}';";
+	$sql="SELECT `idComprobante`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'Factura' when `factTipoDocumento`= 3 then 'Boleta' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2'  then 'De baja' when '3' then 'Enviado a SUNAT' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja` FROM `fact_cabecera` WHERE  `fechaEmision` = '{$fecha}';";
 }
 
 
@@ -49,14 +49,18 @@ while($row=$resultado->fetch_assoc()){
 	<?php endif; ?>
 		<td>S/ <?= number_format($row['IGVFinal'],2); ?></td>
 		<td>S/ <span class="spTotalPac"><?= number_format($row['totalFinal'],2); ?></span></td>
-		<td class="text-capitalize"><?php if($row['comprobanteEmitido']==0){ echo $row['comprobanteEmitidoDescr']; } else if($row['comprobanteEmitido']==2){ echo "<span class='text-danger'>".$row['comprobanteEmitidoDescr']." ".$row['motivoBaja']."</span>";} else { echo "<span class='text-success'>".$row['comprobanteEmitidoDescr']."</span>";}?></td>
+		<td class="text-capitalize">
+			<?php if($row['comprobanteEmitido']==0){ echo "<span class='badge badge-secondary'>{$row['comprobanteEmitidoDescr']}</span>"; }
+				else if($row['comprobanteEmitido']==2){ echo "<span class='badge badge-danger'>".$row['comprobanteEmitidoDescr']."</span> <br><small class='text-danger'>{$row['motivoBaja']}</small>";} 
+				else { echo "<span class='badge badge-success'>".$row['comprobanteEmitidoDescr']. "</span>";} ?>
+		</td>
 		<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" >
 			<?php 
 			if($row['comprobanteEmitido']==0 && $fecha == date('Y-m-d')){ ?>
 			<button class="btn btn-outline-primary btn-sm border border-light btnGenComprobante" data-ticket="<?= $row['idTicket']; ?>" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
 			<?php
 			}
-			else if($row['comprobanteEmitido']==1){ ?>
+			else if($row['comprobanteEmitido']==1 || $row['comprobanteEmitido']==3 ){ ?>
 			<button class="btn btn-outline-success btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
 			<button class="btn btn-outline-success btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
 			<?php if($_COOKIE['ckPower']==1){ ?>

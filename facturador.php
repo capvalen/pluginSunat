@@ -122,7 +122,7 @@ thead{
 	<div class="container-fluid mt-5 px-5">
 		<div class="row">
 		<div class="col-md-3">
-			<img src="images/infocat.png?v=1.0" class='img-fluid mt-3'>
+			<img src="images/infocat.png?v=1.1" class='img-fluid mt-3'>
 		</div>
 		<div class="col ml-4">
 			<h3 class="display-4">Facturación Electrónica</h3>
@@ -590,7 +590,8 @@ $('#btnConsultarDisponibilidad2').click(function() {
 					if($.jTicket.length >=1){
 						$('#modalProcesarComprobante').modal('hide');
 						$('#modalArchivoBien').modal('show');
-						$('#btnPrintTicketera').click();
+						imprimitEnTicketera()
+						
 					}
 				});
 				$('#modalConsultaTicket').modal('hide');
@@ -672,7 +673,10 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 		});
 	});
 });
-$('#btnPrintTicketera').click(function() {
+$('#btnPrintTicketera').click(function() { console.log( 'ticketera' );
+	imprimitEnTicketera()
+});
+function imprimitEnTicketera(){
 	$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/printComprobante.php', type: 'POST', data: {
 				tipoComprobante: $.jTicket[0].tipoComprobante,
 				rucEmisor: $.jTicket[0].rucEmisor,
@@ -695,9 +699,9 @@ $('#btnPrintTicketera').click(function() {
 				/* placa: $.jTicket[0].placa, */
 			}}).done(function(resp) {
 				console.log(resp)
-				location.reload();
+				//location.reload();
 			});
-});
+}
 $('#btnModificarSerie').click(function() {
 	$.ajax({url: 'llamarSeries.php', type: 'POST', data: { }}).done(function(resp) {
 		var data = JSON.parse(resp)[0];

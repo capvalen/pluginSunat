@@ -1,6 +1,9 @@
 <?php
 //Rellenar por cada Cliente:
-$directorio = 'C:\SFS_v1.3.4.2\sunat_archivos\sfs\DATA/';
+$dirBaseSunat = 'C:\SFS_v1.3.4.2\sunat_archivos\sfs';
+$directorio = $dirBaseSunat. '\DATA/';
+$dirRespuestas = $dirBaseSunat. '\RPTA/';
+
 $rucEmisor ='10198436670';
 $nombreEmisor = "De: Aliaga Montes Lucio";
 $direccionEmisor = "Av. Francisca De La Calle N° 241 El Tambo - Huancayo - Junín";
