@@ -162,10 +162,6 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 	$valorSubFin = str_replace (',', '',number_format($rowD['valorItem'],2));
 	$precProducto = number_format($rowD['valorUnitario']+$rowD['igvUnitario'],2);
 
-	$lineaDetalle =  $lineaDetalle . $unidad.$separador.$rowD['cantidadItem']. $separador.$i.$separador. $rowD['codProductoSUNAT'].$separador.$rowD['descripcionItem'].$separador. $valorFin.$separador.  $igvSubFin.$separador. $rowD['codTriIGV'] .$separador. $igvSubFin.$separador. $valorSubFin.$separador. $rowD['nomTributoIgvItem'].$separador. $rowD['codTipTributoIgvItem'] .$separador.$rowD['tipAfeIGV']. $separador. $rowD['porIgvItem'] .$separador. $rowD['codTriISC'] . $separador. $rowD['mtoIscItem'] . $separador. $rowD['mtoBaseIscItem'] . $separador. $rowD['nomTributoIscItem'] .$separador . $rowD['codTipTributoIscItem'] .$separador . $rowD['tipSisISC'] .$separador. $rowD['porIscItem']. $separador. $rowD['codTriOtroItem']. $separador. $tributoOtro .$separador. $tributoOtroItem .$separador.$baseOtroItem .$separador.$rowD['codTipTributoIOtroItem'] . $separador. $rowD['porTriOtroItem'] .$separador. $rowD['mtoPrecioVenta'] . $separador. $rowD['mtoValorVenta']. $separador. $rowD['mtoValorReferencialUnitario']. $separador."\n";
-
-	
-	
 	?>
 	<tr>
 		<td><?= $i;?></td>
@@ -173,7 +169,7 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 		<td><?= $rowD['undCorto']?></td>
 		<td><?= $rowD['cantidadItem']; ?></td>
 		<td><?= $precProducto; ?></td>
-		<td><?= number_format($rowD['mtoPrecioVenta'],2)?></td>
+		<td><?= number_format($rowD['valorItem'],2)?></td>
 	</tr>
 	<?php 
 	$i++;
@@ -200,22 +196,22 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 <div class="col-6">
 <div class="row">
 	<div class="col text-right">
-		<p class="d-none">Descuento</p>
+		
 		<p>Op. Grabada</p>
 		<p>I.G.V.</p>
 		<p>Op. Gratuita</p>
-		<p>Op. Exhonerada</p>
+		<p>Op. Exonerada</p>
 		<p class="d-none">Op. Inafecta</p>
 		<h5 class="border-top pt-2 bordeAlgo">Importe Total</h5>
 	</div>
 	<div class="col">
-		<p class="d-none"><?= number_format($rowC['sumDescTotal'],2);?></p>
-		<p><?= number_format($rowC['costoFinal'],2);?></p>
-		<p><?= number_format($rowC['IGVFinal'],2);?></p>
-		<p>0.00</p>
-		<p><?= number_format($rowC['factExonerados'],2);?></p>
-		<p class="d-none">0.00</p>
-		<h5 class="border-top pt-2 bordeAlgo"><?= number_format($rowC['totalFinal'],2);?></h5>
+		<p class="d-none">S/ <?= number_format($rowC['sumDescTotal'],2);?></p>
+		<p>S/ <?= number_format($rowC['costoFinal'],2);?></p>
+		<p>S/ <?= number_format($rowC['IGVFinal'],2);?></p>
+		<p>S/ 0.00</p>
+		<p>S/ <?= number_format($rowC['factExonerados'],2);?></p>
+		<p class="d-none">S/ 0.00</p>
+		<h5 class="border-top pt-2 bordeAlgo">S/ <?= number_format($rowC['totalFinal'],2);?></h5>
 	</div>
 </div>
 </div>

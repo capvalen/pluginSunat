@@ -1254,6 +1254,14 @@ $('#txtFechaComprobante').focusout(function() {
 	}
 });
 
+$('#btnVaciarBandeja').click(function() {
+	$('#overlay').css('display', 'flex')
+	$('#pFrase').text('Limpiando los datos de la bandeja')
+	$.ajax({url: 'php/limpiarBandeja.php', type: 'POST'}).done(function(resp) {
+		//console.log(resp)
+		$('#overlay').css('display', 'none')
+	});
+});
 
 <?php }?>
 </script>

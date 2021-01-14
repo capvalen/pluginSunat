@@ -36,6 +36,7 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 					<a class="dropdown-item" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
 					<a class="dropdown-item d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
 					<a class="dropdown-item " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
+					<a class="dropdown-item " href="#!" id="btnVaciarBandeja"><i class="icofont-infinite"></i> Vaciar bandeja</a>
 					
 				</div>
 			</li>

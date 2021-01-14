@@ -1,5 +1,5 @@
 <?php 
-
+sleep(2);
 include '../generales.php';
 
 if(is_dir($directorio)){
