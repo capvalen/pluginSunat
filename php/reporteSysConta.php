@@ -1,4 +1,4 @@
-<table class="table table-hover mt-3" id="tablaSysCont" >
+<table class="table table-hover mt-3" id="tablaSysConta" >
 	<thead>
 		<tr>
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Fecha Emisión</th>

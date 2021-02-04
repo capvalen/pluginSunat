@@ -81,10 +81,6 @@ if($filasCabeza==1){
 	$costo= str_replace (',', '',number_format($rowC['costoFinal'],2));
 	$igvFin = str_replace (',', '',number_format($rowC['IGVFinal'],2));
 	$totFin = str_replace (',', '',number_format($rowC['totalFinal'],2));
-	
-	$lineaCabeza = $rowC['tipOperacion'].$separador.$rowC['fechaEmision'].$separador.$rowC['horaEmision'].$separador.$rowC['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowC['dniRUC'].$separador.$rowC['razonSocial']. $separador.$rowC['tipoMoneda'].$separador. $costo.$separador. $igvFin.$separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
-
-	//echo $lineaCabeza;
 
 }
 

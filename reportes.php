@@ -112,7 +112,7 @@ thead tr th{cursor: pointer;}
 			
 			</tbody>
 		</table>
-		<div class="d-none" id="tablaSysCont"></div>
+		<div class="d-none" id="divTablaSysCont"></div>
 
 	</div>
 </section>
@@ -175,7 +175,7 @@ $('.input-daterange input').change(function(){
 }); */
 $('#btnBuscarReporte').click(function() {
 	$('#tablaCabeceras').removeClass('d-none');
-	$('#tablaSysCont').addClass('d-none');
+	$('#divTablaSysCont').addClass('d-none');
 	if( $('#txtFecha1').val()!='' &&  $('#txtFecha2').val()!=''){
 		
 
@@ -189,31 +189,31 @@ $('#btnBuscarReporte').click(function() {
 				});
 				break;
 			case "1":
-				$('#tablaSysCont').removeClass('d-none');
+				$('#divTablaSysCont').removeClass('d-none');
 				$('#tablaCabeceras').addClass('d-none');
 				var fecha1 = moment($('#txtFecha1').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
 				var fecha2 = moment($('#txtFecha2').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
 				$.ajax({url: 'php/reporteSysConta.php', type: 'POST', data:{fecha1: fecha1, fecha2: fecha2 } }).done(function(resp) {
-					$('#tablaSysCont').children().remove();
-					$('#tablaSysCont').append(resp).anotherJqueryMethod;
+					$('#divTablaSysCont').children().remove();
+					$('#divTablaSysCont').append(resp).anotherJqueryMethod;
 				});
 				break;
 			case "2":
-				$('#tablaSysCont').removeClass('d-none');
+				$('#divTablaSysCont').removeClass('d-none');
 				$('#tablaCabeceras').addClass('d-none');
 				$.ajax({url: 'php/reporteKardex.php', type: 'POST', data: { }}).done(function(resp) { console.log( resp );
-					$('#tablaSysCont').children().remove();
-					$('#tablaSysCont').append(resp).anotherJqueryMethod;
+					$('#divTablaSysCont').children().remove();
+					$('#divTablaSysCont').append(resp).anotherJqueryMethod;
 				});
 			break;
 			case '3':
-				$('#tablaSysCont').removeClass('d-none');
+				$('#divTablaSysCont').removeClass('d-none');
 				$('#tablaCabeceras').addClass('d-none');
 				var fecha1 = moment($('#txtFecha1').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
 				var fecha2 = moment($('#txtFecha2').val(), 'DD/MM/YYYY').format('YYYY-MM-DD');
 				$.ajax({url: 'php/reporteC34.php', type: 'POST', data: {fecha: fecha1, fecha2: fecha2 }}).done(function(resp) { console.log( resp );
-					$('#tablaSysCont').children().remove();
-					$('#tablaSysCont').append(resp).anotherJqueryMethod;
+					$('#divTablaSysCont').children().remove();
+					$('#divTablaSysCont').append(resp).anotherJqueryMethod;
 				});
 			break;
 			default:
@@ -227,6 +227,7 @@ $('#btnBuscarReporte').click(function() {
 
 
 $('#btnGuardarReporte').click(function() {
+	console.log( $('#sltFiltroReporte').selectpicker('val') );
 	switch ($('#sltFiltroReporte').selectpicker('val')) {
 		case "0":
 			var instance = new TableExport(document.getElementById('tablaCabeceras'), {
@@ -236,12 +237,14 @@ $('#btnGuardarReporte').click(function() {
 			var exportData = instance.getExportData()['tablaCabeceras']['xlsx'];
 			instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte resumido', exportData.fileExtension);
 		break;
-		case "1", '3':
-		var instance = new TableExport(document.getElementById('tablaSysCont'), {
+		case "1":
+		case '3':
+			console.log( 'pido' );
+			var instance = new TableExport(document.getElementById('tablaSysConta'), {
 				formats: ['xlsx'],
 				exportButtons: false
 			});
-			var exportData = instance.getExportData()['tablaSysCont']['xlsx'];
+			var exportData = instance.getExportData()['tablaSysConta']['xlsx'];
 			instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte contable', exportData.fileExtension);
 		break;
 		default:
