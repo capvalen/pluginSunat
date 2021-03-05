@@ -149,12 +149,13 @@ thead{
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
 					<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
 					<th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> Total</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 					<th>@</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
+				<!-- <tr>
 					<td>1</td>
 					<td>20550-88</td>
 					<td>Factura</td>
@@ -167,7 +168,7 @@ thead{
 						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
 						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
 					</td>
-				</tr>
+				</tr> -->
 			</tbody>
 		</table>
 	</div>
@@ -511,19 +512,29 @@ $(document).ready(function(){
 		$("#tablaPrincipal").stupidtable();
 		var sumaDia =0;
 		$.each( $('#tablaPrincipal tbody tr'), function(index, obj){
+			//console.log( 'cambio num: '+ $(obj).find('.spTotalPac').text() );
 			sumaDia+= parseFloat($(obj).find('.spTotalPac').text().replace(',',''));
 		});
 		$('#strCantdad').text( $('#tablaPrincipal tbody tr').length );
-		$('#strTotal').text( parseFloat(sumaDia).toFixed(2) );
+		$('#strTotal').text( parseFloat(sumaDia).toFixed(2) );		
 		$.sumaDia = sumaDia;
 		limiteVentas()
 	});
 	$('#fechaFiltro').change(function() {
-		console.log( moment($('#fechaFiltro').val()).isValid() );
+		//console.log( moment($('#fechaFiltro').val()).isValid() );
 		$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{fecha: $('#fechaFiltro').val(), fecha2:$('#fechaFiltro').val() } }).done(function(resp) {
 			$('#tablaPrincipal tbody').children().remove();
 			$('#tablaPrincipal tbody').append(resp).anotherJqueryMethod;
 			$('[data-toggle="tooltip"]').tooltip();
+			var sumaDia =0;
+			$.each( $('#tablaPrincipal tbody tr'), function(index, obj){
+				//console.log( 'cambio num: '+ $(obj).find('.spTotalPac').text() );
+				sumaDia+= parseFloat($(obj).find('.spTotalPac').text().replace(',',''));
+			});
+			$('#strCantdad').text( $('#tablaPrincipal tbody tr').length );
+			$('#strTotal').text( parseFloat(sumaDia).toFixed(2) );
+			$.sumaDia = sumaDia;
+			limiteVentas()
 		});
 	});
 });
@@ -540,6 +551,7 @@ function limiteVentas(){
 	$('#spanLimiteSobrepasado').parent().addClass('d-none');
 	$('#spanLimiteSobrepasado').parent().removeClass('d-flex');
 	if(isNaN($.sumaDia)){
+		$('#strTotal').text( '0.00' );
 	}else{
 		if( parseFloat($.sumaDia) >= parseFloat(<?= $_COOKIE['limiteFacurado']?>)){
 			$('#spanLimiteSobrepasado').parent().removeClass('d-none');	

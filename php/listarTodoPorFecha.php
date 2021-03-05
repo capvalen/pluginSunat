@@ -45,7 +45,7 @@ while($row=$resultado->fetch_assoc()){
 
 		<td class="text-capitalize"><?= $row['razonSocial']; ?></td>
 	<?php if( isset($_POST['fecha2'])): ?>
-		<td>S/ <span class="spTotalPac"><?= number_format($row['IGVFinal'],2); ?></span></td>
+		<td>S/ <span ><?= number_format($row['IGVFinal'],2); ?></span></td>
 	<?php endif; ?>
 		<td>S/ <?= number_format($row['IGVFinal'],2); ?></td>
 		<td>S/ <span class="spTotalPac"><?= number_format($row['totalFinal'],2); ?></span></td>
