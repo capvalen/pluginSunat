@@ -128,6 +128,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 	}
 }
 
+if($_COOKIE['crearArchivo']==1){
 
 # Generando los archivos txt para sunat 
 $sqlCabeza="select * from `fact_cabecera` where factSerie = '{$serie}' and factCorrelativo='{$correlativo}';";
@@ -149,6 +150,7 @@ if($filasCabeza==1){
 	fclose($archivo);
 }
 
+}
 //Actualización Facturador v3
 $bolsas = '|-|0|0||';
 
@@ -183,6 +185,7 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 }
 //echo $lineaDetalle ;
 
+if($_COOKIE['crearArchivo']==1){
 $detalle = fopen("{$directorio}{$nombreArchivo}.det", "w");
 fwrite($detalle, "{$lineaDetalle}");
 fclose($detalle);
@@ -205,6 +208,7 @@ fwrite($fTributo, "{$tributo}");
 fclose($fTributo);
 
 
+}
 
 
 

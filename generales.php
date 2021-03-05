@@ -4,14 +4,15 @@ $dirBaseSunat = 'C:\SFS_v1.3.4.2\sunat_archivos\sfs';
 $directorio = $dirBaseSunat. '\DATA/';
 $dirRespuestas = $dirBaseSunat. '\RPTA/';
 
-$rucEmisor ='10198436670';
-$nombreEmisor = "De: Aliaga Montes Lucio";
-$direccionEmisor = "Av. Francisca De La Calle N° 241 El Tambo - Huancayo - Junín";
-$celularEmisor = "969000488 - 989535341 - (064) 412514";
-$nombrePrint = 'XP-58'; //TM-T20II
+$rucEmisor ='10210130557';
+$nombreEmisor = "De: Alvarez Meneses Pablo Cesar";
+$direccionEmisor = "Av. Indrustrial S/N  (Esquina Av. Industrial y Av. España) San Martin de Pangoa - Satipo - Junín";
+$celularEmisor = "988848813";
+$nombrePrint = 'HP1102W'; //TM-T20II
 
 $casaHost = "pluginsunat";
 
+$generarArchivo = false;
 
 
 
