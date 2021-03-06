@@ -122,7 +122,7 @@ thead{
 	<div class="container-fluid mt-5 px-5">
 		<div class="row">
 		<div class="col-md-3">
-			<img src="images/infocat.png?v=1.1" class='img-fluid mt-3'>
+			<img src="images/empresa.png?v=1.1" class='img-fluid mt-3'>
 		</div>
 		<div class="col ml-4">
 			<h3 class="display-4">Facturación Electrónica</h3>

@@ -97,7 +97,7 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 
 <div class="row">
 <div class="col-sm-6 ">
-	<img src="bitmap.jpg?version=1.0.2" alt="" >
+	<img src="images/empresa.png?version=1.0.2" alt="" >
 	<p class="mb-0 mt-2"><strong><?= $nombreEmisor;?></strong></p>
 	<p><?= $direccionEmisor;?></p>
 </div>

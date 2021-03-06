@@ -9,6 +9,7 @@ $local='/';
 $log = mysqli_query($cadena,"select * from  usuario u  where usuNick = '".$_POST['user']."' and usuPass='".md5($_POST['pws'])."';");
 //echo "select * from  usuario u  where usuNick = '".$_POST['user']."' and usuPass='".md5($_POST['pws'])."';";
 $row = mysqli_fetch_array($log, MYSQLI_ASSOC);
+$expira=time()+60*60*3; //cookie para 3 horas
 if ($row['idUsuario']>=1){
 	// $_SESSION['idSucursal']=$row['idSucursal'];
 	// $_SESSION['Sucursal']=$row['sucLugar'];
@@ -18,7 +19,6 @@ if ($row['idUsuario']>=1){
 	// $_SESSION['idUsuario']=$row['idUsuario'];
 	// $_SESSION['oficina']=$_POST['offi'];
 	if( $row['usuActivo']=='1' ){
-		$expira=time()+60*60*3; //cookie para 3 horas
 		
 		setcookie('ckAtiende', $row['usuNombres'], $expira, $local);
 		setcookie('cknomCompleto', $row['usuNombres'].', '.$row['usuApellido'], $expira, $local);
@@ -26,6 +26,14 @@ if ($row['idUsuario']>=1){
 		setcookie('ckidUsuario', $row['idUsuario'], $expira, $local);
 		
 	
+
+		$sqlConf = "SELECT `idConf`, `confVariable`, `confValor` FROM `configuracion` where 1;";
+		$resultadoConf=$esclavo->query($sqlConf);
+		while($rowConf=$resultadoConf->fetch_assoc()){ 
+			setcookie($rowConf['confVariable'], $rowConf['confValor'], $expira, $local);
+		}
+
+
 		echo 'concedido';
 	}else{
 		echo 'inhabilitado';
@@ -38,11 +46,7 @@ if ($row['idUsuario']>=1){
 }
 
 
-$sqlConf = "SELECT `idConf`, `confVariable`, `confValor` FROM `configuracion` where 1;";
-$resultadoConf=$cadena->query($sqlConf);
-while($rowConf=$resultadoConf->fetch_assoc()){ 
-	setcookie($rowConf['confVariable'], $rowConf['confValor'], $expira, $local);
-}
+
 
 /* liberar la serie de resultados */
 mysqli_free_result($log);
