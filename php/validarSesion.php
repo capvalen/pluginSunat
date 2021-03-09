@@ -24,6 +24,7 @@ if ($row['idUsuario']>=1){
 		setcookie('cknomCompleto', $row['usuNombres'].', '.$row['usuApellido'], $expira, $local);
 		setcookie('ckPower', $row['usuPoder'], $expira, $local);
 		setcookie('ckidUsuario', $row['idUsuario'], $expira, $local);
+		setcookie('ckUsuario', $row['usuNick'], $expira, $local);
 		
 	
 

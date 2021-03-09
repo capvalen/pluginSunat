@@ -25,7 +25,7 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 		<?php }else{ ?>
 		<a class="nav-item nav-link " href="facturador.php" id=""><i class="icofont-group"></i> Facturador</a>
 		<?php } ?>
-		<?php if($_COOKIE['ckPower']=='1'): ?>
+		<?php if($_COOKIE['ckPower']=='1' ): ?>
 			<li class="nav-item dropdown <?php if($nomArchivo =='productos.php' || $nomArchivo =='compras.php') echo 'active'; ?>">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<i class="icofont-newspaper"></i> Configuraciones
@@ -37,6 +37,7 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 					<a class="dropdown-item d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
 					<a class="dropdown-item " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
 					<a class="dropdown-item " href="#!" id="btnVaciarBandeja"><i class="icofont-infinite"></i> Vaciar bandeja</a>
+					<a class="dropdown-item " href="envioFactura.php" id="btnEnviarFactura"><i class="icofont-infinite"></i> Enviar facturas</a>
 					
 				</div>
 			</li>

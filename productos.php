@@ -24,7 +24,7 @@ include "generales.php"; ?>
 <body>
 <style>
 .bg-dark {
-	background-color: #7531d4!important;
+	background-color: #7030a0!important;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

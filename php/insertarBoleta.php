@@ -85,7 +85,8 @@ $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSer
 VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1,now(), '{$_POST['cliDireccion']}', '' )";
+	1,now(), '{$_POST['cliDireccion']}', '' );";
+	//echo $sql;
 $resultado=$cadena->query($sql);
 
 $sqlProd  =''; 
@@ -128,10 +129,10 @@ for ($i=0; $i < count($productos) ; $i++) {
 	}
 }
 
-if($_COOKIE['crearArchivo']==1){
+
 
 # Generando los archivos txt para sunat 
-$sqlCabeza="select * from `fact_cabecera` where factSerie = '{$serie}' and factCorrelativo='{$correlativo}';";
+$sqlCabeza="select * from `fact_cabecera` where factSerie = '{$serie}' and factCorrelativo='{$correlativo}';"; //echo $sqlCabeza;
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){
@@ -145,11 +146,11 @@ if($filasCabeza==1){
 	$lineaCabeza = $rowC['tipOperacion'].$separador.$rowC['fechaEmision'].$separador.$rowC['horaEmision'].$separador.$rowC['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowC['dniRUC'].$separador.$rowC['razonSocial']. $separador.$rowC['tipoMoneda'].$separador. $igvFin.$separador. $costo.$separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
 	//echo $lineaCabeza;
 
+	/* if($_COOKIE['crearArchivo']==1){
 	$archivo = fopen("{$directorio}{$nombreArchivo}.cab", "w");
 	fwrite($archivo, "{$lineaCabeza}");
 	fclose($archivo);
-}
-
+	} */
 }
 //Actualización Facturador v3
 $bolsas = '|-|0|0||';
