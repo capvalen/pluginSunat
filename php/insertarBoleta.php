@@ -132,7 +132,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 
 
 # Generando los archivos txt para sunat 
-$sqlCabeza="select * from `fact_cabecera` where factSerie = '{$serie}' and factCorrelativo='{$correlativo}';"; //echo $sqlCabeza;
+$sqlCabeza="SELECT * from `fact_cabecera` where factSerie = '{$serie}' and factCorrelativo='{$correlativo}';"; //echo $sqlCabeza;
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){

@@ -46,7 +46,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 				<tr v-for="(comprobante, index) in comprobantes">
 					<td>{{index+1}}</td>
 					<td>{{comprobante.idComprobante}}</td>
-					<td>{{comprobante.fecha}}</td>
+					<td>{{comprobante.factFecha}}</td>
 					<td>{{comprobante.factSerie}} {{comprobante.factCorrelativo}}</td>
 					<td>{{comprobante.estado}}</td>
 					<td><label @click="enlistar($event.target.checked, comprobante.idComprobante)"><input type="checkbox" id="cbox1" > </label></td>
