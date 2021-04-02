@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pos Ventas - Infocat</title>
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark pl-5" id="menuInfocat" style="background-color: #7030a0!important;">
+		<a class="navbar-brand" href="#">
+			<img src="../images/VirtualCorto.png" width="60" height="60" alt="">
+		</a>
+		<a class="navbar-brand" href="#">Facturador Infocat </a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+			<div class="navbar-nav">
+						<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="icofont-newspaper"></i> Emitir
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
+						<a class="dropdown-item" href="#!" id="AEmitirFactura"><i class="icofont-ui-copy"></i> Factura</a>
+						<a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de crédito</a>
+						<a class="dropdown-item AEmitirNotas d-none" href="#!" id=""><i class="icofont-layers"></i> Nota de débito</a>
+					</div>
+				</li>
+								<li class="nav-item dropdown ">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="icofont-newspaper"></i> Configuraciones
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
+						<a class="dropdown-item" href="compras.php" target="_blank"><i class="icofont-sale-discount"></i> Compras</a>
+						<a class="dropdown-item" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
+						<a class="dropdown-item d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
+						<a class="dropdown-item " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
+						<a class="dropdown-item " href="#!" id="btnVaciarBandeja"><i class="icofont-infinite"></i> Vaciar bandeja</a>
+						<a class="dropdown-item " href="envioFactura.php" id="btnEnviarFactura"><i class="icofont-infinite"></i> Enviar facturas</a>
+						
+					</div>
+				</li>
+				
+				<a class="nav-item nav-link " href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
+			
+						<a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Salir del sistema</a>
+			</div>
+		</div>
+	</nav>
+
+	<div id="app" class="container-fluid">
+		<div class="row">
+			<div class="col-md-4">
+				<h1>Paete 1</h1>
+			</div>
+			<div class="col-md-8">
+				<h1>Paete 2</h1>
+			</div>
+		</div>
+	</div>
+
+<script src="../js/vue_dev.js"></script>
+<script>
+	var app = new Vue({
+		el: '#app',
+		data: {
+			message: 'Hello Vue!'
+		}
+	})
+</script>
+</body>
+</html>

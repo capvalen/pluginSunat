@@ -4,7 +4,7 @@ include "generales.php";
 
 if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	die(); }
-include "generales.php"; ?>
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,6 +18,7 @@ include "generales.php"; ?>
 	<link rel="stylesheet" href="css/anksunamun.css">
 	<link rel="shortcut icon" href="images/VirtualCorto.png" type="image/png">
 	<link rel="stylesheet" href="css/colorsmaterial.css">
+	<link rel="stylesheet" href="css/alertify.min.css">
 
 
 </head>
@@ -44,6 +45,27 @@ input[type=number] {
     border-radius: .25rem;}
 thead tr th{cursor: pointer;}
 .dropdown-item .text, .bootstrap-select button{text-transform: capitalize;}
+.alertify-notifier .ajs-message.ajs-error {
+	background: rgb(239 4 4 / 95%);
+	color: white;
+	border-radius: 2rem;
+}
+.alertify-notifier .ajs-message.ajs-warning {
+	background: rgb(255 143 29 / 95%);
+	color: white;
+	border-radius: 2rem;
+}
+.alertify-notifier .ajs-message {
+    background: rgb(29 57 255 / 95%);
+    color: white;
+    border-radius: 2rem;
+}
+.alertify-notifier.ajs-right{
+}
+.alertify-notifier .ajs-message{
+	width: 360px!important;
+	right: 390px!important;
+}
 </style>
 
 <?php include 'menu-wrapper.php'; ?>
@@ -73,6 +95,7 @@ thead tr th{cursor: pointer;}
 					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio con Dscto.</th>
 					<th data-sort="int"><i class="icofont-expand-alt"></i> Stock</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Gravado</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Unidad</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 					<th>@</th>
 				</tr>
@@ -233,6 +256,40 @@ thead tr th{cursor: pointer;}
   </div>
 </div>
 
+<!-- Modal para: -->
+<div class='modal fade' id='modalBarritas' tabindex='-1'>
+	<div class='modal-dialog modal-dialog-centered'>
+		<div class='modal-content'>
+			<div class='modal-body'>
+				<button type='button' class='close' data-dismiss='modal' aria-label='Close'> <span aria-hidden='true'>&times;</span></button>
+				<h5 class='modal-title'>Código Barras</h5>
+				<div class="card mt-2">
+					<div class="card-body p-3">
+						<div class="input-group mb-3">
+							<input type="text" class="form-control" placeholder="Escanee el código" id="txtCodigoBarrita">
+							<div class="input-group-append">
+								<button class="btn btn-outline-primary" id="btnAddBarrita" type="button" id="button-addon2"><i class="icofont-plus"></i></button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<p class="mt-3"><strong>Códigos de barras asociados:</strong></p>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>N°</th>
+							<th>Código</th>
+							<th>@</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 <?php include "php/modal.php"; ?>
@@ -244,6 +301,7 @@ thead tr th{cursor: pointer;}
 <script src="js/moment.js"></script>
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
+<script src="js/alertify.min.js"></script>
 
 <script>
 $(document).ready(function(){
@@ -366,16 +424,58 @@ $('#btnUpdateStock').click(function() {
 		}}
 	});
 });
+function verBarrasDe(idProd){ $.idProducto= idProd;
+	$.ajax({ url:'php/listarBarrasDe.php', type:"POST", data: { id: idProd}})
+	.done((resp)=>{
+		
+		mostrarBarras(resp);
+		$('#txtCodigoBarrita').val('')
+		$('#modalBarritas').modal('show');
+	})
+	.fail((error)=>{ console.log( error ); })
+}
+function mostrarBarras(resp){
+	$('#modalBarritas tbody').children().remove();
+	if(JSON.parse(resp).length==0){
+		$('#modalBarritas tbody').append(`<tr>
+			<td colspan="3">No hay códigos asignados en el producto</td>
+		</tr>`);
+	}
+	$.each(JSON.parse(resp), (index, barra)=>{
+		//console.log( barra );
+		$('#modalBarritas tbody').append(`<tr>
+				<td >${index+1}</td>
+				<td >${barra.barra}</td>
+				<td ><button class="btn btn-outline-danger border-0 btn-sm" onclick="borrarBarra(${barra.idBarra}, ${barra.idProducto})"><i class="icofont icofont-close"></i></button></td>
+			</tr>
+		`);
+	})
+}
+function borrarBarra(idBarra, idProd){
+	$.ajax({url: 'php/borrarBarra.php', type: 'POST', data: { idBarra: idBarra}}).done(function(resp) { //console.log(resp)
+		if(resp=='ok'){
+			verBarrasDe(idProd);
+		}
+	});
+}
+$('#txtCodigoBarrita').keypress(function (e) { 
+	if(e.keyCode == 13){ $('#btnAddBarrita').click(); }
+});
+$('#btnAddBarrita').click(function() { 
+	if( $('#txtCodigoBarrita').val()!='' ){
+		$.ajax({url: 'php/insertarBarra.php', type: 'POST', data: { idProducto: $.idProducto, barra: $('#txtCodigoBarrita').val() }}).done(function(resp) { //console.log(resp)
+			if(resp=='ok'){
+				alertify.message('<i class="icofont-warning-alt"></i> Guardado con éxito.');
+				$('#txtCodigoBarrita').val('').focus();
+				verBarrasDe($.idProducto);	
+			}else if(resp=='duplicado'){
+				alertify.error('<i class="icofont-warning-alt"></i> El código ya está registrado.').delay(15);
+				//
+			}
+		});
+	}
+});
 </script>
-<!-- BEGIN JIVOSITE CODE {literal} -->
-<!-- <script type='text/javascript'>
-(function(){ var widget_id = 'ucFX66lIdV';var d=document;var w=window;function l(){
-  var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true;
-  s.src = '//code.jivosite.com/script/widget/'+widget_id
-    ; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);}
-  if(d.readyState=='complete'){l();}else{if(w.attachEvent){w.attachEvent('onload',l);}
-  else{w.addEventListener('load',l,false);}}})();
-</script> -->
-<!-- {/literal} END JIVOSITE CODE -->
+
 </body>
 </html>

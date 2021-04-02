@@ -146,11 +146,11 @@ if($filasCabeza==1){
 	$lineaCabeza = $rowC['tipOperacion'].$separador.$rowC['fechaEmision'].$separador.$rowC['horaEmision'].$separador.$rowC['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowC['dniRUC'].$separador.$rowC['razonSocial']. $separador.$rowC['tipoMoneda'].$separador. $igvFin.$separador. $costo.$separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
 	//echo $lineaCabeza;
 
-	/* if($_COOKIE['crearArchivo']==1){
+	if($_COOKIE['crearArchivo']==1){
 	$archivo = fopen("{$directorio}{$nombreArchivo}.cab", "w");
 	fwrite($archivo, "{$lineaCabeza}");
 	fclose($archivo);
-	} */
+	}
 }
 //Actualización Facturador v3
 $bolsas = '|-|0|0||';

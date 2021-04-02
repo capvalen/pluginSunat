@@ -4,7 +4,7 @@ $dirBaseSunat = 'C:\SFS_v1.3.4.2\sunat_archivos\sfs';
 $directorio = $dirBaseSunat. '\DATA/';
 $dirRespuestas = $dirBaseSunat. '\RPTA/';
 
-$rucEmisor ='10210130557';
+$rucEmisor ='10198436670';
 $nombreEmisor = "De: Alvarez Meneses Pablo Cesar";
 $direccionEmisor = "Av. Indrustrial S/N  (Esquina Av. Industrial y Av. España) San Martin de Pangoa - Satipo - Junín";
 $celularEmisor = "988848813";

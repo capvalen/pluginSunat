@@ -1,0 +1,1 @@
+CREATE TABLE `consorcio`.`barras` ( `idBarra` INT NOT NULL AUTO_INCREMENT , `idProducto` INT NOT NULL , `barra` VARCHAR(50) NOT NULL , `activo` INT NOT NULL COMMENT '1activo, 0 no activo' , PRIMARY KEY (`idBarra`)) ENGINE = InnoDB;

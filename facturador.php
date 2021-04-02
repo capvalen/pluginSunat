@@ -1168,7 +1168,7 @@ $('#btnDarbaja').click(function() {
 	}
 });
 $('#txtFechaComprobante').focusout(function() {
-	let hoy = moment( moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')
+	/* let hoy = moment( moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')
 	let comprobante = moment($('#txtFechaComprobante').val(), 'YYYY-MM-DD')
 	let diferencia = hoy.diff(comprobante, 'days')
 	if( diferencia<0 ){
@@ -1177,7 +1177,7 @@ $('#txtFechaComprobante').focusout(function() {
 		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
 	}else if( isNaN(diferencia)){
 		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
-	}
+	} */
 });
 
 $('#btnVaciarBandeja').click(function() {
