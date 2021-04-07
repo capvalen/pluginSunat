@@ -3,7 +3,7 @@
 include "conexion.php";
 
 $sql="SELECT * FROM `configuracion`
-where confVariable in ('ruc', 'razonSocial', 'nomComercial', 'direccion', 'celular', 'logo', 'ticketera', 'facturador')";
+where confVariable in ('ruc', 'razonSocial', 'nomComercial', 'direccion', 'celular', 'logo', 'ticketera', 'facturador', 'crearArchivo', 'carpeta')";
 $resultado=$cadena->query($sql);
 $filas = array();
 while($row=$resultado->fetch_assoc()){ 
@@ -15,6 +15,8 @@ while($row=$resultado->fetch_assoc()){
 	if( $row['confVariable']=='logo' ){ $filas['logo']=$row['confValor']; }
 	if( $row['confVariable']=='ticketera' ){ $filas['ticketera']=$row['confValor']; }
 	if( $row['confVariable']=='facturador' ){ $filas['facturador']=$row['confValor']; }
+	if( $row['confVariable']=='crearArchivo' ){ $filas['crearArchivo']=$row['confValor']; }
+	if( $row['confVariable']=='carpeta' ){ $filas['carpeta']=$row['confValor']; }
 }
 
 $sqlSerie="SELECT * FROM `fact_series`";

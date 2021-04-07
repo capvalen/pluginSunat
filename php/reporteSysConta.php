@@ -38,7 +38,7 @@ include "conexion.php";
 
 $sql= "SELECT date_format(`fechaEmision`, '%d/%m/%Y') as fechaEmision, `factTipoDocumento`, FORMAT(totalFinal,2) as totalFinal, `factSerie`,`factCorrelativo`, `tipDocUsuario`, `dniRUC`, upper(`razonSocial`) as `razonSocial`, 
 `totalFinal`, `factExonerados`, `costoFinal`, `IGVFinal`, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2' then 'De baja' end as comprobanteEmitidoDescr
-FROM `fact_cabecera` WHERE `fechaEmision` BETWEEN '{$_POST['fecha1']}' and '{$_POST['fecha2']}'; ";
+FROM `fact_cabecera` WHERE `fechaEmision` BETWEEN '{$_POST['fecha1']}' and '{$_POST['fecha2']}' and factSerie<>''; ";
 $resultado=$cadena->query($sql);
 if($resultado->num_rows>=1){
 

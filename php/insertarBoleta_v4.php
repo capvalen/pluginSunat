@@ -5,7 +5,7 @@ include '../generales.php';
 require "../NumeroALetras.php";
 
 $_POST = json_decode(file_get_contents('php://input'),true); 
-var_dump( $_POST);
+//var_dump( $_POST);
 
 $caso = "-0{$_POST['cabecera']['tipo']}-"; // 01 para factura, 03 para boleta
 
@@ -23,15 +23,15 @@ if( $_POST['cabecera']['fecha']== $hoy->format('Y-m-d') ){
 }else{
 	$fecha = "'".$_POST['cabecera']['fecha']."'";
 }
-/* 
+
 $productos= $_POST['jsonProductos'];
 $afectos=0; $exonerados=0;
 $sumaTotal =0;
 for ($i=0; $i < count($productos) ; $i++) { 
 	if( $productos[$i]['afecto']=='1' ){
-		$afectos = $afectos + ( $productos[$i]['cantidad']*$productos[$i]['precioProducto'] );
+		$afectos = $afectos + ( $productos[$i]['cantidad']*$productos[$i]['precio'] );
 	}else{
-		$exonerados= $exonerados + ( $productos[$i]['cantidad']*$productos[$i]['precioProducto'] );
+		$exonerados= $exonerados + ( $productos[$i]['cantidad']*$productos[$i]['precio'] );
 	}
 }
 $sumaTotal = round($afectos+$exonerados,2);
@@ -61,13 +61,13 @@ if($filasCorrelativo==0){
 
 $factura =  $serie.'-'.$correlativo;
 
-$nombreArchivo = $rucEmisor.$caso.$factura ;
+$nombreArchivo = $_POST['empresa']['ruc'].$caso.$factura ;
 
-if(strlen($_POST['dniRUC'])==11){
+if(strlen($_POST['cliente']['dni'])==11){
 	$tipoDoc = '6';
-}else if(strlen($_POST['dniRUC'])==8){
+}else if(strlen($_POST['cliente']['dni'])==8){
 	$tipoDoc = '1';
-}else if(strlen($_POST['dniRUC'])<8){
+}else if(strlen($_POST['cliente']['dni'])<8){
 	$tipoDoc = '0';
 }
 
@@ -75,18 +75,19 @@ $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSer
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
   `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`) 
-VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
-	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
+VALUES (null,{$_POST['cabecera']['tipo']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
+	'{$_POST['cliente']['dni']}', '{$_POST['cliente']['razon']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1,now(), '{$_POST['cliDireccion']}', '' );";
+	1,now(), '{$_POST['cliente']['direccion']}', '' );";
 	//echo $sql;
 $resultado=$cadena->query($sql);
+$idCabecera = $cadena->insert_id;
 
 $sqlProd  =''; 
 for ($i=0; $i < count($productos) ; $i++) { 
-	if( $productos[$i]['subtotal']<>0){
+	if( $productos[$i]['subTotal']<>0){
 		$canti = $productos[$i]['cantidad'];
-		$prec = $productos[$i]['precioProducto'];
+		$prec = $productos[$i]['precio'];
 		if( $productos[$i]['afecto']=='1'  ){
 			$subTo = round($canti*$prec,2);
 			$costoUnit = round($prec/1.18,2);
@@ -105,13 +106,13 @@ for ($i=0; $i < count($productos) ; $i++) {
 			$codigoIGV='9997'; $nomTributo ='EXO'; $tipAfecto=20;
 		}
 		
-		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
+		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `idCabecera`,`facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`) VALUES
-		 (null,  concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['descripcionProducto']}',
-		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']}, {$productos[$i]['idProd']});";
+		 (null, {$idCabecera}, concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['nombre']}',
+		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']}, {$productos[$i]['id']});";
 		 $cadena->query($sqlProd);
 
-		 $_POST['idProd']=$productos[$i]['idProd'];
+		 $_POST['idProd']=$productos[$i]['id'];
 		 $_POST['proceso']='3';
 		 $_POST['cantidad']=$canti;
 		 $_POST['obs']='';
@@ -125,7 +126,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 
 
 # Generando los archivos txt para sunat 
-$sqlCabeza="SELECT * from `fact_cabecera` where factSerie = '{$serie}' and factCorrelativo='{$correlativo}';"; //echo $sqlCabeza;
+$sqlCabeza="SELECT * from `fact_cabecera` where idComprobante={$idCabecera}; "; //factSerie = '{$serie}' and factCorrelativo='{$correlativo}' //echo $sqlCabeza;
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){
@@ -139,10 +140,11 @@ if($filasCabeza==1){
 	$lineaCabeza = $rowC['tipOperacion'].$separador.$rowC['fechaEmision'].$separador.$rowC['horaEmision'].$separador.$rowC['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowC['dniRUC'].$separador.$rowC['razonSocial']. $separador.$rowC['tipoMoneda'].$separador. $igvFin.$separador. $costo.$separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
 	//echo $lineaCabeza;
 
-	if($_COOKIE['crearArchivo']==1){
-	$archivo = fopen("{$directorio}{$nombreArchivo}.cab", "w");
-	fwrite($archivo, "{$lineaCabeza}");
-	fclose($archivo);
+	if($_POST['empresa']['crearArchivo']==1 && $soy!='NOTA DE PEDIDO' ){
+		$dire= $_POST['empresa']['facturador'] . "\sunat_archivos\sfs\DATA/";
+		$archivo = fopen("{$dire}{$nombreArchivo}.cab", "w");
+		fwrite($archivo, "{$lineaCabeza}");
+		fclose($archivo);
 	}
 }
 //Actualización Facturador v3
@@ -153,7 +155,7 @@ $rowProductos = array();
 $i=1;
 $lineaDetalle ='';
 $sqlDetalle="SELECT fd.*, u.undCorto FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida
-WHERE `facSerieCorre` ='{$serie}-{$correlativo}';";
+WHERE idCabecera={$idCabecera};"; //`facSerieCorre` ='{$serie}-{$correlativo}'
 $resultadoDetalle=$cadena->query($sqlDetalle);
 while($rowD=$resultadoDetalle->fetch_assoc()){ 
 
@@ -179,27 +181,28 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 }
 //echo $lineaDetalle ;
 
-if($_COOKIE['crearArchivo']==1){
-$detalle = fopen("{$directorio}{$nombreArchivo}.det", "w");
-fwrite($detalle, "{$lineaDetalle}");
-fclose($detalle);
+if($_POST['empresa']['crearArchivo']==1 && $soy!='NOTA DE PEDIDO' ){
+	$dire= $_POST['empresa']['facturador'] . "\sunat_archivos\sfs\DATA/";
+	$detalle = fopen("{$dire}{$nombreArchivo}.det", "w");
+	fwrite($detalle, "{$lineaDetalle}");
+	fclose($detalle);
 
-$leyenda = $rowC['codLeyenda'].$separador. $letras .$separador;
+	$leyenda = $rowC['codLeyenda'].$separador. $letras .$separador;
 
-$fLeyenda = fopen("{$directorio}{$nombreArchivo}.ley", "w");
-fwrite($fLeyenda, "{$leyenda}");
-fclose($fLeyenda);
+	$fLeyenda = fopen("{$dire}{$nombreArchivo}.ley", "w");
+	fwrite($fLeyenda, "{$leyenda}");
+	fclose($fLeyenda);
 
 
 
-$tributo = $rowC['ideTributo'] . $separador . $rowC['nomTributo'] . $separador .  $rowC['codTipTributo']  . $separador . $rowC['mtoBaseImponible'] . $separador . $rowC['mtoTributo'] . $separador;
-if( $exonerados >0 ){
-	$tributo = $tributo . "\n9997|EXO|VAT|".round($exonerados,2)."|0.00|";
-}
+	$tributo = $rowC['ideTributo'] . $separador . $rowC['nomTributo'] . $separador .  $rowC['codTipTributo']  . $separador . $rowC['mtoBaseImponible'] . $separador . $rowC['mtoTributo'] . $separador;
+	if( $exonerados >0 ){
+		$tributo = $tributo . "\n9997|EXO|VAT|".round($exonerados,2)."|0.00|";
+	}
 
-$fTributo = fopen("{$directorio}{$nombreArchivo}.tri", "w");
-fwrite($fTributo, "{$tributo}");
-fclose($fTributo);
+	$fTributo = fopen("{$dire}{$nombreArchivo}.tri", "w");
+	fwrite($fTributo, "{$tributo}");
+	fclose($fTributo);
 
 
 }
@@ -209,11 +212,11 @@ fclose($fTributo);
 
 //echo $serie."-".$correlativo."-OK";
 $filas=array();
-$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $_POST['emitir'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'exonerado'=> $exonerados,  'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion'], "placa"=> '' ));
+$filas = array(array ( 'rucEmisor'=> $_POST['empresa']['ruc'], 'tipoComprobante' => $_POST['cabecera']['tipo'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$_POST['cliente']['dni'], 'razonSocial'=>$_POST['cliente']['razon'], 'fechaEmision'=> $rowC['fechaEmision'], 'exonerado'=> $exonerados,  'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion'], "placa"=> '' ));
 
 array_push ( $filas, $rowProductos);
 
 echo json_encode($filas);
- */
+
 
 ?>

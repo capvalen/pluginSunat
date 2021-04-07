@@ -18,8 +18,9 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
 					<a class="dropdown-item" href="#!" id="AEmitirFactura"><i class="icofont-ui-copy"></i> Factura</a>
-					<a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de crédito</a>
-					<a class="dropdown-item AEmitirNotas d-none" href="#!" id=""><i class="icofont-layers"></i> Nota de débito</a>
+					<a class="dropdown-item" href="./POS" id="AEmitirFactura"><i class="icofont-diamond"></i> POS Ventas</a>
+					<!-- <a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de crédito</a>
+					<a class="dropdown-item AEmitirNotas d-none" href="#!" id=""><i class="icofont-layers"></i> Nota de débito</a> -->
 				</div>
 			</li>
 		<?php }else{ ?>
@@ -31,13 +32,13 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 					<i class="icofont-newspaper"></i> Configuraciones
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-    		  <a class="dropdown-item" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a>
-					<a class="dropdown-item" href="compras.php" target="_blank"><i class="icofont-sale-discount"></i> Compras</a>
+    		  <!-- <a class="dropdown-item" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a> -->
+					<!-- <a class="dropdown-item" href="compras.php" target="_blank"><i class="icofont-sale-discount"></i> Compras</a> -->
 					<a class="dropdown-item" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
 					<a class="dropdown-item d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
 					<a class="dropdown-item " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
 					<a class="dropdown-item " href="#!" id="btnVaciarBandeja"><i class="icofont-infinite"></i> Vaciar bandeja</a>
-					<a class="dropdown-item " href="envioFactura.php" id="btnEnviarFactura"><i class="icofont-infinite"></i> Enviar facturas</a>
+					<!-- <a class="dropdown-item " href="envioFactura.php" id="btnEnviarFactura"><i class="icofont-infinite"></i> Enviar facturas</a> -->
 					
 				</div>
 			</li>

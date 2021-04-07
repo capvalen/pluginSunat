@@ -25,7 +25,7 @@ include "generales.php"; ?>
 <body>
 <style>
 .bg-dark {
-	background-color: #7531d4!important;
+	background-color: #7030a0!important;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -48,11 +48,11 @@ thead tr th{cursor: pointer;}
 </style>
 <?php include 'menu-wrapper.php'; ?>
 
-<section class="mt-5 pt-5">
+<section class="mt-3">
 	<div class="container-fluid  px-5">
 		<div class="row">
 		<div class="col-md-3">
-			<img src="bitmap.jpg?version=1.0.3" class='img-fluid mt-3'>
+			<center><img src="images/aliser.jpeg?version=1.0.3" class='img-fluid mt-3 w-75'></center>
 		</div>
 		<div class="col ml-4">
 			<h3 class="display-4">Reportes</h3>
@@ -72,7 +72,7 @@ thead tr th{cursor: pointer;}
 				<select class="selectpicker" data-live-search="false" id="sltFiltroReporte" title="&#xed12; Tipo de reporte">
 					<option value="0">Resumido</option>
 					<option value="1">Contable</option>
-					<option value="2">Kardex</option>
+					<!-- <option value="2">Kardex</option> -->
 					<option value="3">Detallado</option>
 				</select>
 				<select class="selectpicker" data-live-search="false" id="sltFiltroProducto" title="&#xed12; Productos">
