@@ -78,12 +78,13 @@ try {
     $printer -> text("SON: {$_POST['monedas']} \n");
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
-    $printer -> bitImage($tuxQR);
-    $printer -> text("--------------------------------\n");
-    /*$printer -> text("Contactos: ".$celularEmisor."\n");*/
 	if($_POST['serie']==''){
+    /*$printer -> text("Contactos: ".$celularEmisor."\n");*/
+	
 		$printer -> text("No olvide reclamar su comprobante\n");
 	}else{
+		$printer -> bitImage($tuxQR);
+		$printer -> text("--------------------------------\n");
 		$printer -> text("Esta es una representación impresa de la factura electrónica, generada en el Sistema de SUNAT. Puede verificarla utilizando su Clave SOL.\n");
 	}	
     $printer -> text("Gracias por tu preferencia\n\n");
