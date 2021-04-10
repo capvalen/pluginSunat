@@ -2,6 +2,8 @@
 date_default_timezone_set('America/Lima');
 include "conexion.php";
 
+$comprobantes=[1,3,12];
+
 if( isset($_POST['fecha'])){
 	$fecha = $_POST['fecha'];
 	if( isset($_POST['fecha2'])){
@@ -10,11 +12,11 @@ if( isset($_POST['fecha'])){
 		$fecha2 = $_POST['fecha'];
 	}
 
-	$sql="SELECT `idComprobante`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'Factura' when `factTipoDocumento`= 3 then 'Boleta' when `factTipoDocumento` = 0 then 'Interno' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2' then 'De baja' when '3' then 'Enviado a SUNAT' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja` FROM `fact_cabecera` WHERE  `fechaEmision` between '{$fecha}' and '{$fecha2}';";
+	$sql="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'Factura' when 3 then 'Boleta' when 0 then 'Interno' when -1 then 'Proforma' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Generar XML' when 0 then 'Sin emitir' when '2' then 'De baja' when '3' then 'Enviado a SUNAT' when 4 then 'Borrado' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja` FROM `fact_cabecera` WHERE  `fechaEmision` between '{$fecha}' and '{$fecha2}';";
 }else{
 	$fecha = date('Y-m-d');
 
-	$sql="SELECT `idComprobante`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'Factura' when `factTipoDocumento`= 3 then 'Boleta' when `factTipoDocumento` = 0 then 'Interno' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2'  then 'De baja' when '3' then 'Enviado a SUNAT' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja` FROM `fact_cabecera` WHERE  `fechaEmision` = '{$fecha}';";
+	$sql="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'Factura' when 3 then 'Boleta' when 0 then 'Interno' when -1 then 'Proforma' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Generar XML' when 0 then 'Sin emitir' when '2'  then 'De baja' when '3' then 'Enviado a SUNAT' when 4 then 'Borrado' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja` FROM `fact_cabecera` WHERE  `fechaEmision` = '{$fecha}';";
 }
 
 
@@ -36,7 +38,7 @@ while($row=$resultado->fetch_assoc()){
 		<td><?= $i; ?></td>
 		
 		<td><?= $row['queDoc']; ?></td>
-		<td class="tdCorrelativo"><?= ($row['queDoc']=='Interno')? $row['factCorrelativo'] : $row['factSerie']."-".$row['factCorrelativo']; ?></td>
+		<td class="tdCorrelativo"><?= ($row['queDoc']=='Interno' || $row['queDoc']=='Proforma' )? $row['factCorrelativo'] : $row['factSerie']."-".$row['factCorrelativo']; ?></td>
 	<?php if( isset($_POST['fecha2'])): ?>
 		<td data-sort-value="<?php echo $hora->format('ymd'); ?>"><?php echo $fEmision1->format('d/m/Y')." ". $hora->format('h:i a'); ?></td>
 	<?php else: ?>
@@ -50,25 +52,35 @@ while($row=$resultado->fetch_assoc()){
 		<td>S/ <?= number_format($row['IGVFinal'],2); ?></td>
 		<td>S/ <span class="spTotalPac"><?= number_format($row['totalFinal'],2); ?></span></td>
 		<td class="text-capitalize">
-			<?php if($row['comprobanteEmitido']==0){ echo "<span class='badge badge-secondary'>{$row['comprobanteEmitidoDescr']}</span>"; }
-				else if($row['comprobanteEmitido']==2){ echo "<span class='badge badge-danger'>".$row['comprobanteEmitidoDescr']."</span> <br><small class='text-danger'>{$row['motivoBaja']}</small>";} 
-				else { echo "<span class='badge badge-success'>".$row['comprobanteEmitidoDescr']. "</span>";} ?>
-		</td>
-		<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" >
-			<?php 
-			if($row['comprobanteEmitido']==0 && $fecha == date('Y-m-d')){ ?>
-			<button class="btn btn-outline-primary btn-sm border border-light btnGenComprobante" data-ticket="<?= $row['idTicket']; ?>" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
-			<?php
-			}
-			else if($row['comprobanteEmitido']==1 || $row['comprobanteEmitido']==3 ){ ?>
-			<button class="btn btn-outline-success btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
-			<button class="btn btn-outline-success btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
-			<?php if($_COOKIE['ckPower']==1){ ?>
-			<button class="btn btn-outline-danger btn-sm border border-light btnDarBajas" data-toggle="tooltip" data-placement="top" title="Dar de baja" data-boleta="<?= $row['factTipoDocumento'];?>" data-baja="<?= $row['idComprobante'];?>"><i class="icofont-download-alt"></i></button>
-			<?php } ?>
-			<?php }
+			<?php if($row['comprobanteEmitido']==0){ echo "<span class='badge badge-secondary'> <i class='icofont-safety'></i> {$row['comprobanteEmitidoDescr']}</span>"; }
+				else if( in_array($row['comprobanteEmitido'], [2,4]) ){ echo "<span class='badge badge-danger'> <i class='icofont-delete'></i> ".$row['comprobanteEmitidoDescr']."</span> <br><small class='text-danger'>{$row['motivoBaja']}</small>";} 
+				else if($row['comprobanteEmitido']==3) { echo "<span class='badge badge-success'><i class='icofont-safety'></i> ".$row['comprobanteEmitidoDescr']. "</span>";}
+				else { echo "<span class='badge badge-secondary'><i class='icofont-spinner-alt-2'></i> ".$row['comprobanteEmitidoDescr']. "</span>";}
 			?>
 		</td>
+		<?php if(in_array( $row['factTipoDocumento'], $comprobantes)){ ?>
+			<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" >
+				<?php 
+				if($row['comprobanteEmitido']==0 && $fecha == date('Y-m-d')){ ?>
+					<button class="btn btn-outline-primary btn-sm border border-light btnGenComprobante" data-ticket="<?= $row['idTicket']; ?>" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
+				<?php }
+				else if($row['comprobanteEmitido']==1 || $row['comprobanteEmitido']==3 ){ ?>
+					<button class="btn btn-outline-secondary btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
+					<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
+				<?php if($_COOKIE['ckPower']==1){ ?>
+					<button class="btn btn-outline-danger btn-sm border border-light btnDarBajas" data-toggle="tooltip" data-placement="top" title="Dar de baja" data-boleta="<?= $row['factTipoDocumento'];?>" data-baja="<?= $row['idComprobante'];?>"><i class="icofont-download-alt"></i></button>
+				
+				<?php } }
+				?>
+			</td>
+		<?php }else{ ?>
+			<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" >
+				<button class="btn btn-outline-secondary btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
+				<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
+				<button class="btn btn-outline-warning btn-sm border border-light " onclick="borrarExtra('<?= $row['idComprobante']?>')" data-toggle="tooltip" data-placement="top" title="Borrar interno"><i class="icofont-ui-rate-remove"></i></button>
+				<button class="btn btn-outline-primary btn-sm border border-light " onclick="prepararTransformacion('<?= $row['idComprobante']?>')" data-toggle="tooltip" data-placement="top" title="Convertir en..."><i class="icofont-ui-rate-remove"></i></button>
+			</td>
+		<?php } ?>
 	</tr>
 <?php  $i++; }
 

@@ -138,6 +138,7 @@
 								<option value="0">Ticket interno</option>
 								<option value="3">Boleta de venta</option>
 								<option value="1">Factura</option>
+								<option value="-1">Proforma</option>
 							</select>
 						</div>
 					</div>
@@ -202,8 +203,15 @@
 						<button type='button' class='close' data-dismiss='modal' aria-label='Close'> <span aria-hidden='true'>&times;</span></button>
 						
 						<p class="mt-4 mb-2">Estas editando: <strong id="queEdito"></strong></p>
-						<p>Precio:</p>
-						<input type="number" class="form-control" id="txtPrecioProducto">
+						<p>Precio: S/ <span id="txtPrecioProducto"></span></p>
+						
+						<div >
+							<select name="" id="sltPreciosEspeciales" class="form-control" @change="precioDe">
+								<option :value="preciosEspeciales.normal" v-if="preciosEspeciales.normal>0">Normal</option>
+								<option :value="preciosEspeciales.descuento" v-if="preciosEspeciales.descuento>0">Con descuento</option>
+								<option :value="preciosEspeciales.mayor" v-if="preciosEspeciales.mayor>0">Por mayor</option>
+							</select>
+						</div>
 						<div class='d-flex justify-content-between mt-3'>
 							<button type='button' class='btn btn-outline-danger btn-sm' data-dismiss="modal" @click="retirarProducto()"><i class="bi bi-arrow-90deg-left"></i> Retirar</button>
 							<button type='button' class='btn btn-outline-primary btn-sm' data-dismiss="modal" @click="actualizarProducto()"><i class="bi bi-arrow-down-up"></i> Actualizar</button>
@@ -232,7 +240,7 @@
 				cliRuc: '00000000'
 			}],
 			clienteActual:{dni: '00000000', razon: 'Cliente simple', idCliente:1, tipo:'persona', direccion:''},
-			modoCliente:null, idProducto:null,
+			modoCliente:null, idProducto:null, preciosEspeciales:[],
 			productos:[],
 			canasta:[],
 			
@@ -365,7 +373,7 @@
 				}
 			},
 			llenarProductos(item){
-				//console.log('total producro es '+ this.productos.length );
+				//console.log('total productos es '+ this.productos.length );
 				if(this.productos.length==1){
 					this.canasta.push({
 						id: this.productos[0].idProductos,
@@ -374,6 +382,8 @@
 						unidad: 'Und.',
 						unidadSunat: 'NIU',
 						precio: this.productos[0].prodPrecio,
+						mayor: this.productos[0].prodPrecioMayor,
+						descuento: this.productos[0].prodPrecioDescto,
 						afecto: this.productos[0].idGravado,
 						subTotal: this.productos[0].prodPrecio
 					});
@@ -388,6 +398,8 @@
 						unidad: 'Und.',
 						unidadSunat: 'NIU',
 						precio: this.productos[item].prodPrecio,
+						mayor: this.productos[item].prodPrecioMayor,
+						descuento: this.productos[item].prodPrecioDescto,
 						afecto: this.productos[item].idGravado,
 						subTotal: this.productos[item].prodPrecio
 					});
@@ -398,7 +410,7 @@
 			buscarProducto(){
 				if(this.prodBuscar!=''){
 					axios.post('../php/buscarProducto.php', {texto: this.prodBuscar})
-					.then((response)=>{ console.log( response.data );
+					.then((response)=>{ //console.log( response.data );
 						app.productos=response.data;
 						app.llenarProductos();
 					})
@@ -422,6 +434,7 @@
 					case '3': this.venta="Boleta de venta"; break;
 					case '1': this.venta="Factura"; break;
 					case '0': this.venta="Ticket interno"; break;
+					case '-1': this.venta="Proforma"; break;
 				}
 			},
 			emitir(){	
@@ -464,6 +477,16 @@
 							this.guardar();
 						}
 					break;
+					case -1: case '-1':
+					if( this.canasta.length==0 ){
+							alertify.error('<i class="bi bi-exclamation-diamond-fill"></i> La venta debe tener al menos 1 producto.').delay(15);
+						}else{
+							alertify.message('<i class="bi bi-info-circle"></i> Generando la factura, espere ').delay(15);
+							this.serie = '';
+							//mandar a guardar e impr
+							this.guardar();
+						}
+					break;
 				}
 				
 			},
@@ -475,6 +498,7 @@
 					let jTicket = response.data;
 
 					$.ajax({url: "http://127.0.0.1/"+this.empresa.carpeta+"/printComprobante.php", type: 'POST', data: {
+						ticketera: this.empresa.ticketera,
 						tipoComprobante: jTicket[0].tipoComprobante,
 						rucEmisor: jTicket[0].rucEmisor,
 						queEs: jTicket[0].queSoy,
@@ -496,6 +520,7 @@
 						/* placa: jTicket[0].placa, */
 					}}).done(function(resp) {
 						console.log(resp)
+						app.limpiarTodo();
 						//location.reload();
 					});
 
@@ -505,7 +530,8 @@
 			editarProducto(item){
 				this.idProducto=item;
 				$('#queEdito').text(this.canasta[item].nombre);
-				$('#txtPrecioProducto').val(this.canasta[item].precio);
+				$('#txtPrecioProducto').text(parseFloat(this.canasta[item].precio).toFixed(2));
+				this.preciosEspeciales = {normal:this.canasta[item].precio, mayor: this.canasta[item].mayor, descuento:  this.canasta[item].descuento };
 				$('#modalEditarProducto').modal('show');
 				
 			},
@@ -513,9 +539,29 @@
 				this.canasta.splice(this.idProducto, 1)
 			},
 			actualizarProducto(){
-				this.canasta[this.idProducto].precio = $('#txtPrecioProducto').val();
+				this.canasta[this.idProducto].precio = $('#sltPreciosEspeciales').val();
 				this.canasta[this.idProducto].subTotal = this.canasta[this.idProducto].precio * this.canasta[this.idProducto].cantidad;
 			},
+			precioDe(){
+				$('#txtPrecioProducto').text( parseFloat($('#sltPreciosEspeciales').val()).toFixed(2) );
+			},
+			limpiarTodo(){
+				this.cliBuscar= '';
+				this.prodBuscar=''
+				this.tipoVenta=0;
+				this.venta= 'Ticket interno';
+				this.clientes= [{
+					idCliente: 1,
+					cliRazonSocial: 'Cliente simple',
+					cliRuc: '00000000'
+				}];
+				this.clienteActual={dni: '00000000', razon: 'Cliente simple', idCliente:1, tipo:'persona', direccion:''};
+				this.modoCliente=null;
+				this.idProducto=null;
+				this.preciosEspeciales=[];
+				this.productos=[];
+				this.canasta=[];
+			}
 		},
 		computed:{
 			sumaTotal(){

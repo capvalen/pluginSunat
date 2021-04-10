@@ -13,6 +13,7 @@ switch ($_POST['cabecera']['tipo']) {
 	case '1': $soy="FACTURA"; break;
 	case '3': $soy="BOLETA DE VENTA"; break;
 	case '0': $soy="NOTA DE PEDIDO"; break;
+	case '-1': $soy="PROFORMA"; break;
 	default: # code... break;
 }
 $serie = $_POST['cabecera']['serie'];
@@ -45,23 +46,7 @@ if($parteDecimal == '0'){
 	$parteDecimal='00';
 }
 
-//Pedir las letras del monto facturado
-$letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES con '.$parteDecimal.'/100 MN';
 
-$sqlCorrelativo="SELECT LPAD(factCorrelativo+1, 8, '0') as contador  FROM `fact_cabecera` where factSerie = '{$serie}' order by factCorrelativo desc limit 1";
-$resultadoCorrelativo=$cadena->query($sqlCorrelativo);
-$filasCorrelativo = $resultadoCorrelativo->num_rows;
-if($filasCorrelativo==0){
-	$correlativo='00000001';
-}else{
-	$rowCorrelativo=$resultadoCorrelativo->fetch_assoc(); 
-	$correlativo = $rowCorrelativo['contador'];
-}
-
-
-$factura =  $serie.'-'.$correlativo;
-
-$nombreArchivo = $_POST['empresa']['ruc'].$caso.$factura ;
 
 if(strlen($_POST['cliente']['dni'])==11){
 	$tipoDoc = '6';
@@ -69,6 +54,19 @@ if(strlen($_POST['cliente']['dni'])==11){
 	$tipoDoc = '1';
 }else if(strlen($_POST['cliente']['dni'])<8){
 	$tipoDoc = '0';
+}
+
+//Pedir las letras del monto facturado
+$letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES con '.$parteDecimal.'/100 MN';
+
+$sqlCorrelativo="SELECT LPAD(factCorrelativo+1, 8, '0') as contador FROM `fact_cabecera` where factSerie = '{$serie}' order by factCorrelativo desc limit 1";
+$resultadoCorrelativo=$cadena->query($sqlCorrelativo);
+$filasCorrelativo = $resultadoCorrelativo->num_rows;
+if($filasCorrelativo==0){
+	$correlativo='00000001';
+}else{
+	$rowCorrelativo=$resultadoCorrelativo->fetch_assoc(); 
+	$correlativo = $rowCorrelativo['contador'];
 }
 
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
@@ -80,6 +78,10 @@ VALUES (null,{$_POST['cabecera']['tipo']},'{$serie}','{$correlativo}',{$fecha}, 
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
 	1,now(), '{$_POST['cliente']['direccion']}', '' );";
 	//echo $sql;
+
+$factura =  $serie.'-'.$correlativo;
+$nombreArchivo = $_POST['empresa']['ruc'].$caso.$factura ;
+
 $resultado=$cadena->query($sql);
 $idCabecera = $cadena->insert_id;
 

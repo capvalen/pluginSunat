@@ -2,6 +2,9 @@
 include('phpqrcode/qrlib.php'); 
 include "generales.php";
 
+$_POST = json_decode(file_get_contents('php://input'),true); 
+
+
 require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
@@ -36,7 +39,8 @@ foreach ($productos as $variable) {
     $todoProd = $todoProd .  ucwords($variable['descripcion'])."\n              ".$variable['cantidad']." ".$variable['undCorto']."   ". "S/ ". number_format($variable['preProducto'],2).'   S/ '. number_format($variable['precio'],2)."\n";
 }
 //echo $todoProd;
-
+if($_POST['queEs']!='PROFORMA' && $_POST['queEs']!="NOTA DE PEDIDO"){ $queEs = $_POST['queEs'] . " ELECTRÓNICA"; }else{ $queEs = $_POST['queEs']; }
+if (isset($_POST['ticketera'])){ $nombrePrint= $_POST['ticketera'];}
 
 $connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/".$nombrePrint);
 try {
@@ -53,7 +57,7 @@ try {
     $printer -> setEmphasis(false);
     $printer -> text("".$direccionEmisor."\n");
     $printer -> setEmphasis(true);
-    $printer -> text("{$_POST['queEs']} ELECTRÓNICA\n");
+    $printer -> text("{$queEs}\n");
     $printer -> text("{$_POST['serie']} - {$_POST['correlativo']}\n"); //Cambniar Codigooooooooo
     $printer -> setEmphasis(false);
     $printer -> text("--------------------------------\n");

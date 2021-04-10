@@ -119,3 +119,21 @@
     </div>
   </div>
 </div>
+<!-- Modal para: -->
+<div class='modal fade' id='modalTransformacion' tabindex='-1'>
+	<div class='modal-dialog modal-sm modal-dialog-centered'>
+		<div class='modal-content'>
+			<div class='modal-body'>
+				<button type='button' class='close' data-dismiss='modal' aria-label='Close'> <span aria-hidden='true'>&times;</span></button>
+				<h5 class='modal-title'>Convertir a...</h5>
+				<p class="mb-0">Éste comprobante solo puede emitirse a:</p>
+				<p class="mb-0"><strong class="text-primary" id="pConverir"></strong></p>
+				<p class="">¿Deseas transformarlo?</p>
+				<div class='d-flex justify-content-between'>
+					<button type='button' class='btn btn-outline-secondary' data-dismiss="modal">No</button>
+					<button type='button' class='btn btn-primary' onclick="transformar()" data-dismiss="modal">Sí</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

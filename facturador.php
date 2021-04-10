@@ -62,7 +62,7 @@ include "generales.php"; ?>
 					<th data-sort="int"><i class="icofont-expand-alt"></i> Hora</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
 					<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th>
+					<!-- <th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th> -->
 					<th data-sort="float"><i class="icofont-expand-alt"></i> Total</th>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 					<th>@</th>
@@ -388,6 +388,22 @@ include "generales.php"; ?>
 		</div>
 	</div>
 </div>
+<!-- Modal para: -->
+<div class='modal fade' id='modalConfirmarBorrar' tabindex='-1'>
+	<div class='modal-dialog modal-sm modal-dialog-centered'>
+		<div class='modal-content'>
+			<div class='modal-body'>
+				<button type='button' class='close' data-dismiss='modal' aria-label='Close'> <span aria-hidden='true'>&times;</span></button>
+				<h5 class='modal-title'>Confirmar</h5>
+				<p>¿Deseas borrar el comprobante extra?</p>
+				<div class='d-flex justify-content-between'>
+					<button type='button' class='btn btn-outline-dark' data-dismiss="modal">No</button>
+					<button type='button' class='btn btn-outline-danger' onclick="borrarDefinitivamente()" data-dismiss="modal">Sí</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <?php } ?>
 
 <div id="overlay">
@@ -413,7 +429,7 @@ $(document).ready(function(){
 		//console.log(resp)
 		console.info( '\033[35mLista de precios:' );
 		$.precios = JSON.parse(resp);
-		console.log( $.precios );
+		//console.log( $.precios );
 	});
 	$('#fechaFiltro').val( moment().format('YYYY-MM-DD'));
 	$('[data-toggle="tooltip"]').tooltip();
@@ -1133,8 +1149,24 @@ function calcularVuelto(){
 	}
 }
 
+function prepararTransformacion(id){
+	$.idComprobante = id;
+	$.ajax({url: 'php/prepararConversion.php', type: 'POST', data: { id: $.idComprobante }}).done(function(resp) {
+		console.log(resp)
+		$.transformar = JSON.parse(resp)
+		$('#pConverir').text($.transformar.que);
+		$('#modalTransformacion').modal('show');
+	});
+}
+function transformar(){
+	$.ajax({url: 'php/transformar.php', type: 'POST', data: { id: $.idComprobante, serie: $.transformar.serie, tipo: $.transformar.tipo }}).done(function(resp) {
+		console.log(resp)
+		location.reload();
+	});
+}
 
-<?php if($_COOKIE['ckPower']==1){?>
+
+<?php if($_COOKIE['ckPower']==1){ ?>
 $('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {
 	$('#strComprobante').text( $(this).parent().parent().find('.tdCorrelativo').text());
 	$('#h5ComprobanteBaja').text( $('#strComprobante').text());
@@ -1188,6 +1220,18 @@ $('#btnVaciarBandeja').click(function() {
 		$('#overlay').css('display', 'none')
 	});
 });
+function borrarExtra(id){
+	$.idComprobante=id;
+	$('#modalConfirmarBorrar').modal('show');
+}
+function borrarDefinitivamente(){
+	$.ajax({url: 'php/borrarInterno.php', type: 'POST', data: { id: $.idComprobante }}).done(function(resp) {
+		console.log(resp)
+		if(resp=='ok'){
+			location.reload();
+		}
+	});
+}
 
 <?php }?>
 </script>
