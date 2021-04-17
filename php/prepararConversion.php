@@ -13,9 +13,9 @@ $resultado=$cadena->query($sql);
 $row=$resultado->fetch_assoc();
 $queEmite = array();
 if(in_array($row['tipDocUsuario'], [0,1])){ //es dni de 8
-	$queEmite = array( 'que'=> 'Boleta', 'serie'=> $rowSerie['serieBoleta'], 'tipo'=> 1);
+	$queEmite = array( 'que'=> 'Boleta', 'serie'=> $rowSerie['serieBoleta'], 'tipo'=> 3);
 }else if($row['tipDocUsuario']==6){ //es ruc 11
-	$queEmite = array( 'que'=> 'Factura', 'serie'=> $rowSerie['serieFactura'], 'tipo'=> 3);
+	$queEmite = array( 'que'=> 'Factura', 'serie'=> $rowSerie['serieFactura'], 'tipo'=> 1);
 }
 echo json_encode($queEmite);
 ?>

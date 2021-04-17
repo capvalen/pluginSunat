@@ -78,7 +78,7 @@ while($row=$resultado->fetch_assoc()){
 				<button class="btn btn-outline-secondary btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
 				<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
 				<button class="btn btn-outline-warning btn-sm border border-light " onclick="borrarExtra('<?= $row['idComprobante']?>')" data-toggle="tooltip" data-placement="top" title="Borrar interno"><i class="icofont-ui-rate-remove"></i></button>
-				<button class="btn btn-outline-primary btn-sm border border-light " onclick="prepararTransformacion('<?= $row['idComprobante']?>')" data-toggle="tooltip" data-placement="top" title="Convertir en..."><i class="icofont-ui-rate-remove"></i></button>
+				<button class="btn btn-outline-primary btn-sm border border-light " onclick="prepararTransformacion('<?= $row['idComprobante']?>')" data-toggle="tooltip" data-placement="top" title="Convertir en..."><i class="icofont-stylish-up"></i></button>
 			</td>
 		<?php } ?>
 	</tr>

@@ -32,7 +32,7 @@ require "NumeroALetras.php";
 
 
 
-$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case when `factTipoDocumento`= 1 then 'FACTURA' when `factTipoDocumento`= 3 then 'BOLETA' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
+$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'FACTURA ELECTRÓNICA' when 3 then 'BOLETA ELECTRÓNICA' when -1 then 'PROFORMA' when 0 then 'TICKET INTERNO' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
 $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc();
 
@@ -43,8 +43,7 @@ $serie = $rowSeries['factSerie'];
 $soy = $rowSeries['queDoc'];
 $correlativo = $rowSeries['factCorrelativo'];
 
-
-$factura =  $serie.'-'.$correlativo;
+if( in_array( $rowSeries['queDoc'] , ['PROFORMA', 'TICKET INTERNO']) ){ $factura =  $correlativo; }else{$factura =  $serie.'-'.$correlativo;}
 $nombreArchivo = $rucEmisor.$caso.$factura ; 
 
 
@@ -104,7 +103,7 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 <div class="col-sm-6 mt-5 mb-2 text-center " class="">
 	<div class="border border-dark bordeGrueso">
 		<h3 class="text-uppercase">RUC: <?= $rucEmisor; ?></h3>
-		<h2 class="text-uppercase"><?= $soy; ?> ELECTRÓNICA</h2>
+		<h2 class="text-uppercase"><?= $soy; ?></h2>
 		<h2 class="text-uppercase"><?= $factura; ?></h2>
 	</div>
 </div>

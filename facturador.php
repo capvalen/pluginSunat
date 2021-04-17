@@ -589,7 +589,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/printComprobante.php', type: 'POST', data: {
+		$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/<?= $_COOKIE['demoFacturador']==true? 'php/printDemoTicket.php' : 'printComprobante.php' ?>', type: 'POST', data: {
 			tipoComprobante: $.jTicket[0].tipoComprobante,
 			rucEmisor: $.jTicket[0].rucEmisor,
 			queEs: $.jTicket[0].queSoy,
@@ -614,6 +614,7 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 			//location.reload();
 		});
 	});
+
 });
 $('#btnPrintTicketera').click(function() { console.log( 'ticketera' );
 	imprimitEnTicketera()

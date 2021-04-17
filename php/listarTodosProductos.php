@@ -25,8 +25,8 @@ while($row=$resultado->fetch_assoc()){
 		<td class='text-center tdMayor' data-value="<?= round($row['prodPrecioMayor'],2); ?>">S/ <?= number_format($row['prodPrecioMayor'],2); ?></td>
 		<td class='text-center tdDescuento' data-value="<?= round($row['prodPrecioDescto'],2); ?>">S/ <?= number_format($row['prodPrecioDescto'],2); ?></td>
 		<td><span class="tdStock"><?= $row['prodStock'];?></span> Unds.</td>
-		<td class="tdGrabado" data-value="<?= $row['idGravado'];?>"><?= $row['gravDescripcion']; ?></td>
-		<td><?= $row['undDescipcion']; ?></td>
+		<td class="tdGrabado <?= ($_COOKIE['facCambiarGravado']==0 ? 'd-none': '') ?>" data-value="<?= $row['idGravado'];?>"><?= $row['gravDescripcion']; ?></td>
+		<td class="<?= ($_COOKIE['facCambiarUnidad']==0 ? 'd-none': '') ?>"><?= $row['undDescipcion']; ?></td>
 		<td><?= $row['estActivo']; ?></td>
 		<td>
 			<button class="btn btn-outline-primary btn-sm border border-light btnEditProducto" data-toggle="tooltip" data-placement="top" title="" data-original-title="Editar Producto"><i class="icofont-flag"></i></button>

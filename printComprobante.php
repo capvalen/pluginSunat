@@ -58,7 +58,7 @@ try {
     $printer -> text("".$direccionEmisor."\n");
     $printer -> setEmphasis(true);
     $printer -> text("{$queEs}\n");
-    $printer -> text("{$_POST['serie']} - {$_POST['correlativo']}\n"); //Cambniar Codigooooooooo
+    $printer -> text("{$_POST['serie']}-{$_POST['correlativo']}\n"); //Cambniar Codigooooooooo
     $printer -> setEmphasis(false);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);

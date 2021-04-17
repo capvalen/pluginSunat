@@ -80,8 +80,11 @@ thead tr th{cursor: pointer;}
 			<h3 class="display-4">Gestión de productos</h3>
 			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 		</div></div>
-		<div class="d-flex justify-content-end">
-			<button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button>
+		<div class="row ">
+			<div class="col">
+				<label for="">Buscar Producto: </label>
+				<input type="search" class="form-control" id="txtProductoBuscar" placeholder='Buscar Producto' autocomplete="nope"></div>
+			<div class="col text-right"><button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button></div>
 		</div>
 		
 
@@ -94,13 +97,17 @@ thead tr th{cursor: pointer;}
 					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio por Mayor</th>
 					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio con Dscto.</th>
 					<th data-sort="int"><i class="icofont-expand-alt"></i> Stock</th>
+					<?php if($_COOKIE['facCambiarGravado']==1){ ?>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Gravado</th>
+					<?php } ?>
+					<?php if($_COOKIE['facCambiarUnidad']==1){ ?>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Unidad</th>
+					<?php } ?>
 					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 					<th>@</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody id="tbodyRespuestaProductos">
 				<?php include "php/listarTodosProductos.php"; ?>
 			</tbody>
 		</table>
@@ -318,6 +325,15 @@ $(document).ready(function(){
 
 });
 
+$('#txtProductoBuscar').keypress(function (e) { 
+	if(e.keyCode == 13){ 
+		$.ajax({url: 'php/buscarProductoEsp.php', type: 'POST', data: { texto: $('#txtProductoBuscar').val() }}).done(function(resp) {
+			//console.log(resp)
+			$('#tbodyRespuestaProductos').html(resp);
+		});
+	}
+});
+
 $('table').on('click', '.btnEditProducto', function (e) {
 	var padre=$(this).parent().parent();
 
@@ -354,7 +370,7 @@ $('#btnUpdateProduct').click(function() {
 	if( $('#txtPrecioMayor').val()!='' ){ pMayor=$('#txtPrecioMayor').val(); }
 	if( $('#txtPrecioDescuento').val()!='' ){ pDescuento=$('#txtPrecioDescuento').val(); }
 
-	$.ajax({url: 'php/updateProducto.php', type: 'POST', data: { idProd: $('#btnUpdateProduct').attr('data-id'), pNombre: $('#txtDescripcionPub').val(), pPublico: pPublico, pMayor: pMayor, pDescuento: pDescuento, pImpuesto: $('#sltFiltroGravado').selectpicker('val'), pUnidad: $('#sltFiltroUnidades').selectpicker('val') }}).done(function(resp) {
+	$.ajax({url: 'php/updateProducto.php', type: 'POST', data: { idProd: $('#btnUpdateProduct').attr('data-id'), pNombre: $('#txtDescripcionPub').val(), pPublico: pPublico, pMayor: pMayor, pDescuento: pDescuento, pImpuesto: $('#sltFiltroGravado').selectpicker('val'), pUnidad: $('#sltFiltroUnidades').selectpicker('val') }}).done(function(resp) { console.log( resp );
 		if(resp=='ok'){
 			$('#h5Detalle').text('Producto Actualizado');
 			$('#modalEditarProducto').modal('hide');
