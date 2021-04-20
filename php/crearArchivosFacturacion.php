@@ -12,7 +12,7 @@ $current_dir = dirname(__FILE__);
 $directorio="../comprobantes/";
 //$path = realpath( $current_dir . '/../comprobantes/' );
 $path = realpath( $current_dir . '/'.$directorio );
-echo "Estamos en ". $path;
+//echo "Estamos en ". $path;
 
 $_POST = json_decode(file_get_contents('php://input'),true); 
 //var_dump($_POST['comprobantes']);

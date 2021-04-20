@@ -29,6 +29,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 	<p>Todas las facturas que no han sido enviadas aún a SUNAT. </p>
 	<div class="row">
 		<button class="btn btn-outline-primary mb-3" @click="enviarComprobantes()"><i class="icofont-copy"></i> Generar comprobantes TXT</button>
+		<button class="btn btn-outline-primary mb-3" @click="bajar()"><i class="icofont-copy"></i> Bajar</button>
 	</div>
 	<table class="table table-hover">
 		<thead>
@@ -38,7 +39,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 				<th>Fecha</th>
 				<th>Comprobante</th>
 				<th>Estado</th>
-				<th><i class="icofont-plus"></i></th>
+				<th @click="incluirTodo()"><i class="icofont-plus"></i> <input type="checkbox" id="chkTodo" ></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -49,7 +50,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 					<td>{{comprobante.factFecha}}</td>
 					<td>{{comprobante.factSerie}} {{comprobante.factCorrelativo}}</td>
 					<td>{{comprobante.estado}}</td>
-					<td><label @click="enlistar($event.target.checked, comprobante.idComprobante)"><input type="checkbox" id="cbox1" > </label></td>
+					<td><label @click="enlistar($event.target.checked, comprobante.idComprobante)"><input type="checkbox" class="checkbox" > </label></td>
 				</tr>
 				<?php
 			
@@ -75,7 +76,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
          console.log(error);
       });
 		},
-		enlistar( estado, idComprobante ){ //console.log( 'estado' + estado );
+		enlistar( estado, idComprobante ){ //console.log( 'estado ' + estado );
 			if (estado){
 				this.seleccionados.push(idComprobante)
 			}else{
@@ -95,15 +96,42 @@ if( !isset($_COOKIE['ckUsuario']) ){
 			})
 			.then( function (response) {
 				console.log( response.data );
+				if(response.data == 'Archivo Zip creado'){
+					let filename = 'sunat.zip'
+					fetch("comprobantes/datosSunat.zip").then(function(t) {
+						return t.blob().then((b)=>{
+							var a = document.createElement("a");
+							a.href = URL.createObjectURL(b);
+							a.setAttribute("download", filename);
+							a.click();
+							a.remove();
+							
+							axios('php/limpiarServidorSunat.php')
+							.then((response)=> {console.log( console.log(response.data) );})
+							.catch( (error) =>{console.log( error );})
+						});
+					});
+				}
 			})
 			.catch(function (error) {
 				console.log( error );
 			})
+		},
+		incluirTodo(){
+			this.comprobantes.forEach( caso => {
+				console.log( caso );
+				this.enlistar(true, caso.idComprobante)
+			})
+			//this.seleccionados.push(idComprobante)
+			let checks = document.querySelectorAll('tbody .checkbox');
+			checks.forEach((chk)=>{
+				chk.checked=true;
+			});
 		}
 		
 	}
 });
-app.todaData()
+app.todaData();
 </script>
 </body>
 </html>
