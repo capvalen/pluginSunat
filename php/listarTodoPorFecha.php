@@ -50,12 +50,16 @@ while($row=$resultado->fetch_assoc()){
 		<td>S/ <span ><?= number_format($row['IGVFinal'],2); ?></span></td>
 	<?php endif; ?>
 		<td>S/ <?= number_format($row['IGVFinal'],2); ?></td>
-		<td>S/ <span class="spTotalPac"><?= number_format($row['totalFinal'],2); ?></span></td>
+		<td>S/ <span class="spTotalPac" data-estado="<?= $row['comprobanteEmitido']; ?>"><?= number_format($row['totalFinal'],2); ?></span></td>
 		<td class="text-capitalize">
 			<?php if($row['comprobanteEmitido']==0){ echo "<span class='badge badge-secondary'> <i class='icofont-safety'></i> {$row['comprobanteEmitidoDescr']}</span>"; }
 				else if( in_array($row['comprobanteEmitido'], [2,4]) ){ echo "<span class='badge badge-danger'> <i class='icofont-delete'></i> ".$row['comprobanteEmitidoDescr']."</span> <br><small class='text-danger'>{$row['motivoBaja']}</small>";} 
 				else if($row['comprobanteEmitido']==3) { echo "<span class='badge badge-success'><i class='icofont-safety'></i> ".$row['comprobanteEmitidoDescr']. "</span>";}
-				else { echo "<span class='badge badge-secondary'><i class='icofont-spinner-alt-2'></i> ".$row['comprobanteEmitidoDescr']. "</span>";}
+				else {
+					if($row['factSerie']!=''){
+						echo "<span class='badge badge-secondary'><i class='icofont-spinner-alt-2'></i> ".$row['comprobanteEmitidoDescr']. "</span>";
+					}
+				}
 			?>
 		</td>
 		<?php if(in_array( $row['factTipoDocumento'], $comprobantes)){ ?>

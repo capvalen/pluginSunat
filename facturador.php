@@ -440,15 +440,7 @@ $(document).ready(function(){
 		$('#tablaPrincipal tbody').append(resp);
 		$('[data-toggle="tooltip"]').tooltip();
 		$("#tablaPrincipal").stupidtable();
-		var sumaDia =0;
-		$.each( $('#tablaPrincipal tbody tr'), function(index, obj){
-			//console.log( 'cambio num: '+ $(obj).find('.spTotalPac').text() );
-			sumaDia+= parseFloat($(obj).find('.spTotalPac').text().replace(',',''));
-		});
-		$('#strCantdad').text( $('#tablaPrincipal tbody tr').length );
-		$('#strTotal').text( parseFloat(sumaDia).toFixed(2) );		
-		$.sumaDia = sumaDia;
-		limiteVentas()
+		sumarGenerados()
 	});
 	$('#fechaFiltro').change(function() {
 		//console.log( moment($('#fechaFiltro').val()).isValid() );
@@ -456,18 +448,25 @@ $(document).ready(function(){
 			$('#tablaPrincipal tbody').children().remove();
 			$('#tablaPrincipal tbody').append(resp).anotherJqueryMethod;
 			$('[data-toggle="tooltip"]').tooltip();
-			var sumaDia =0;
-			$.each( $('#tablaPrincipal tbody tr'), function(index, obj){
-				//console.log( 'cambio num: '+ $(obj).find('.spTotalPac').text() );
-				sumaDia+= parseFloat($(obj).find('.spTotalPac').text().replace(',',''));
-			});
-			$('#strCantdad').text( $('#tablaPrincipal tbody tr').length );
-			$('#strTotal').text( parseFloat(sumaDia).toFixed(2) );
-			$.sumaDia = sumaDia;
-			limiteVentas()
+			sumarGenerados()
+			
 		});
 	});
 });
+function sumarGenerados(){
+	var sumaDia =0;
+	$.each( $('#tablaPrincipal tbody tr'), function(index, obj){
+		//console.log( 'cambio num: '+ $(obj).find('.spTotalPac').text() );
+		let caso  = $(obj).find('.spTotalPac');
+		if($(caso).attr('data-estado')!='4'){
+			sumaDia+= parseFloat( caso.text().replace(',',''));
+		}
+	});
+	$('#strCantdad').text( $('#tablaPrincipal tbody tr').length );
+	$('#strTotal').text( parseFloat(sumaDia).toFixed(2) );
+	$.sumaDia = sumaDia;
+	limiteVentas();
+}
 /* $('#btnEmitirBoleta').click(function() {
 	$.ajax({url: 'emision.php', type: 'POST', data: { emitir: 3, factura: $('#txtCodigoFact').val() }}).done(function(resp) {
 		console.log(resp)
