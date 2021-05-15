@@ -34,6 +34,8 @@ if ($row['idUsuario']>=1){
 			setcookie($rowConf['confVariable'], $rowConf['confValor'], $expira, $local);
 		}
 
+		include "datosEmpresa_priv.php";
+
 
 		echo 'concedido';
 	}else{

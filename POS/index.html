@@ -141,6 +141,7 @@
 								<option value="-1">Proforma</option>
 							</select>
 						</div>
+						<label><input type="checkbox" id="chkImprimir" v-model="impresionTicket"> <span v-if="impresionTicket">Imprimir ticket</span> <span v-else>Sin impresión</span></label><br>
 					</div>
 					<div class="col ">
 						<button class="btn btn-outline-success float-right mt-4" @click="emitir()"><i class="bi bi-bookmark-star"></i> Emitir </button>
@@ -243,6 +244,7 @@
 			modoCliente:null, idProducto:null, preciosEspeciales:[],
 			productos:[],
 			canasta:[],
+			impresionTicket:true
 			
 		},
 		mounted(){
@@ -497,32 +499,38 @@
 				.then((response)=>{ console.log( response.data );
 					let jTicket = response.data;
 
-					$.ajax({url: "http://127.0.0.1/"+this.empresa.carpeta+"/printComprobante.php", type: 'POST', data: {
-						ticketera: this.empresa.ticketera,
-						tipoComprobante: jTicket[0].tipoComprobante,
-						rucEmisor: jTicket[0].rucEmisor,
-						queEs: jTicket[0].queSoy,
-						serie: jTicket[0].serie,
-						correlativo: jTicket[0].correlativo,
-						tipoCliente: jTicket[0].tipoCliente,
-						fecha: jTicket[0].fechaEmision,
-						fechaLat: moment(jTicket[0].fechaEmision, 'YYYY-MM-DD').format('DD/MM/YYYY'),
-						cliente: jTicket[0].razonSocial,
-						docClient: jTicket[0].ruc,
-						monedas: jTicket[0].letras,
-						descuento: parseFloat(jTicket[0].descuento).toFixed(2),
-						costoFinal: parseFloat(jTicket[0].costoFinal).toFixed(2),
-						igvFinal: parseFloat(jTicket[0].igvFinal).toFixed(2),
-						totalFinal: parseFloat(jTicket[0].totalFinal).toFixed(2),
-						productos: jTicket[1],
-						direccion:jTicket[0].direccion,
-						exonerado: parseFloat(jTicket[0].exonerado).toFixed(2),
-						/* placa: jTicket[0].placa, */
-					}}).done(function(resp) {
-						console.log(resp)
+					if(app.impresionTicket){
+						$.ajax({url: "http://127.0.0.1/"+this.empresa.carpeta+"/printComprobante.php", type: 'POST', data: {
+							ticketera: this.empresa.ticketera,
+							tipoComprobante: jTicket[0].tipoComprobante,
+							rucEmisor: jTicket[0].rucEmisor,
+							queEs: jTicket[0].queSoy,
+							serie: jTicket[0].serie,
+							correlativo: jTicket[0].correlativo,
+							tipoCliente: jTicket[0].tipoCliente,
+							fecha: jTicket[0].fechaEmision,
+							fechaLat: moment(jTicket[0].fechaEmision, 'YYYY-MM-DD').format('DD/MM/YYYY'),
+							cliente: jTicket[0].razonSocial,
+							docClient: jTicket[0].ruc,
+							monedas: jTicket[0].letras,
+							descuento: parseFloat(jTicket[0].descuento).toFixed(2),
+							costoFinal: parseFloat(jTicket[0].costoFinal).toFixed(2),
+							igvFinal: parseFloat(jTicket[0].igvFinal).toFixed(2),
+							totalFinal: parseFloat(jTicket[0].totalFinal).toFixed(2),
+							productos: jTicket[1],
+							direccion:jTicket[0].direccion,
+							exonerado: parseFloat(jTicket[0].exonerado).toFixed(2),
+							/* placa: jTicket[0].placa, */
+						}}).done(function(resp) {
+							console.log(resp)
+							app.limpiarTodo();
+							//location.reload();
+						});
+
+					}else{
 						app.limpiarTodo();
-						//location.reload();
-					});
+					}
+
 
 				})
 				.catch((error)=>{ console.log( error );});

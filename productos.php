@@ -2,6 +2,7 @@
 include 'php/conexion.php';
 include "generales.php";
 
+
 if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	die(); }
 ?>
@@ -74,43 +75,49 @@ thead tr th{cursor: pointer;}
 	<div class="container-fluid mt-5 px-5">
 		<div class="row">
 		<div class="col-md-3">
-			<img src="bitmap.jpg?version=1.0.3" class='img-fluid mt-3'>
+			<img src="<?= $_COOKIE['logo']?>" class='img-fluid mt-3'>
 		</div>
 		<div class="col ml-4">
 			<h3 class="display-4">Gestión de productos</h3>
 			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 		</div></div>
-		<div class="row ">
-			<div class="col">
-				<label for="">Buscar Producto: </label>
-				<input type="search" class="form-control" id="txtProductoBuscar" placeholder='Buscar Producto' autocomplete="nope"></div>
-			<div class="col text-right"><button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button></div>
+		<div class="card">
+			<div class="card-body  row">
+				<div class="col-12 col-md-6 form-inline my-2">
+					<label class="my-1 mr-2" for="">Buscar Producto: </label>
+					<input type="search" class="form-control" id="txtProductoBuscar" placeholder='Buscar Producto' autocomplete="nope">
+				</div>
+				<div class="col-12 col-md-6 d-flex justify-content-end my-2">
+					<button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button>
+				</div>
+			</div>
 		</div>
-		
 
-		<table class="table table-hover mt-3">
-			<thead>
-				<tr>
-					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Nombre de producto</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio Público</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio por Mayor</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Precio con Dscto.</th>
-					<th data-sort="int"><i class="icofont-expand-alt"></i> Stock</th>
-					<?php if($_COOKIE['facCambiarGravado']==1){ ?>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Gravado</th>
-					<?php } ?>
-					<?php if($_COOKIE['facCambiarUnidad']==1){ ?>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Unidad</th>
-					<?php } ?>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
-					<th>@</th>
-				</tr>
-			</thead>
-			<tbody id="tbodyRespuestaProductos">
-				<?php include "php/listarTodosProductos.php"; ?>
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-hover mt-3">
+				<thead>
+					<tr>
+						<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> Nombre de producto</th>
+						<th data-sort="float"><i class="icofont-expand-alt"></i> Precio Público</th>
+						<th data-sort="float"><i class="icofont-expand-alt"></i> Precio por Mayor</th>
+						<th data-sort="float"><i class="icofont-expand-alt"></i> Precio con Dscto.</th>
+						<th data-sort="int"><i class="icofont-expand-alt"></i> Stock</th>
+						<?php if($_COOKIE['facCambiarGravado']==1){ ?>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> Gravado</th>
+						<?php } ?>
+						<?php if($_COOKIE['facCambiarUnidad']==1){ ?>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> Unidad</th>
+						<?php } ?>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
+						<th>@</th>
+					</tr>
+				</thead>
+				<tbody id="tbodyRespuestaProductos">
+					<?php include "php/listarTodosProductos.php"; ?>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </section>
 
