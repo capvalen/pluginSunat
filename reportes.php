@@ -232,17 +232,22 @@ $('#btnGuardarReporte').click(function() {
 		case "0":
 			var instance = new TableExport(document.getElementById('tablaCabeceras'), {
 				formats: ['xlsx'],
-				exportButtons: false
+				exportButtons: false,
+				sheetname: "Reporte resumido"
 			});
 			var exportData = instance.getExportData()['tablaCabeceras']['xlsx'];
 			instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte resumido', exportData.fileExtension);
+			
+			
+
 		break;
 		case "1":
 		case '3':
 			console.log( 'pido' );
 			var instance = new TableExport(document.getElementById('tablaSysConta'), {
 				formats: ['xlsx'],
-				exportButtons: false
+				exportButtons: false,
+				sheetname: "Reporte contable"
 			});
 			var exportData = instance.getExportData()['tablaSysConta']['xlsx'];
 			instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte contable', exportData.fileExtension);
@@ -255,15 +260,6 @@ $('#btnGuardarReporte').click(function() {
 });
 
 </script>
-<!-- BEGIN JIVOSITE CODE {literal} -->
-<script type='text/javascript'>
-(function(){ var widget_id = 'ucFX66lIdV';var d=document;var w=window;function l(){
-  var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true;
-  s.src = '//code.jivosite.com/script/widget/'+widget_id
-    ; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);}
-  if(d.readyState=='complete'){l();}else{if(w.attachEvent){w.attachEvent('onload',l);}
-  else{w.addEventListener('load',l,false);}}})();
-</script>
-<!-- {/literal} END JIVOSITE CODE -->
+
 </body>
 </html>

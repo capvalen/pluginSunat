@@ -81,20 +81,23 @@ thead tr th{cursor: pointer;}
 			<h3 class="display-4">Gestión de productos</h3>
 			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 		</div></div>
-		<div class="card">
-			<div class="card-body  row">
+		<div class="card mt-3">
+			<div class="card-body row">
 				<div class="col-12 col-md-6 form-inline my-2">
 					<label class="my-1 mr-2" for="">Buscar Producto: </label>
 					<input type="search" class="form-control" id="txtProductoBuscar" placeholder='Buscar Producto' autocomplete="nope">
 				</div>
-				<div class="col-12 col-md-6 d-flex justify-content-end my-2">
+				<div class="col-12 col-md-3 d-flex justify-content-end my-2">
 					<button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button>
+				</div>
+				<div class="col-12 col-md-3 d-flex justify-content-end my-2">
+					<button class="btn btn-outline-success " id="btnExportarProductos"><i class="icofont-file-excel"></i> Exportar productos</button>
 				</div>
 			</div>
 		</div>
 
 		<div class="table-responsive">
-			<table class="table table-hover mt-3">
+			<table class="table table-hover mt-3" id="tlbProductosTodos">
 				<thead>
 					<tr>
 						<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
@@ -498,6 +501,29 @@ $('#btnAddBarrita').click(function() {
 		});
 	}
 });
+$('#btnExportarProductos').click(function() {
+	
+	//exportTableToExcel('tlbProductosTodos', 'archivos')
+	Exportar()
+});
+function Exportar(){
+	var uri = 'data:application/vnd.ms-excel;base64,'
+	, template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+	, base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+	, format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+
+	var table = 'tlbProductosTodos';
+	var name = 'Productos';
+
+	if (!table.nodeType) table = document.getElementById(table)
+		var ctx = { worksheet: name || 'Worksheet', table: table.innerHTML }
+		//window.location.href = uri + base64(format(template, ctx))
+		const a = document.createElement('a');
+		a.download = 'DB_Productos.xls';
+		a.href = uri + base64(format(template, ctx));
+		a.click();
+}
+
 </script>
 
 </body>

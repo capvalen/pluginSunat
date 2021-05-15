@@ -238,7 +238,7 @@
      * Bootstrap configuration classes ['base', 'theme', 'container'].
      * @memberof TableExport.prototype
      */
-    bootstrapConfig: ["btn", "btn-outline-secondary", "btn-toolbar"],
+    bootstrapConfig: ["btn", "btn-default", "btn-toolbar"],
     /**
      * Row delimeter
      * @memberof TableExport.prototype
@@ -266,7 +266,7 @@
        */
       xlsx: {
         defaultClass: "xlsx",
-        buttonContent: "Exportar a Excel",
+        buttonContent: "Export to xlsx",
         mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         fileExtension: ".xlsx"
       },
@@ -288,7 +288,7 @@
        */
       xls: {
         defaultClass: "xls",
-        buttonContent: "Exportar a Excel",
+        buttonContent: "Export to xls",
         separator: "\t",
         mimeType: "application/vnd.ms-excel",
         fileExtension: ".xls",
