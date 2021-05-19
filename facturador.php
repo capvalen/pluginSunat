@@ -584,11 +584,10 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	var serie = padre.attr('data-serie');
 	var correlativo = padre.attr('data-correlativo');
 	
-
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/<?= $_COOKIE['demoFacturador']==true? 'php/printDemoTicket.php' : 'printComprobante.php' ?>', type: 'POST', data: {
+		$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/<?= $_COOKIE['demoFacturador']=="true" ? 'php/printDemoTicket.php' : 'printComprobante.php' ?>', type: 'POST', data: {
 			tipoComprobante: $.jTicket[0].tipoComprobante,
 			rucEmisor: $.jTicket[0].rucEmisor,
 			queEs: $.jTicket[0].queSoy,
@@ -1200,16 +1199,16 @@ $('#btnDarbaja').click(function() {
 	}
 });
 $('#txtFechaComprobante').focusout(function() {
-	/* let hoy = moment( moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')
+	let hoy = moment( moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')
 	let comprobante = moment($('#txtFechaComprobante').val(), 'YYYY-MM-DD')
 	let diferencia = hoy.diff(comprobante, 'days')
 	if( diferencia<0 ){
 		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
-	}else if(diferencia>5){
+	}else if(diferencia>4){
 		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
 	}else if( isNaN(diferencia)){
 		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
-	} */
+	}
 });
 
 $('#btnVaciarBandeja').click(function() {

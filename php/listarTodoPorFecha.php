@@ -47,7 +47,7 @@ while($row=$resultado->fetch_assoc()){
 
 		<td class="text-capitalize"><?= $row['razonSocial']; ?></td>
 	<?php if( isset($_POST['fecha2'])): ?>
-		<td class="tableexport-number">S/ <span ><?= number_format($row['IGVFinal'],2); ?></span></td>
+		<td class="tableexport-string">S/ <span ><?= number_format($row['IGVFinal'],2); ?></span></td>
 	<?php endif; ?>
 		<td class="tableexport-string">S/ <?= number_format($row['IGVFinal'],2); ?></td>
 		<td class="tableexport-string">S/ <span class="spTotalPac" data-estado="<?= $row['comprobanteEmitido']; ?>"><?= number_format($row['totalFinal'],2); ?></span></td>
