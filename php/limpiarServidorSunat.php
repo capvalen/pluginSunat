@@ -2,7 +2,7 @@
 sleep(15);
 $current_dir = dirname(__FILE__);
 
-include "../../generales.php";
+include "../generales.php";
 
 $directorio="../comprobantes/";
 

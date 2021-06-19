@@ -29,7 +29,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 	<p>Todas las facturas que no han sido enviadas aún a SUNAT. </p>
 	<div class="row">
 		<button class="btn btn-outline-primary mb-3" @click="enviarComprobantes()"><i class="icofont-copy"></i> Generar comprobantes TXT</button>
-		<button class="btn btn-outline-primary mb-3" @click="bajar()"><i class="icofont-copy"></i> Bajar</button>
+		<button class="btn btn-outline-primary mb-3" @click="actualizarDB()"><i class="icofont-copy"></i> Actualizar DB</button>
 	</div>
 	<table class="table table-hover">
 		<thead>
@@ -116,6 +116,11 @@ if( !isset($_COOKIE['ckUsuario']) ){
 			.catch(function (error) {
 				console.log( error );
 			})
+		},
+		actualizarDB(){
+			axios.post('php/actualizarRegistrosDB.php', {comprobantes: app.seleccionados})
+			.then((response)=>{ console.log( response.data );})
+			.catch((error)=>{ console.log( error );});
 		},
 		incluirTodo(){
 			this.comprobantes.forEach( caso => {
