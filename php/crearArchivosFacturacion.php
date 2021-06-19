@@ -21,7 +21,7 @@ $lineaDetalle='';
 foreach ($_POST['comprobantes'] as $comprobante) {
 	$sqlCabecera="SELECT * from `fact_cabecera` WHERE `idComprobante` like {$comprobante}; ";
 	$resultadoCabecera=$cadena->query($sqlCabecera);
-	while($rowCabecera=$resultadoCabecera->fetch_assoc()){ 
+	while($rowCabecera=$resultadoCabecera->fetch_assoc()){
 
 		/* ***************  CABECERA ****************** */
 		
@@ -56,8 +56,19 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 			fclose($fTributo);
 
 		/* ************ FIN DE CABECERA *************** */
+
+		/* ************ INICIO DE BAJAS *************** */
+		if( $rowCabecera['comprobanteEmitido']=='2'){
+			$_POST['boleta'] = $rowCabecera['factTipoDocumento'];
+			$_POST['id'] = $comprobante;
+			$_POST['concepto'] = $rowCabecera['motivoBaja'];
+			require ('darBajas2.php');
+		}
+		/* ************ FIN DE BAJAS *************** */
+		
 		}
 
+		/* ************ INICIO DE DETALLE *************** */
 
 		$bolsas = '|-|0|0||';
 		$i=1;
@@ -95,7 +106,8 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 			fclose($fLeyenda);
 
 		/* ************ FIN DE DETALLES *************** */
-		$i++; }
+		$i++;
+	}
 }
 
 

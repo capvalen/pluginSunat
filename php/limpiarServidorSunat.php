@@ -2,6 +2,8 @@
 sleep(15);
 $current_dir = dirname(__FILE__);
 
+include "../../generales.php";
+
 $directorio="../comprobantes/";
 
 
@@ -40,7 +42,6 @@ if(is_dir($directorio)){
 }
 
 function actualizarDB($archivoConFirma, $dirBase){
-	//echo "empieza el borrado";
 	$tempCabecera = $dirBase . $archivoConFirma.'.cab';
 	$tempDetalle = $dirBase . $archivoConFirma.'.det';
 	$tempLeyenda = $dirBase . $archivoConFirma.'.ley';
