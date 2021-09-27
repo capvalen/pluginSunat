@@ -28,7 +28,8 @@ $hoy = new DateTime();
 if( $_POST['fecha']== $hoy->format('Y-m-d') ){
 	$fecha = 'curdate()';
 }else{
-	$fecha = "'".$_POST['fecha']."'";
+	//$fecha = "'".$_POST['fecha']."'";
+	$fecha = "'{$_POST['fecha']}'";
 }
 
 $productos= $_POST['jsonProductos'];
@@ -139,7 +140,10 @@ if($filasCabeza==1){
 	$rowC=$resultadoCabeza->fetch_assoc();
 
 	$descuento = $rowC['sumDescTotal'];
-	$costo= str_replace (',', '',number_format($rowC['costoFinal'] ,2));
+	if($rowC['costoFinal']==0){
+		$costo= str_replace (',', '',number_format($rowC['factExonerados'] ,2)); }else{
+		$costo= str_replace (',', '',number_format($rowC['costoFinal'] ,2));
+	}
 	$igvFin = str_replace (',', '',number_format($rowC['IGVFinal'],2));
 	$totFin = str_replace (',', '',number_format($rowC['totalFinal'],2));
 	
