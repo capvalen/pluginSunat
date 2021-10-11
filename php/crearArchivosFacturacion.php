@@ -17,8 +17,8 @@ $path = realpath( $current_dir . '/'.$directorio );
 $_POST = json_decode(file_get_contents('php://input'),true); 
 //var_dump($_POST['comprobantes']);
 
-$lineaDetalle='';
 foreach ($_POST['comprobantes'] as $comprobante) {
+	$lineaDetalle='';
 	$sqlCabecera="SELECT * from `fact_cabecera` WHERE `idComprobante` like {$comprobante}; ";
 	$resultadoCabecera=$cadena->query($sqlCabecera);
 	while($rowCabecera=$resultadoCabecera->fetch_assoc()){
