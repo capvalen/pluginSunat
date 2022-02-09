@@ -46,7 +46,7 @@ $resultado=$cadena->query($sql);
 
 
 
-$sqlCabeza="select * from `fact_cabecera` where idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}';";
+$sqlCabeza="SELECT * from `fact_cabecera` where idNegocio = '{$_COOKIE['ckNegocio']}' and idLocal='{$_COOKIE['ckLocal']}' and idTicket='{$_POST['ticket']}';";
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){

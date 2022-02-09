@@ -52,7 +52,7 @@ thead tr th{cursor: pointer;}
 	<div class="container-fluid  px-5">
 		<div class="row">
 		<div class="col-md-3">
-			<center><img src="images/aliser.jpeg?version=1.0.3" class='img-fluid mt-3 w-75'></center>
+			<center><img src="<?= $_COOKIE['logo'];?>" class='img-fluid mt-3 w-75'></center>
 		</div>
 		<div class="col ml-4">
 			<h3 class="display-4">Reportes</h3>

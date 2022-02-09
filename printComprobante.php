@@ -2,8 +2,6 @@
 include('phpqrcode/qrlib.php'); 
 include "generales.php";
 
-$_POST = json_decode(file_get_contents('php://input'),true); 
-
 
 require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
 use Mike42\Escpos\Printer;
@@ -45,14 +43,14 @@ if (isset($_POST['ticketera'])){ $nombrePrint= $_POST['ticketera'];}
 $connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/".$nombrePrint);
 try {
 
-    $tux = EscposImage::load("aliser.jpg", false);
+    $tux = EscposImage::load(".\images\casadebarro_black.jpg", false);
     $tuxQR = EscposImage::load("qrcode.png", false);
 
     $printer = new Printer($connectorV31);
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> bitImage($tux);
     $printer -> setEmphasis(true);
-    $printer -> text("\n".$nombreEmisor."\n");
+    $printer -> text($nombreEmisor."\n");
     $printer -> text("RUC: ".$rucEmisor."\n");
     $printer -> setEmphasis(false);
     $printer -> text("".$direccionEmisor."\n");
@@ -83,15 +81,17 @@ try {
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
 	if($_POST['serie']==''){
-    /*$printer -> text("Contactos: ".$celularEmisor."\n");*/
+    $printer -> text("Contacto: ".$celularEmisor."\n");
 	
 		$printer -> text("No olvide reclamar su comprobante\n");
 	}else{
 		$printer -> bitImage($tuxQR);
 		$printer -> text("--------------------------------\n");
-		$printer -> text("Esta es una representación impresa de la factura electrónica, generada en el Sistema de SUNAT. Puede verificarla utilizando su Clave SOL.\n");
+    $printer -> text("Contacto: ".$celularEmisor."\n");
+    $printer -> setTextSize(1, 1);
+    $printer -> text("Esta es una representación impresa de la factura electrónica, generada en el Sistema de SUNAT. Puede verificarla utilizando su Clave SOL.\n");
 	}	
-    $printer -> text("Gracias por tu preferencia\n\n");
+    $printer -> text("Gracias por tu preferencia\n");
     
     $printer -> cut();
     // Close printer 

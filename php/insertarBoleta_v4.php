@@ -7,6 +7,18 @@ require "../NumeroALetras.php";
 $_POST = json_decode(file_get_contents('php://input'),true); 
 //var_dump( $_POST);
 
+
+/* Verifico si existe, el cliente, sino lo guardo */
+$sqlCliente = "SELECT * FROM `clientes` where cliRuc = '{$_POST['cliente']['dni']}' and cliActivo=1;";
+$respCliente = $datab->query($sqlCliente)->fetchAll();
+if(count($respCliente)==0){
+	$prepCliente = $datab->prepare("INSERT INTO `clientes`(`cliRuc`, `cliRazonSocial`, `cliDomicilio`) VALUES (?, ?, ?)");
+	$respCliente2 = $prepCliente->execute([ $_POST['cliente']['dni'], $_POST['cliente']['razon'], $_POST['cliente']['direccion'] ]);
+}else{
+	$prepCliente2 = $datab->prepare("UPDATE `clientes` SET `cliRazonSocial`=?, `cliDomicilio`=? WHERE `cliRuc`= ?;");
+	$respCliente2 = $prepCliente2->execute([ $_POST['cliente']['razon'], $_POST['cliente']['direccion'], $_POST['cliente']['dni'] ]);
+}
+
 $caso = "-0{$_POST['cabecera']['tipo']}-"; // 01 para factura, 03 para boleta
 
 switch ($_POST['cabecera']['tipo']) {

@@ -36,8 +36,13 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 		$costo= str_replace (',', '',number_format($rowCabecera['costoFinal'] ,2));
 		$igvFin = str_replace (',', '',number_format($rowCabecera['IGVFinal'],2));
 		$totFin = str_replace (',', '',number_format($rowCabecera['totalFinal'],2));
+
+		if( $rowCabecera['factExonerados'] >0){
+			$lineaCabeza = $rowCabecera['tipOperacion'].$separador.$rowCabecera['fechaEmision'].$separador.$rowCabecera['horaEmision'].$separador.$rowCabecera['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowCabecera['dniRUC'].$separador.$rowCabecera['razonSocial']. $separador.$rowCabecera['tipoMoneda'].$separador. $igvFin.$separador. $totFin. $separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
+		}else{
+			$lineaCabeza = $rowCabecera['tipOperacion'].$separador.$rowCabecera['fechaEmision'].$separador.$rowCabecera['horaEmision'].$separador.$rowCabecera['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowCabecera['dniRUC'].$separador.$rowCabecera['razonSocial']. $separador.$rowCabecera['tipoMoneda'].$separador. $igvFin.$separador. $costo. $separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
+		}
 		
-		$lineaCabeza = $rowCabecera['tipOperacion'].$separador.$rowCabecera['fechaEmision'].$separador.$rowCabecera['horaEmision'].$separador.$rowCabecera['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowCabecera['dniRUC'].$separador.$rowCabecera['razonSocial']. $separador.$rowCabecera['tipoMoneda'].$separador. $igvFin.$separador. $costo.$separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
 		
 
 		
@@ -48,7 +53,7 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 
 		$tributo = $rowCabecera['ideTributo'] . $separador . $rowCabecera['nomTributo'] . $separador .  $rowCabecera['codTipTributo']  . $separador . $rowCabecera['mtoBaseImponible'] . $separador . $rowCabecera['mtoTributo'] . $separador;
 			if( $rowCabecera['factExonerados'] >0){
-				$tributo = $tributo . "\n9997|EXO|VAT|".round($exonerados,2)."|0.00|";
+				$tributo = $tributo . "\n9997|EXO|VAT|".round($rowCabecera['sumImpVenta'],2)."|0.00|";
 			}
 
 			$fTributo = fopen("{$path}/{$nombreArchivo}.tri", "w");

@@ -1,16 +1,16 @@
 <?php
 //Rellenar por cada Cliente:
-$dirBaseSunat = 'C:\SFS_v1.3.4.2\sunat_archivos\sfs';
+$dirBaseSunat = 'D:\SFS_1.3.4.4\sunat_archivos\sfs';
 $directorio = $dirBaseSunat. '\DATA/';
 $dirRespuestas = $dirBaseSunat. '\RPTA/';
 
-$rucEmisor ='10198436670';
-$nombreEmisor = "De: Alvarez Meneses Pablo Cesar";
-$direccionEmisor = "Av. Indrustrial S/N  (Esquina Av. Industrial y Av. España) San Martin de Pangoa - Satipo - Junín";
-$celularEmisor = "988848813";
-$nombrePrint = 'HP1102W'; //TM-T20II
+$rucEmisor ='20568763832';
+$nombreEmisor = "I.G. BARSAM S.R.L.";
+$direccionEmisor = "Sucursal: Cal. 09 de Octubre N° 1584\n Pblo Huamancaca Chico - Chupaca - Junín\nPrincipal: Jr. José Olaya N° 152 - \nHuancayo - Junín";
+$celularEmisor = "972981671";
+$nombrePrint = 'CAJA'; //TM-T20II
 
-$casaHost = "pluginsunat";
+$casaHost = "pluginSunat";
 
 $generarArchivo = false;
 
@@ -21,7 +21,7 @@ $separador ='|';
 //De la cabecera:
 $tipoOperacion = '0101';
 $fechaVencimiento = '-';
-$domicilioFiscal = '0000';
+$domicilioFiscal = '0000'; //cambiar a 1 si es sucursal
 $descuento = '0.00';
 $sumaCargos ='0.00';
 $anticipos ='0.00';
