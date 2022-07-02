@@ -34,12 +34,12 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
     		  <!-- <a class="dropdown-item" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a> -->
 					<!-- <a class="dropdown-item" href="compras.php" target="_blank"><i class="icofont-sale-discount"></i> Compras</a> -->
-					<!-- <a class="dropdown-item" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a> -->
+					<a class="dropdown-item" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
 					<a class="dropdown-item d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
 					<a class="dropdown-item " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
 					<a class="dropdown-item " href="#!" id="btnVaciarBandeja"><i class="icofont-infinite"></i> Vaciar bandeja</a>
 					<?php if($_COOKIE['crearArchivo']=='0' ): ?>
-					<a class="dropdown-item " href="envioFactura.php" id="btnEnviarFactura"><i class="icofont-infinite"></i> Enviar facturas</a>
+					<a class="dropdown-item " href="envioFactura.php" id="btnEnviarFactura"><i class="icofont-paper"></i> Enviar facturas</a>
 					<?php endif; ?>
 				</div>
 			</li>

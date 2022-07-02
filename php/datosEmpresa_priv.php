@@ -3,7 +3,7 @@
 include "conexion.php";
 
 $sql="SELECT * FROM `configuracion`
-where confVariable in ('ruc', 'razonSocial', 'nomComercial', 'direccion', 'celular', 'logo', 'ticketera', 'facturador', 'crearArchivo', 'carpeta')";
+where confVariable in ('ruc', 'razonSocial', 'nomComercial', 'direccion', 'celular', 'logo', 'ticketera', 'facturador', 'crearArchivo', 'carpeta', 'verCantidad')";
 $resultado=$cadena->query($sql);
 $filas = array();
 while($row=$resultado->fetch_assoc()){ 

@@ -50,23 +50,24 @@ if( $_POST['boleta']=="1" ){ //Bajas para facturas
 }
 
 if( $_POST['boleta']=="3" ){ //Bajas para boletas
-	$nombreArchivoBorrar = $rucEmisor."-RC-".date('Ymd')."-".$rowNum['contBajas'];
+	$nombreArchivo = $rucEmisor."-RA-".date('Ymd')."-".$rowNum['contBajas'];
 
 	$sqlC="SELECT concat(`factSerie`,'-', `factCorrelativo`) as facCorre, `fechaEmision`, tipDocUsuario, dniRUC, costoFinal, IGVFinal, totalFinal FROM `fact_cabecera` WHERE `idComprobante`={$_POST['id']}";
-	$resultadoC=$conf->query($sqlC);
+	$resultadoC=$cadena->query($sqlC);
 	$rowC=$resultadoC->fetch_assoc();
 
-	$lineaBaja = $lineaBaja . $rowC['fechaEmision']. "|". date('Y-m-d') ."|03|".$rowC['facCorre']."|".$rowC['tipDocUsuario']."|".$rowC['dniRUC']."|PEN|".$rowC['costoFinal']."|0|0|0|0|0|". $rowC['totalFinal']."|||||||||3|";
-	//echo $nombreArchivoBorrar;
+	/* $lineaBaja = $lineaBaja . $rowC['fechaEmision']. "|". date('Y-m-d') ."|03|".$rowC['facCorre']."|".$rowC['tipDocUsuario']."|".$rowC['dniRUC']."|PEN|".$rowC['costoFinal']."|0|0|0|0|0|". $rowC['totalFinal']."|||||||||3|"; */
+	$lineaBaja = $lineaBaja . $rowC['fechaEmision']. "|".date('Y-m-d')."|03|".$rowC['facCorre']."|BAJA DE BOLETA|";
+	//echo $nombreArchivo;
 	
-	$baja = fopen("{$path}/{$nombreArchivoBorrar}.RDI", "w");
+	$baja = fopen("{$directorio}{$nombreArchivo}.cba", "w");
 	fwrite($baja, "{$lineaBaja}");
 	fclose($baja);
 
-	$lineaTributo = '1|1000|IGV|VAT|'.$rowC['costoFinal'].'|'.$rowC['IGVFinal'].'|';
-	$tributo = fopen("{$path}{$nombreArchivoBorrar}.TRD", "w");
+/* 	$lineaTributo = '1|1000|IGV|VAT|'.$rowC['costoFinal'].'|'.$rowC['IGVFinal'].'|';
+	$tributo = fopen("{$directorio}{$nombreArchivo}.TRD", "w");
 	fwrite($tributo, "{$lineaTributo}");
-	fclose($tributo);
+	fclose($tributo); */
 	
 
 	$sql="UPDATE `fact_cabecera` SET 
@@ -74,7 +75,7 @@ if( $_POST['boleta']=="3" ){ //Bajas para boletas
 	motivoBaja='{$_POST['concepto']}',
 	fechaBaja = now()
 	where `idComprobante` = {$_POST['id']}";
-	$resultado=$conf->query($sql);
+	$resultado=$cadena->query($sql);
 	
 	//echo "ok";
 }

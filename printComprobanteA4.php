@@ -96,9 +96,8 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 
 <div class="row">
 <div class="col-sm-6 ">
-	<img src="images/aliser.jpeg?version=1.0.2" alt="" class="w-75" >
-	<p class="mb-0 mt-2"><strong><?= $nombreEmisor;?></strong></p>
-	<p><?= $direccionEmisor;?></p>
+	<img src="images/empresa.jpg" alt="" class="w-50" >
+	
 </div>
 <div class="col-sm-6 mt-5 mb-2 text-center " class="">
 	<div class="border border-dark bordeGrueso">
@@ -108,19 +107,26 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 	</div>
 </div>
 </div>
+<div class="row my-2">
+	<div class="col">
+		<p class="mb-0 "><strong><?= $nombreEmisor;?></strong></p>
+		<p class="mb-0"><strong>Dirección:</strong> <?= $direccionEmisor; ?></p>
+		<p class="mb-0"><strong>Celular:</strong> <?= $celularEmisor;?></p>
+	</div>
+</div>
 <section>
 	<div class="border bordeDelgado p-2 container-fluid">
-	<div class="row">
+	<div class="row p-2">
 		<div class="col-8">
-			<p class="text-capitalize">Srs: <?= $rowC['razonSocial']; ?> </p>
-			<p  class="text-capitalize">Domicilio Fiscal: <?= $rowC['cliDireccion']; ?></p>
-			<p>N° Documento: <?= $rowC['dniRUC']; ?></p>
+			<p class="text-capitalize mb-0"><strong>Señor(es):</strong> <?=  $rowC['razonSocial']; ?> </p>
+			<p class="text-capitalize mb-0"><strong>Domicilio:</strong> <?= ($rowC['cliDireccion'] =='') ? '-' : $rowC['cliDireccion']; ?></p>
+			<p class="mb-0"><strong>N° Documento:</strong> <?= $rowC['dniRUC']; ?></p>
 			
 		</div>
 		<div class="col">
 		<br>
-		<p>Fecha de emisión: <?php echo $fecha->format('d/m/Y'); ?></p>
-		<p>Tipo Moneda: PEN</p>
+		<p class="mb-0"><strong>Fecha de emisión:</strong> <?php echo $fecha->format('d/m/Y'); ?></p>
+		<p class="mb-0"><strong>Tipo Moneda:</strong> Soles</p>
 		</div>
 	</div>
 	</div>
@@ -129,12 +135,12 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 <table class="table table-bordered">
 <thead>
 	<tr>
-		<th>Item</th>
-		<th>Descripción</th>
-		<th>Und.</th>
-		<th>Cant.</th>
-		<th>Prec. Unt.</th>
-		<th>SubTotal. <br> (inc. IGV)</th>
+		<th class="p-1">Item</th>
+		<th class="p-1">Descripción</th>
+		<th class="p-1">Und.</th>
+		<th class="p-1">Cant.</th>
+		<th class="p-1">Prec. Unt.</th>
+		<th class="p-1">Sub-Total</th>
 	</tr>
 </thead>
 <tbody>
@@ -156,15 +162,16 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 	$igvSubFin = str_replace (',', '',number_format($rowD['igvUnitario'],2));
 	$valorSubFin = str_replace (',', '',number_format($rowD['valorItem'],2));
 	$precProducto = number_format($rowD['valorUnitario']+$rowD['igvUnitario'],2);
+	$cantidadProd = $rowD['cantidadItem']
 
 	?>
 	<tr>
-		<td><?= $i;?></td>
-		<td class="text-capitalize"><?= $rowD['descripcionItem']; ?></td>
-		<td><?= $rowD['undCorto']?></td>
-		<td><?= $rowD['cantidadItem']; ?></td>
-		<td><?= $precProducto; ?></td>
-		<td><?= number_format($rowD['valorItem'],2)?></td>
+		<td class="p-1"><?= $i;?></td>
+		<td class="p-1" class="text-capitalize"><?= $rowD['descripcionItem']; ?></td>
+		<td class="p-1"><?= $rowD['undCorto']?></td>
+		<td class="p-1"><?= $rowD['cantidadItem']; ?></td>
+		<td class="p-1"><?= $precProducto; ?></td>
+		<td class="p-1"><?= number_format( floatval($precProducto) * floatval($cantidadProd) ,2)?></td>
 	</tr>
 	<?php 
 	$i++;
@@ -180,36 +187,43 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 <section>
 <div class="row">
 <div class="col-6">
-	<div class="d-flex flex-column text-center">
-		<div>
+	<div class="d-flex flex-column ">
+		<p>Representacion Impresa de <br><?= $soy; ?> ELECTRÓNICA: <?= $factura; ?></p>
+		
+		<div class="text-center">
 			<img src="qrtemp.png" alt="">
 		</div>
+		<h5 class="text-center">Son: <?= $letras; ?></h5>
 	</div>
-<p>Representacion Impresa de <br><?= $soy; ?> ELECTRÓNICA N° <?= $factura; ?></p>
-<h5>Son: <?= $letras; ?></h5>
+
 </div>
 <div class="col-6">
 <div class="row">
 	<div class="col text-right">
 		
-		<p>Op. Grabada</p>
-		<p>I.G.V.</p>
-		<p>Op. Gratuita</p>
-		<p>Op. Exonerada</p>
+		<p class="mb-0">Op. Gravada</p>
+		<p class="mb-0">I.G.V.</p>
+		<p class="mb-0">Op. Gratuita</p>
+		<p class="">Op. Exonerada</p>
 		<p class="d-none">Op. Inafecta</p>
 		<h5 class="border-top pt-2 bordeAlgo">Importe Total</h5>
 	</div>
 	<div class="col">
 		<p class="d-none">S/ <?= number_format($rowC['sumDescTotal'],2);?></p>
-		<p>S/ <?= number_format($rowC['costoFinal'],2);?></p>
-		<p>S/ <?= number_format($rowC['IGVFinal'],2);?></p>
-		<p>S/ 0.00</p>
-		<p>S/ <?= number_format($rowC['factExonerados'],2);?></p>
+		<p class="mb-0">S/ <?= number_format($rowC['costoFinal'],2);?></p>
+		<p class="mb-0">S/ <?= number_format($rowC['IGVFinal'],2);?></p>
+		<p class="mb-0">S/ 0.00</p>
+		<p class="">S/ <?= number_format($rowC['factExonerados'],2);?></p>
 		<p class="d-none">S/ 0.00</p>
 		<h5 class="border-top pt-2 bordeAlgo">S/ <?= number_format($rowC['totalFinal'],2);?></h5>
 	</div>
 </div>
 </div>
+</div>
+<div class="row">
+	<div class="col">
+		<p class="small">Puede ser consultada en: https://grupoeuroandino.com/facturas/ <br/>Visble en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
+	</div>
 </div>
 </section>
 

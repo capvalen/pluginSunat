@@ -90,32 +90,33 @@ if( !isset($_COOKIE['ckUsuario']) ){
 			}
 		},
 		enviarComprobantes(){
-			
-			axios.post('php/crearArchivosFacturacion.php', {
-				comprobantes: app.seleccionados
-			})
-			.then( function (response) {
-				console.log( response.data );
-				if(response.data == 'Archivo Zip creado'){
-					let filename = 'sunat.zip'
-					fetch("comprobantes/datosSunat.zip").then(function(t) {
-						return t.blob().then((b)=>{
-							var a = document.createElement("a");
-							a.href = URL.createObjectURL(b);
-							a.setAttribute("download", filename);
-							a.click();
-							a.remove();
-							
-							axios('php/limpiarServidorSunat.php')
-							.then((response)=> {console.log( console.log(response.data) );})
-							.catch( (error) =>{console.log( error );})
+			axios('php/limpiarServidorSunat.php')
+			.then((response)=> {console.log( console.log(response.data));
+				axios.post('php/crearArchivosFacturacion.php', {
+					comprobantes: app.seleccionados
+				})
+				.then( function (response) {
+					console.log( response.data );
+					if(response.data[0] == 'Archivo Zip creado'){
+						let filename = `Sunat_txt_${response.data[1]}.zip`
+						fetch(`comprobantes/datosSunat${response.data[1]}.zip`).then(function(t) {
+							return t.blob().then((b)=>{
+								var a = document.createElement("a");
+								a.href = URL.createObjectURL(b);
+								a.setAttribute("download", filename);
+								a.click();
+								a.remove();
+							});
 						});
-					});
-				}
+					}
+				})
+				.catch(function (error) {
+					console.log( error );
+				})
 			})
-			.catch(function (error) {
-				console.log( error );
-			})
+			.catch( (error) =>{console.log( error );})
+			
+			
 		},
 		actualizarDB(){
 			axios.post('php/actualizarRegistrosDB.php', {comprobantes: app.seleccionados})

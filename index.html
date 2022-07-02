@@ -15,8 +15,8 @@
 	background-color: #eee;
 	background: url(images/fondo.jpg);
 	background-repeat: no-repeat;
-	background-size: auto;
-	background-position: top right;
+	background-size: cover;
+	background-position: center center;
 	position: fixed; /* Sit on top of the page content */
   width: 100%; /* Full width (cover the whole page) */
   height: 100%; /* Full height (cover the whole page) */
@@ -25,7 +25,7 @@
   right: 0;
   bottom: 0;
   z-index: 0; /* Specify a stack order in case you're using a different order for other elements */
-	filter:blur(1px)
+	/* filter:blur(4px); */
 }
 .card{border-radius: .45rem;}
 #overlay{
@@ -74,7 +74,7 @@ small{font-size: 68%;}
 </style>
 <div id="imagen"></div>
 <div id="overlay"></div>
-<section class="p-5 m-5">
+<section class="p-md-5 m-md-5">
 	<div class="container p-3 col-sm-4">
 		<div class="card">
 			<div class="card-body py-5">
@@ -85,9 +85,9 @@ small{font-size: 68%;}
 				<label for="">Contraseña:</label>
 				<input type="password" class="form-control" id="txtlocalLog" value="" autocomplete="nope">
 				<button class="btn btn-outline-light mt-3 btn-block " id="btnAcceder"><i class="icofont-key-hole"></i> Acceder</button>
-				<div id="divError"><span id="spanError2"></span></div>
+				<div class="mt-3" id="divError"><span id="spanError2"></span></div>
 			
-				<p class='mt-3 mb-0'><small>Versión 1.4.12 Compilación 21.0519</small></p>
+				<p class='mt-3 mb-0 text-right'><small>Versión 1.5 Compilación 22.0701</small></p>
 			</div>
 		</div> 
 		
@@ -120,14 +120,14 @@ $('#btnAcceder').click(function() {
 				console.log(resp)
 				window.location="facturador.php";
 			}else if(resp=='inhabilitado'){
-				$('#spanError2').text('Tu usuario fue inhabilitado temporalmente. No inista y llame a soporte informático.');
+				$('#spanError2').html('<i class="icofont-cat-alt-3"></i> Tu usuario fue inhabilitado temporalmente. No inista y llame a soporte informático.');
 				$('#divError').removeClass('hidden');
 				$('#txtUser_app').select();
 				$('.fa-spin').addClass('sr-only');$('.icofont-ui-lock').removeClass('sr-only');
 				$('#txtPassw').val(''); $('#txtPassw').focus();
 				console.log('error en los datos')
-			}else {
-				$('#spanError2').text('Error interno, comunicarse con soporte.');
+			}else if( resp == 'nada' ){
+				$('#spanError2').html('<i class="icofont-cat-alt-3"></i> Sus datos usuario o contraseña están errados.');
 				$('#divError').removeClass('hidden');
 				//var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
 				// $('#btnAcceder').addClass('animated wobble' ).one(animationEnd, function() {
@@ -137,7 +137,16 @@ $('#btnAcceder').click(function() {
 				$('.fa-spin').addClass('sr-only');$('.icofont-ui-lock').removeClass('sr-only');
 				//console.log(resp);
 				$('#txtPassw').val(''); $('#txtPassw').focus();
-				console.log('error en los datos')}
+				console.log('error en los datos')
+			}else{
+				$('#spanError2').html('<i class="icofont-cat-alt-3"></i> Error interno del servidor');
+				$('#divError').removeClass('hidden');
+				$('#txtUser_app').select();
+				$('.fa-spin').addClass('sr-only');$('.icofont-ui-lock').removeClass('sr-only');
+				//console.log(resp);
+				$('#txtPassw').val(''); $('#txtPassw').focus();
+				console.log('error en los datos')
+			}
 		}
 	});
 });

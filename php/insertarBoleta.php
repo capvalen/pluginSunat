@@ -26,7 +26,7 @@ $serie = $_POST['queSerie'];
 
 $hoy = new DateTime();
 if( $_POST['fecha']== $hoy->format('Y-m-d') ){
-	$fecha = 'curdate()';
+	$fecha = "CONVERT_TZ(NOW(), '+00:00', '-05:00' )";
 }else{
 	//$fecha = "'".$_POST['fecha']."'";
 	$fecha = "'{$_POST['fecha']}'";
@@ -83,10 +83,10 @@ $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSer
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
   `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`) 
-VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
+VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, CONVERT_TZ(NOW(), '+00:00', '-05:00' ),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1,now(), '{$_POST['cliDireccion']}', '' );";
+	1, CONVERT_TZ(NOW(), '+00:00', '-05:00') , '{$_POST['cliDireccion']}', '' );";
 	//echo $sql;
 $resultado=$cadena->query($sql);
 
@@ -116,7 +116,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`) VALUES
 		 (null,  concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['descripcionProducto']}',
-		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']}, {$productos[$i]['idProd']});";
+		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, CONVERT_TZ(NOW(), '+00:00', '-05:00' ), {$productos[$i]['afecto']}, {$productos[$i]['idProd']});";
 		 $cadena->query($sqlProd);
 
 		 $_POST['idProd']=$productos[$i]['idProd'];
@@ -126,7 +126,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 		 require 'updateStock.php';
 		 
 
-		// echo $sqlProd;
+		//echo $sqlProd;
 	}
 }
 

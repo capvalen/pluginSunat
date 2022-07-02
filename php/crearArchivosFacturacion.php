@@ -1,4 +1,7 @@
 <?php 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 include "conexion.php";
 include '../generales.php';
@@ -15,14 +18,13 @@ $path = realpath( $current_dir . '/'.$directorio );
 //echo "Estamos en ". $path;
 
 $_POST = json_decode(file_get_contents('php://input'),true); 
-//var_dump($_POST['comprobantes']);
+//var_dump($_POST['comprobantes']); die();
 
 foreach ($_POST['comprobantes'] as $comprobante) {
 	$lineaDetalle='';
-	$sqlCabecera="SELECT * from `fact_cabecera` WHERE `idComprobante` like {$comprobante}; ";
+	$sqlCabecera="SELECT * from `fact_cabecera` WHERE `idComprobante` = {$comprobante}; ";
 	$resultadoCabecera=$cadena->query($sqlCabecera);
 	while($rowCabecera=$resultadoCabecera->fetch_assoc()){
-
 		/* ***************  CABECERA ****************** */
 		
 		$caso = "-0{$rowCabecera['factTipoDocumento']}-"; // 01 para factura, 03 para boleta
@@ -61,16 +63,6 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 			fclose($fTributo);
 
 		/* ************ FIN DE CABECERA *************** */
-
-		/* ************ INICIO DE BAJAS *************** */
-		if( $rowCabecera['comprobanteEmitido']=='2'){
-			$_POST['boleta'] = $rowCabecera['factTipoDocumento'];
-			$_POST['id'] = $comprobante;
-			$_POST['concepto'] = $rowCabecera['motivoBaja'];
-			require ('darBajas2.php');
-		}
-		/* ************ FIN DE BAJAS *************** */
-		
 		}
 
 		/* ************ INICIO DE DETALLE *************** */
@@ -80,8 +72,9 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 		$sqlDetallles="SELECT fd.*, u.undCorto, codLeyenda, desLeyenda FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida
 		inner join fact_cabecera fc on concat(fc.factSerie, '-', fc.factCorrelativo) = fd.facSerieCorre
 		where fc.idComprobante = {$comprobante};";
+		//echo $sqlDetallles;
 		$resultadoDetallles=$esclavo->query($sqlDetallles);
-		while($rowDetallles=$resultadoDetallles->fetch_assoc()){ 
+		while($rowDetallles=$resultadoDetallles->fetch_assoc()){
 			/* ***************  DETALLES ****************** */
 			$unidad = $rowDetallles['codUnidadMedida'];
 
@@ -114,15 +107,19 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 		$i++;
 	}
 }
+/* ************ Llamamos a bajas *************** */
+require_once('darBajas_todas.php');
+/* ************ Fin de bajas *************** */
 
 
 
 $zip = new ZipArchive();
-$baseZip = "datosSunat.zip";
+$idUnico = uniqid();
+$baseZip = "datosSunat". $idUnico .".zip";
 $nombreArchivoZip = $path . "/". $baseZip;
 //echo $nombreArchivoZip;
 if (!$zip->open($nombreArchivoZip, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
-	exit("Error abriendo ZIP en $nombreArchivoZip");
+	exit("Error abriendo ZIP"); //en $nombreArchivoZip
 }
 
 /* $rutaAbsoluta = __DIR__ . "/../compras.php";
@@ -147,10 +144,10 @@ if ($handler = opendir($thefolder)) {
 
 
 $resultado = $zip->close();
-if ($resultado) {
-    echo "Archivo Zip creado";
-} else {
-    echo "Error creando archivo";
-}
+	if ($resultado) {
+    echo json_encode(array("Archivo Zip creado", $idUnico));
+	}else{
+		echo json_encode(array("Error creando archivo", ''));
+	}
 
 ?>

@@ -74,7 +74,9 @@ while($row=$resultado->fetch_assoc()){
 				<?php if($_COOKIE['ckPower']==1){ ?>
 					<button class="btn btn-outline-danger btn-sm border border-light btnDarBajas" data-toggle="tooltip" data-placement="top" title="Dar de baja" data-boleta="<?= $row['factTipoDocumento'];?>" data-baja="<?= $row['idComprobante'];?>"><i class="icofont-download-alt"></i></button>
 				
-				<?php } }
+				<?php } }else{
+					echo '<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>';
+				}
 				?>
 			</td>
 		<?php }else{ ?>

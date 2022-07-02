@@ -33,58 +33,59 @@ include "generales.php"; ?>
 	</section>
 </div>
 <section>
-	<div class="container-fluid mt-5 px-5">
+	<div class="container-fluid mt-5 px-md-5">
 		<div class="row">
-		<div class="col-md-3">
-			<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mt-3'>
-		</div>
-		<div class="col ml-4">
-			<h3 class="display-4">Facturación Electrónica</h3>
-			<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
-			<div class="row d-flex justify-content-between">
-				<div class="col-sm-3"><input type="date" class="form-control text-center" id="fechaFiltro"></div>
-				<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
+			<div class="col-md-3 text-center">
+				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto' width="150px;">
 			</div>
-		</div></div>
-		<hr>
-		<div class="container mx-auto mt-4 row" style="color: #7030a0">
-			<div class="col"><strong>N° Comprobantes: <span id="strCantdad"></span></strong></div>
-			<div class="col"><strong>Total S/ <span id="strTotal"></span></strong></div>
-		</div>
+			<div class="col ml-4">
+				<h3 class="display-4">Facturación Electrónica</h3>
+				<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
+				<div class="row d-flex justify-content-between">
+					<div class="col-sm-3"><input type="date" class="form-control text-center" id="fechaFiltro"></div>
+					<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
+				</div>
+			</div></div>
+			<hr>
+			<div class="container mx-auto mt-4 row" style="color: #7030a0">
+				<div class="col"><strong>N° Comprobantes: <span id="strCantdad"></span></strong></div>
+				<div class="col"><strong>Total S/ <span id="strTotal"></span></strong></div>
+			</div>
 		
-
-		<table class="table table-hover mt-3" id="tablaPrincipal">
-			<thead>
-				<tr>
-					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Código</th>
-					<th data-sort="int"><i class="icofont-expand-alt"></i> Hora</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
-					<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
-					<!-- <th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th> -->
-					<th data-sort="float"><i class="icofont-expand-alt"></i> Total</th>
-					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
-					<th>@</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- <tr>
-					<td>1</td>
-					<td>20550-88</td>
-					<td>Factura</td>
-					<td>3:05 p.m.</td>
-					<td>Cliente sin DNI</td>
-					<td>55.00</td>
-					<td>Emitido</td>
-					<td>
-						<button class="btn btn-outline-primary btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
-						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
-						<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
-					</td>
-				</tr> -->
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-hover mt-3" id="tablaPrincipal">
+				<thead>
+					<tr>
+						<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> Código</th>
+						<th data-sort="int"><i class="icofont-expand-alt"></i> Hora</th>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
+						<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
+						<!-- <th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th> -->
+						<th data-sort="float"><i class="icofont-expand-alt"></i> Total</th>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
+						<th>@</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- <tr>
+						<td>1</td>
+						<td>20550-88</td>
+						<td>Factura</td>
+						<td>3:05 p.m.</td>
+						<td>Cliente sin DNI</td>
+						<td>55.00</td>
+						<td>Emitido</td>
+						<td>
+							<button class="btn btn-outline-primary btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
+							<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
+							<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
+						</td>
+					</tr> -->
+				</tbody>
+			</table>
+		</div>
 	</div>
 </section>
 
@@ -129,16 +130,16 @@ include "generales.php"; ?>
 					<label for="">Placa de vehículo:</label>
 					<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
 				</div>
-				<div class="form-inline mt-n3 pl-3">
+				<div class="form-inline  pl-3">
 				<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
 					<?php include "php/listarTodosClientes.php";?>
 				</select>
 				</div>
 				<div class="form-inline  ml-auto">
-					<label class="pr-3 mt-n3 text-muted" for=""><strong>Fecha:</strong></label>
-					<input type="date" class="form-control mt-n3 mr-2" id="txtFechaComprobante">
-					<label class="pr-3 mt-n3 text-muted" for=""><strong>Serie:</strong></label>
-					<div class="dropdown mb-3">
+					<label class="pr-3  text-muted mt-2" for=""><strong>Fecha:</strong></label>
+					<input type="date" class="form-control  mr-2" id="txtFechaComprobante">
+					<label class="pr-3 text-muted mt-2" for=""><strong>Serie:</strong></label>
+					<div class="dropdown my-3">
 					<?php 
 						$sqlSerieBoleta="SELECT * FROM `fact_series`";
 						$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
@@ -161,15 +162,15 @@ include "generales.php"; ?>
 						<p class="text-muted "><strong>Datos del cliente:</strong></p>
 						<div class="row mb-3">
 							<div class="col-4">
-								<input type="text"  class="form-control ml-2 soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' readonly>
+								<input type="text"  class="form-control ml-2 soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' readonly autocomplete="off">
 							</div>
 							<div class="col-8">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly>
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly autocomplete="off">
 							</div>
 						</div>
 						<div class="row">
 							<div class="col">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly>
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly autocomplete="off">
 							</div>
 						</div>
 					</div>
@@ -178,17 +179,19 @@ include "generales.php"; ?>
 					<div class="card-body">
 						<p class="text-muted d-none mb-0"><strong>Detalle:</strong></p>
 						<div class="row text-muted">
-							<div class="col-4"><strong>Concepto</strong></div>
-							<div class="col-1"><strong>Cant.</strong></div>
+							<div class="col-6 col-md-4"><strong>Concepto</strong></div>
+							<div class="col-6 col-md-2"><strong>Cant.</strong></div>
 							<?php if($_COOKIE['facCambiarUnidad']==1): ?>
-							<div class="col-1"><strong>Und</strong></div>
+							<div class="col-6 col-md-1"><strong>Und</strong></div>
 							<?php endif;
 							if($_COOKIE['facCambiarGravado']==1): ?>
-							<div class="col-2"><strong>Gravado.</strong></div>
+							<div class="col-6 col-md-2"><strong>Gravado.</strong></div>
 							<?php endif; ?>
-							<div class="col-2"><strong>Precio</strong></div>
-							<div class="col-2"><strong>Precio Unit.</strong></div>
-							<div class="col-2 d-none"><strong>Sub-Total</strong></div>
+							<div class="col-6 col-md-2"><strong>Precio</strong></div>
+							<?php if($_COOKIE['verCantidad']==1):?>
+							<div class="col-6 col-md-2 "><strong>Precio Unit.</strong></div>
+							<?php endif;?>
+							<div class="col-6 col-md-2 d-none"><strong>Sub-Total</strong></div>
 						</div>
 						<div id="divProductos">
 							<?php include "php/filaNueva.php";?>
@@ -197,7 +200,7 @@ include "generales.php"; ?>
 					</div>
 				</div>
 				<div class='my-3 '>
-					<div class="d-flex justify-content-around" id="divCalculosFinales"> <!-- align-items-end flex-column -->
+					<div class="container row row-cols-2 row-cols-md-4 text-center" id="divCalculosFinales"> <!-- align-items-end flex-column -->
 						<span><small>Exonerado:</small> <span>S/ <span id="spExoneradoBoleta">0.00</span></span></span>
 						<span><small>Sub-Total:</small> <span>S/ <span id="spSubTotBoleta">0.00</span></span></span>
 						<span><small>IGV:</small> <span>S/ <span id="spIgvBoleta">0.00</span></span></span>
@@ -211,13 +214,13 @@ include "generales.php"; ?>
 				
 				
 			
-			<div class="container-fluid row d-flex justify-content-end my-3">
+			<div class="container-fluid row d-flex justify-content-end mb-3">
 				<div class="row">
 					<label for="" class="col-sm-4 col-form-label text-right"><small>Paga con:</small></label>
 					<input type="number" class="form-control col-sm-3" id="txtPagaCuanto">
 					<label for="" class="col-sm-4 col-form-label d-none"><small>Vuelto: S/<span id="spanVuelto"></span></small></label>
 				</div>
-				<div class="col">
+				<div class="col mt-2 mt-md-0">
 					<button type="button" class="btn btn-outline-success float-right d-none" id="btnEmitirFacturav2" ><i class="icofont-paper"></i> Emitir Factura</button>
 					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir Boleta</button>
 				</div>
@@ -1025,10 +1028,10 @@ $('#btnAgregarProducto').click(function() {
 	}
 });
 $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, clickedIndex, isSelected, previousValue) {
-	var padre = $(this).parent().parent().parent();
-	//console.log( padre.html() );
+	var padre = $(this).parent().parent(); //.parent()
+	console.log( padre );
 	
-	if( $(this).selectpicker('val')!=null ){
+	if( $(this).selectpicker('val')!=null && $(this).selectpicker('val')!='' ){
 		var queProd= $(this).selectpicker('val');
 		$.each( $.precios , function(i, prodObj){
 			if(prodObj.idProductos==queProd){
@@ -1043,15 +1046,26 @@ $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, c
 
 			}
 		});
-		padre.find('.sltFiltroPrecios').selectpicker('val', '1');
-		padre.find('.campoPrecioUnit').prop('readonly',true);
 
-		if($(this).selectpicker('val')==1){ //codigo de la posición libre -> Antes #52
+		//console.log('ver:' + JSON.stringify($(this).selectpicker('val')))
+
+		if( clickedIndex ==1){ //codigo de la posición libre -> Antes #52
 			padre.find('#sltFiltroGravado').prop('disabled', false).selectpicker('refresh');
 			
 			padre.find('.sltFiltroProductos').addClass('d-none');
 			padre.find('.campoTextoLibre').removeClass('d-none').focus();
+
+			padre.find('.sltFiltroPrecios').selectpicker('val', 0);
+			padre.find('.campoPrecioUnit').prop('readonly', false);
+			console.log('estoy en libre')
 		}
+		else if(clickedIndex>1){
+			padre.find('.sltFiltroPrecios').selectpicker('val', 1);
+			padre.find('.campoPrecioUnit').prop('readonly', true);
+			console.log('estoy en otro')
+		}
+		padre.find('#sltFiltroGravado').selectpicker('val', 1)
+		padre.find('.sltFiltroUnidad').selectpicker('val', 'NIU')
 		sumaTodo();
 	}
 });
@@ -1214,7 +1228,7 @@ $('#txtFechaComprobante').focusout(function() {
 $('#btnVaciarBandeja').click(function() {
 	$('#overlay').css('display', 'flex')
 	$('#pFrase').text('Limpiando los datos de la bandeja')
-	$.ajax({url: 'php/limpiarBandeja.php', type: 'POST'}).done(function(resp) {
+	$.ajax({url: '<?= $_COOKIE['servidorCasa']?>/php/limpiarBandeja.php', type: 'POST'}).done(function(resp) {
 		//console.log(resp)
 		$('#overlay').css('display', 'none')
 	});

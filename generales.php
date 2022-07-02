@@ -4,10 +4,10 @@ $dirBaseSunat = 'D:\SFS_1.3.4.4\sunat_archivos\sfs';
 $directorio = $dirBaseSunat. '\DATA/';
 $dirRespuestas = $dirBaseSunat. '\RPTA/';
 
-$rucEmisor ='20568763832';
-$nombreEmisor = "I.G. BARSAM S.R.L.";
-$direccionEmisor = "Sucursal: Cal. 09 de Octubre N° 1584\n Pblo Huamancaca Chico - Chupaca - Junín\nPrincipal: Jr. José Olaya N° 152 - \nHuancayo - Junín";
-$celularEmisor = "972981671";
+$rucEmisor ='20568390629';
+$nombreEmisor = "GRUPO EURO ANDINO S.A.C.";
+$direccionEmisor = "Cal. Independencia N° 415 - El Tambo - Huancayo - Junín";
+$celularEmisor = "947614293";
 $nombrePrint = 'CAJA'; //TM-T20II
 
 $casaHost = "pluginSunat";
