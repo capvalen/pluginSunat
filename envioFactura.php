@@ -2,11 +2,6 @@
 if( !isset($_COOKIE['ckUsuario']) ){ 
 	header("Location: index.html");
 	die();
-}else{
-	if($_COOKIE['ckUsuario']!= 'cpariona'){
-		header("Location: index.html");
-	die();
-	}
 }
 
 ?>
