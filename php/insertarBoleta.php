@@ -1,8 +1,8 @@
 <?php 
 date_default_timezone_set('America/Lima');
-include 'conexion.php';
-include '../generales.php';
-require "../NumeroALetras.php";
+include __DIR__ . '/conexion.php';
+include __DIR__ . './../generales.php';
+require __DIR__ . "./../NumeroALetras.php";
 
 if(isset($_POST['jsonCliente'])){
 
@@ -123,7 +123,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 		 $_POST['proceso']='3';
 		 $_POST['cantidad']=$canti;
 		 $_POST['obs']='';
-		 require 'updateStock.php';
+		 require __DIR__. 'updateStock.php';
 		 
 
 		//echo $sqlProd;
