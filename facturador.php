@@ -101,7 +101,8 @@ include "generales.php"; ?>
 			<div class="modal-body">
 				<p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
 				<button class="btn btn-outline-primary" id="btnPrintTicketera"><i class="icofont-paper"></i> Imprimir en ticketera</button>
-				<button class="btn btn-outline-success" id="btnPrintA4"><i class="icofont-print"></i> Generar PDF (A4)</button>
+				<button class="btn btn-outline-success d-none d-sm-block" id="btnPrintA4"><i class="icofont-print"></i> Generar A4</button>
+				<button class="btn btn-outline-success d-block d-sm-none" id="btnPrintPDF"><i class="icofont-print"></i> Generar PDF</button>
 
 			</div>
 			<div class="modal-footer d-none">
@@ -685,8 +686,25 @@ $('tbody').on('click', '.imprA4Fuera', function (e) {
 		window.open( 'printComprobanteA4.php?serie='+encodeURIComponent(serie)+'&correlativo='+encodeURIComponent(correlativo) ,'_blank');
 	});
 });
+$('tbody').on('click', '.imprPDFFuera', function (e) {
+	var padre= $(this).parent()
+
+	var caso = padre.attr('data-caso');
+	var serie = padre.attr('data-serie');
+	var correlativo = padre.attr('data-correlativo');
+
+	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
+		console.log(resp)
+		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
+		window.open( 'printComprobantePDF.php?serie='+encodeURIComponent(serie)+'&correlativo='+encodeURIComponent(correlativo) ,'_blank');
+	});
+});
 $('#btnPrintA4').click(function() {
 	window.open( 'printComprobanteA4.php?serie='+encodeURIComponent($.jTicket[0].serie)+'&correlativo='+encodeURIComponent($.jTicket[0].correlativo) ,'_blank');
+	location.reload();
+});
+$('#btnPrintPDF').click(function() {
+	window.open( 'printComprobantePDF.php?serie='+encodeURIComponent($.jTicket[0].serie)+'&correlativo='+encodeURIComponent($.jTicket[0].correlativo) ,'_blank');
 	location.reload();
 });
 $('tbody').on('click', '.btnGenComprobante', function (e) {

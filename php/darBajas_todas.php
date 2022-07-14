@@ -70,5 +70,7 @@ $baja = fopen("{$path}/{$nombreArchivoBorrar}.cba", "w"); //{$directorio}{$nombr
 fwrite($baja, "{$lineaBaja}");
 fclose($baja);
 
-$sql= $lineaActualizar;
-$resultado=$conf->query($sql);
+if($lineaActualizar<>''){
+	$sql= $lineaActualizar;
+	$resultado=$conf->query($sql);
+}

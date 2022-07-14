@@ -46,9 +46,9 @@ while($row=$resultado->fetch_assoc()){
 	<?php endif; ?>
 
 		<td class="text-capitalize"><?= $row['razonSocial']; ?></td>
-	<?php if( isset($_POST['fecha2'])): ?>
+	<?php /* if( isset($_POST['fecha2'])): ?>
 		<td class="tableexport-string">S/ <span ><?= number_format($row['IGVFinal'],2); ?></span></td>
-	<?php endif; ?>
+	<?php endif; */ ?>
 		<td class="tableexport-string">S/ <?= number_format($row['IGVFinal'],2); ?></td>
 		<td class="tableexport-string">S/ <span class="spTotalPac" data-estado="<?= $row['comprobanteEmitido']; ?>"><?= number_format($row['totalFinal'],2); ?></span></td>
 		<td class="text-capitalize">
@@ -63,14 +63,18 @@ while($row=$resultado->fetch_assoc()){
 			?>
 		</td>
 		<?php if(in_array( $row['factTipoDocumento'], $comprobantes)){ ?>
-			<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" >
+			<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" style="display: flex;">
 				<?php 
 				if($row['comprobanteEmitido']==0 && $fecha == date('Y-m-d')){ ?>
 					<button class="btn btn-outline-primary btn-sm border border-light btnGenComprobante" data-ticket="<?= $row['idTicket']; ?>" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
 				<?php }
 				else if($row['comprobanteEmitido']==1 || $row['comprobanteEmitido']==3 ){ ?>
 					<button class="btn btn-outline-secondary btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
-					<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
+					<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera d-none d-sm-block" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
+					<button class="btn btn-outline-secondary btn-sm border border-light imprPDFFuera d-block d-sm-none" data-toggle="tooltip" data-placement="top" title="Imprimir PDF"><i class="icofont-print"></i></button>
+					
+
+
 				<?php if($_COOKIE['ckPower']==1){ ?>
 					<button class="btn btn-outline-danger btn-sm border border-light btnDarBajas" data-toggle="tooltip" data-placement="top" title="Dar de baja" data-boleta="<?= $row['factTipoDocumento'];?>" data-baja="<?= $row['idComprobante'];?>"><i class="icofont-download-alt"></i></button>
 				
