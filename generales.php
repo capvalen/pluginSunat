@@ -1,6 +1,6 @@
 <?php
 //Rellenar por cada Cliente:
-$dirBaseSunat = 'D:\SFS_1.3.4.4\sunat_archivos\sfs';
+$dirBaseSunat = 'D:\Fac_Casabarro_1.3.4.4\sunat_archivos\sfs';
 $directorio = $dirBaseSunat. '\DATA/';
 $dirRespuestas = $dirBaseSunat. '\RPTA/';
 
@@ -35,7 +35,8 @@ $tipoTributo='1000';
 $nombreTributo = 'IGV';
 $tributoExtranjero = 'VAT';
 $afectacion = '10';
-$porcentajeIGV = '18.00';
+$porcentajeIGV = $_COOKIE['igvGlobal'];
+$porcentajeIGV1 = 1+($porcentajeIGV)/100;
 $tributoISC = '-';
 $codigoISC = '0.00';
 $montoISC = '0.00';
@@ -54,6 +55,5 @@ $invoce = '11.80';
 $ventaInvoce = '11.80';
 $valorVentaInvoce='10.00';
 $gratuito ='0.00';
-
 
 ?>

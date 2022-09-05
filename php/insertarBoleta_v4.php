@@ -49,7 +49,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 	}
 }
 $sumaTotal = round($afectos+$exonerados,2);
-$baseTotal = round($afectos/1.18,2);
+$baseTotal = round($afectos/ $porcentajeIGV1 ,2);
 $igvTotal = round($afectos-$baseTotal,2);
 
 
@@ -105,7 +105,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 		$prec = $productos[$i]['precio'];
 		if( $productos[$i]['afecto']=='1'  ){
 			$subTo = round($canti*$prec,2);
-			$costoUnit = round($prec/1.18,2);
+			$costoUnit = round($prec/ $porcentajeIGV1 ,2);
 			$igvUnit= round($prec-$costoUnit,2);
 			$valorUnit = round($costoUnit*$canti,2);
 			$igvCant=round($igvUnit*$canti,2);
@@ -122,9 +122,9 @@ for ($i=0; $i < count($productos) ; $i++) {
 		}
 		
 		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `idCabecera`,`facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
-		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`) VALUES
+		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
 		 (null, {$idCabecera}, concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['nombre']}',
-		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']}, {$productos[$i]['id']});";
+		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']}, {$productos[$i]['id']}, {$porcentajeIGV});";
 		 $cadena->query($sqlProd);
 
 		 $_POST['idProd']=$productos[$i]['id'];

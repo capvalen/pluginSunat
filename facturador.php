@@ -36,7 +36,7 @@ include "generales.php"; ?>
 	<div class="container-fluid mt-5 px-md-5">
 		<div class="row">
 			<div class="col-md-3 text-center">
-				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto' width="150px;">
+				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto'>
 			</div>
 			<div class="col ml-4">
 				<h3 class="display-4">Facturación Electrónica</h3>
@@ -822,7 +822,7 @@ function sumaTodo() {
 	});
 	//console.log( sumaTotal );
 	sumaTotal=afectos+exonerados;
-	var costo = afectos/1.18;
+	var costo = afectos/parseFloat(<?= $porcentajeIGV1; ?>);
 	var igv=afectos-costo;
 	$('#spExoneradoBoleta').text(parseFloat(exonerados).toFixed(2));
 	$('#spSubTotBoleta').text(parseFloat(costo).toFixed(2));

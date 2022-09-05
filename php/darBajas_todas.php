@@ -62,15 +62,18 @@ while($rowComprobantes=$resultComprobantes->fetch_assoc()){
 		$lineaActualizar.="UPDATE `fact_cabecera` SET `comprobanteEmitido` = 2,
 		fechaBaja = CONVERT_TZ(now(), '+00:00', '-05:00')
 		where `idComprobante` = {$rowComprobantes['idComprobante']}";
-	}
+
+		$nombreArchivoBorrar = $rucEmisor."-RA-".date('Ymd')."-".$rowNum['contBajas'];
+
+		$baja = fopen("{$path}/{$nombreArchivoBorrar}.cba", "w"); //{$directorio}{$nombreArchivo}
+		fwrite($baja, "{$lineaBaja}");
+		fclose($baja);
+
+		if($lineaActualizar<>''){
+			$sql= $lineaActualizar;
+			$resultado=$conf->query($sql);
 }
-$nombreArchivoBorrar = $rucEmisor."-RA-".date('Ymd')."-".$rowNum['contBajas'];
 
-$baja = fopen("{$path}/{$nombreArchivoBorrar}.cba", "w"); //{$directorio}{$nombreArchivo}
-fwrite($baja, "{$lineaBaja}");
-fclose($baja);
 
-if($lineaActualizar<>''){
-	$sql= $lineaActualizar;
-	$resultado=$conf->query($sql);
+	}
 }

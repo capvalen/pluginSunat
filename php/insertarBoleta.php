@@ -43,7 +43,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 	}
 }
 $sumaTotal = round($afectos+$exonerados,2);
-$baseTotal = round($afectos/1.18,2);
+$baseTotal = round($afectos/ $porcentajeIGV1, 2);
 $igvTotal = round($afectos-$baseTotal,2);
 
 
@@ -97,7 +97,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 		$prec = $productos[$i]['precioProducto'];
 		if( $productos[$i]['afecto']=='1'  ){
 			$subTo = round($canti*$prec,2);
-			$costoUnit = round($prec/1.18,2);
+			$costoUnit = round($prec/ $porcentajeIGV1 ,2);
 			$igvUnit= round($prec-$costoUnit,2);
 			$valorUnit = round($costoUnit*$canti,2);
 			$igvCant=round($igvUnit*$canti,2);
@@ -114,16 +114,16 @@ for ($i=0; $i < count($productos) ; $i++) {
 		}
 		
 		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
-		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`) VALUES
+		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
 		 (null,  concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['descripcionProducto']}',
-		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, CONVERT_TZ(NOW(), '+00:00', '-05:00' ), {$productos[$i]['afecto']}, {$productos[$i]['idProd']});";
+		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, CONVERT_TZ(NOW(), '+00:00', '-05:00' ), {$productos[$i]['afecto']}, {$productos[$i]['idProd']}, {$porcentajeIGV});";
 		 $cadena->query($sqlProd);
 
 		 $_POST['idProd']=$productos[$i]['idProd'];
 		 $_POST['proceso']='3';
 		 $_POST['cantidad']=$canti;
 		 $_POST['obs']='';
-		 require __DIR__. 'updateStock.php';
+		 require __DIR__. '/updateStock.php';
 		 
 
 		//echo $sqlProd;
