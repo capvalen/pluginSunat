@@ -70,13 +70,16 @@ if($filasCorrelativo==0){
 $factura =  $serie.'-'.$correlativo;
 
 $nombreArchivo = $rucEmisor.$caso.$factura ;
-
-if(strlen($_POST['dniRUC'])==11){
-	$tipoDoc = '6';
-}else if(strlen($_POST['dniRUC'])==8){
-	$tipoDoc = '1';
-}else if(strlen($_POST['dniRUC'])<8){
-	$tipoDoc = '0';
+if($_POST['jsonCliente'][0]['tipo'] == '7'){
+	$tipoDoc = '7';
+}else{
+	if(strlen($_POST['dniRUC'])==11){
+		$tipoDoc = '6';
+	}else if(strlen($_POST['dniRUC'])==8){
+		$tipoDoc = '1';
+	}else if(strlen($_POST['dniRUC'])<8){
+		$tipoDoc = '0';
+	}
 }
 
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,

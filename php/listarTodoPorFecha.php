@@ -84,7 +84,7 @@ while($row=$resultado->fetch_assoc()){
 				?>
 			</td>
 		<?php }else{ ?>
-			<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" >
+			<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" style="white-space: nowrap;">
 				<button class="btn btn-outline-secondary btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
 				<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
 				<button class="btn btn-outline-warning btn-sm border border-light " onclick="borrarExtra('<?= $row['idComprobante']?>')" data-toggle="tooltip" data-placement="top" title="Borrar interno"><i class="icofont-ui-rate-remove"></i></button>
