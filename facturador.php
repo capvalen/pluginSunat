@@ -14,6 +14,9 @@ include "generales.php"; ?>
 </head>
 <body>
 
+<style>
+	.modal-xl { max-width: 95vw!important;}
+</style>
 <?php include 'menu-wrapper.php'; ?>
 
 <div class="container d-none">
@@ -36,7 +39,7 @@ include "generales.php"; ?>
 	<div class="container-fluid mt-5 px-md-5">
 		<div class="row">
 			<div class="col-md-3 text-center">
-				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto'>
+				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto' width="150px;">
 			</div>
 			<div class="col ml-4">
 				<h3 class="display-4">Facturación Electrónica</h3>
@@ -123,19 +126,23 @@ include "generales.php"; ?>
 				</button>
 				<h4 class="py-3 hTitulo"><i class="icofont-paper"></i> Generar: <span id="queGenero"></span> Electrónica</h4>
 				<div class="form-inline">
-				<div class="form-check mb-3">
-					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
-					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
-				</div>
-				<div class="form-check mb-3 ml-5 d-none">
-					<label for="">Placa de vehículo:</label>
-					<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
-				</div>
-				<div class="form-inline  pl-3">
-				<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
-					<?php include "php/listarTodosClientes.php";?>
-				</select>
-				</div>
+				
+					<div class="form-check mb-3 ml-5 d-none">
+						<label for="">Placa de vehículo:</label>
+						<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
+					</div>
+					<div class="form-inline">
+						<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
+							<?php include "php/listarTodosClientes.php";?>
+						</select>
+					</div>
+					<div class="dropdown mb-3">
+						<select class="form-control ml-2" id="sltContado">
+							<option value="1">Contado</option>
+							<option value="2">Crédito</option>
+						</select>
+					</div>
+				
 				<div class="form-inline  ml-auto">
 					<label class="pr-3  text-muted mt-2" for=""><strong>Fecha:</strong></label>
 					<input type="date" class="form-control  mr-2" id="txtFechaComprobante">
@@ -158,27 +165,39 @@ include "generales.php"; ?>
 				</div>
 			
 				
-				<div id="divDatosCliente" class="d-none card mb-3">
+				<div id="divDatosCliente" class="card mb-3">
 					<div class="card-body">
-						<p class="text-muted "><strong>Datos del cliente:</strong></p>
+						<p class="text-muted lead"><strong>Datos del cliente:</strong></p>
 						<div class="row mb-3">
-							<div class="col-4">
-								<input type="text"  class="form-control ml-2 soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' readonly autocomplete="off">
+							<div class="col-12 col-md-2">
+								<select class="custom-select" id="sltEstadoDni">
+									<option value="0">Sin documento</option>
+									<option value="1">D.N.I.</option>
+									<option value="6">R.U.C.</option>
+									<option value="7">Pasaporte</option>
+								</select>
+								<!-- <div class="form-check mb-3">
+									<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
+									<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
+								</div> -->
 							</div>
-							<div class="col-8">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly autocomplete="off">
+							<div class="col-12 col-md-3">
+								<input type="text"  class="form-control soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' readonly autocomplete="off">
+							</div>
+							<div class="col-12 col-md-7">
+								<input type="text"  class="form-control text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly autocomplete="off">
 							</div>
 						</div>
 						<div class="row">
 							<div class="col">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly autocomplete="off">
+								<input type="text"  class="form-control text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly autocomplete="off">
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="card">
 					<div class="card-body">
-						<p class="text-muted d-none mb-0"><strong>Detalle:</strong></p>
+						<p class="text-muted lead mb-0"><strong>Detalles</strong></p>
 						<div class="row text-muted">
 							<div class="col-6 col-md-4"><strong>Concepto</strong></div>
 							<div class="col-6 col-md-2"><strong>Cant.</strong></div>
@@ -200,12 +219,14 @@ include "generales.php"; ?>
 						<button class="btn btn-outline-success btn-sm mt-2" id="btnAgregarProducto"><i class="icofont-ui-add"></i> Agregar más produtos</button>
 					</div>
 				</div>
-				<div class='my-3 '>
-					<div class="container row row-cols-2 row-cols-md-4 text-center" id="divCalculosFinales"> <!-- align-items-end flex-column -->
-						<span><small>Exonerado:</small> <span>S/ <span id="spExoneradoBoleta">0.00</span></span></span>
-						<span><small>Sub-Total:</small> <span>S/ <span id="spSubTotBoleta">0.00</span></span></span>
-						<span><small>IGV:</small> <span>S/ <span id="spIgvBoleta">0.00</span></span></span>
-						<span><small>Total:</small> <strong>S/ <span id="spTotalBoleta">0.00</span></strong></span>
+				<div class="card my-3">
+					<div class="card-body">
+						<div class="container row row-cols-2 row-cols-md-4 text-center" id="divCalculosFinales"> <!-- align-items-end flex-column -->
+							<span><small>Exonerado:</small> <span>S/ <span id="spExoneradoBoleta">0.00</span></span></span>
+							<span><small>Sub-Total:</small> <span>S/ <span id="spSubTotBoleta">0.00</span></span></span>
+							<span><small>IGV:</small> <span>S/ <span id="spIgvBoleta">0.00</span></span></span>
+							<span><small>Total:</small> <strong>S/ <span id="spTotalBoleta">0.00</span></strong></span>
+						</div>
 					</div>
 				</div>
 				
@@ -217,7 +238,7 @@ include "generales.php"; ?>
 			
 			<div class="container-fluid row d-flex justify-content-end mb-3">
 				<div class="row">
-					<label for="" class="col-sm-4 col-form-label text-right"><small>Paga con:</small></label>
+					<label for="" class="col-sm-5 col-form-label text-right"><i class="icofont-diamond"></i> <small>Paga con:</small></label>
 					<input type="number" class="form-control col-sm-3" id="txtPagaCuanto">
 					<label for="" class="col-sm-4 col-form-label d-none"><small>Vuelto: S/<span id="spanVuelto"></span></small></label>
 				</div>
@@ -724,6 +745,7 @@ $('#btnRefresh').click(function() {
 	location.reload();
 });
 $('#AEmitirBoleta').click(function() {
+	$.soy="boleta";
 	$('#optBoleta').attr('disabled',false);
 	$('#optFactura').attr('disabled',true);
 	$('#txtDniBoleta').attr('placeholder', 'D.N.I.');
@@ -732,12 +754,15 @@ $('#AEmitirBoleta').click(function() {
 	$('#btnEmitirFacturav2').addClass('d-none');
 	$('#sltSeriesBoleta option').removeAttr('selected');
 	$('#optBoleta').attr('selected', true);
-	$('#chkEstadoDni').prop('checked', true).change().attr('disabled', false);
+	//$('#chkEstadoDni').prop('checked', true).change().attr('disabled', false);
+	$('#sltEstadoDni').val(0).change().attr('disabled', false);
 	$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'));
 	$('#queGenero').text('Boleta de venta');
 	$('#modalEmisionBoleta').modal('show');
+	$('#sltSeriesBoleta').attr('disabled', false)
 });
 $('#AEmitirFactura').click(function() {
+	$.soy="factura";
 	$('#optBoleta').attr('disabled',true);
 	$('#optFactura').attr('disabled',false);
 	$('#txtDniBoleta').attr('placeholder', 'R.U.C.');
@@ -745,28 +770,61 @@ $('#AEmitirFactura').click(function() {
 	$('#btnEmitirBoletav2').addClass('d-none');
 	$('#btnEmitirFacturav2').removeClass('d-none');
 	$('#optFactura').attr('selected', true);
-	$('#chkEstadoDni').prop('checked', false).change().attr('disabled', true);
+	//$('#chkEstadoDni').prop('checked', false).change().attr('disabled', true);
+	$('#sltEstadoDni').val(6).change().attr('disabled', true);
 	$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'));
 	$('#queGenero').text('Factura');
 	$('#modalEmisionBoleta').modal('show');
+	$('#sltSeriesBoleta').attr('disabled', true)
 });
 
-$('#chkEstadoDni').change(function() {
+$('#sltEstadoDni').change(()=>{
+	$('.selectpicker').selectpicker('val', -1);
+	switch($('#sltEstadoDni').val()){
+		case '0':
+			$('#txtDniBoleta').attr('placeholder', 'No DOC.')
+			$('#txtRazonBoleta').attr('placeholder', 'Sin datos')
+			$('#txtDniBoleta').val('00000000').attr('readonly', true);
+			$('#txtRazonBoleta').val('Cliente simple').attr('readonly', true);
+			$('#txtDireccionBoleta').attr('readonly', true).val('');
+			break;
+		case '1':
+			$('#txtDniBoleta').attr('placeholder', 'D.N.I.')
+			$('#txtRazonBoleta').attr('placeholder', 'Nombres y apellidos')
+		case '7':
+			$('#txtDniBoleta').attr('placeholder', 'N° Pasaporte')
+			$('#txtRazonBoleta').attr('placeholder', 'Nombres y apellidos')
+			$('#txtDniBoleta').val('').attr('readonly', false);
+			$('#txtRazonBoleta').val('').attr('readonly', false);
+			$('#txtDireccionBoleta').attr('readonly', false).val('');
+			break;
+		case '6':
+			$('#txtDniBoleta').attr('placeholder', 'R.U.C.')
+			$('#txtRazonBoleta').attr('placeholder', 'Razón social')
+			$('#txtDniBoleta').val('').attr('readonly', false);
+			$('#txtRazonBoleta').val('').attr('readonly', false);
+			$('#txtDireccionBoleta').attr('readonly', false).val('');
+			break;
+	}
+})
+
+/* $('#chkEstadoDni').change(function() {
 	if($('#chkEstadoDni').prop('checked')	){
 		$('#labelEstadoDni').text('Cliente anónimo');
-		$('#divDatosCliente').addClass('d-none');
-		$('#txtDniBoleta').attr('readonly', true).val('');
-		$('#txtRazonBoleta').attr('readonly', true).val('');
+		//$('#divDatosCliente').addClass('d-none');
+		$('#txtDniBoleta').val('00000000');
+		$('#txtDniBoleta').attr('readonly', true)
+		$('#txtRazonBoleta').val('Cliente simple');
+		$('#txtRazonBoleta').attr('readonly', true);
 		$('#txtDireccionBoleta').attr('readonly', true).val('');
-		$('.selectpicker').selectpicker('val', -1);
 	}else{
 		$('#labelEstadoDni').text('Cliente con Documento');
-		$('#divDatosCliente').removeClass('d-none');
+		//$('#divDatosCliente').removeClass('d-none');
 		$('#txtRazonBoleta').attr('readonly', false);
 		$('#txtDireccionBoleta').attr('readonly', false);
 		$('#txtDniBoleta').attr('readonly', false).focus();
 	}
-});
+}); */
 $('#divProductos').on('keyup','.campoSubTotal', function() {	
 	var padre = $(this).parent().parent();
 	var subTotal = 0;
@@ -879,9 +937,12 @@ $('#btnEmitirBoletav2').click(function() {
 		else{
 			var jsonCliente= [];
 			if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
-				jsonCliente.push({dni: $('#txtDniBoleta').val(),
+				jsonCliente.push({
+					tipo: $('#sltEstadoDni').val(),
+					dni: $('#txtDniBoleta').val(),
 					razon: $('#txtRazonBoleta').val(),
-					direccion: $('#txtDireccionBoleta').val()
+					direccion: $('#txtDireccionBoleta').val(),
+					contado: $('#sltContado').val()
 				});
 			}
 			var jsonProductos = [];
@@ -950,9 +1011,12 @@ $('#btnEmitirFacturav2').click(function() {
 	}else{
 		var jsonCliente= [];
 		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
-			jsonCliente.push({dni: $('#txtDniBoleta').val(),
+			jsonCliente.push({
+				tipo: $('#sltEstadoDni').val(),
+				dni: $('#txtDniBoleta').val(),
 				razon: $('#txtRazonBoleta').val(),
-				direccion: $('#txtDireccionBoleta').val()
+				direccion: $('#txtDireccionBoleta').val(),
+				contado: $('#sltContado').val()
 			});
 		}
 		var jsonProductos= [];
@@ -1023,10 +1087,15 @@ $('#sltFiltroClientes').on('changed.bs.select', function (e, clickedIndex, isSel
 	var index=$('#sltFiltroClientes').val();
 	var padre = $("#sltFiltroClientes option[value="+index+"]");
 	if($(this).val()!=null){
-		$('#chkEstadoDni').prop('checked', false).change();
+		if( padre.attr('data-ruc').length==8 ){
+			$('#sltEstadoDni').val(1).change()
+		}else if(padre.attr('data-ruc').length==11 ){
+			$('#sltEstadoDni').val(6).change()
+			//$('#chkEstadoDni').prop('checked', false).change();
+		}else{
+			$('#sltEstadoDni').val(7).change()
+		}
 	}
-	
-	
 	$('#txtDniBoleta').val(padre.attr('data-ruc'));
 	$('#txtRazonBoleta').val(padre.attr('data-razon'));
 	$('#txtDireccionBoleta').val(padre.attr('data-direccion'));
@@ -1061,7 +1130,6 @@ $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, c
 				padre.find('.campoPrecioUnit').val(parseFloat(prodObj.prodPrecio).toFixed(2));
 				padre.find('.campoSubTotal').val(parseFloat(prodObj.prodPrecio).toFixed(2)).attr('data-exonerado', padre.find('#sltFiltroGravado').selectpicker('val'));
 				padre.find('.campoCantidad').val(1).focus();
-
 			}
 		});
 
@@ -1236,7 +1304,9 @@ $('#txtFechaComprobante').focusout(function() {
 	let diferencia = hoy.diff(comprobante, 'days')
 	if( diferencia<0 ){
 		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
-	}else if(diferencia>4){
+	}else if(diferencia>2 && $.soy=='factura'){
+		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
+	}else if(diferencia>4 && $.soy=='boleta'){
 		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
 	}else if( isNaN(diferencia)){
 		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
