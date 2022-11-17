@@ -92,6 +92,11 @@ include "generales.php"; ?>
 	</div>
 </section>
 
+<footer class="bg-dark p-3 text-white text-center mt-4">
+	<p class="mb-0"><i class="icofont-book-mark"></i>  <small><?php include 'php/version.php';?></small></p>
+	<p><i class="icofont-book-mark"></i> Facturador SFS 1.5</p>
+</footer>
+
 <div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog" data-backdrop="static" >
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -141,6 +146,10 @@ include "generales.php"; ?>
 							<option value="1">Contado</option>
 							<option value="2">Crédito</option>
 						</select>
+					</div>
+					<div class="d-none form-inline mb-3" id="divAdelanto">
+						<label class="mx-2">Adelanto:</label>
+						<input type="number" class="form-control mb-3" value="0" id="txtAdelanto">
 					</div>
 				
 				<div class="form-inline  ml-auto">
@@ -477,6 +486,13 @@ $(document).ready(function(){
 			
 		});
 	});
+	$('#sltContado').change( ()=>{
+		if( $('#sltContado').val()==1){
+			$('#divAdelanto').addClass('d-none')
+		}else{
+			$('#divAdelanto').removeClass('d-none')
+		}
+	})
 });
 function sumarGenerados(){
 	var sumaDia =0;
@@ -760,6 +776,7 @@ $('#AEmitirBoleta').click(function() {
 	$('#queGenero').text('Boleta de venta');
 	$('#modalEmisionBoleta').modal('show');
 	$('#sltSeriesBoleta').attr('disabled', false)
+	$('#sltContado').parent().addClass('d-none')
 });
 $('#AEmitirFactura').click(function() {
 	$.soy="factura";
@@ -776,6 +793,7 @@ $('#AEmitirFactura').click(function() {
 	$('#queGenero').text('Factura');
 	$('#modalEmisionBoleta').modal('show');
 	$('#sltSeriesBoleta').attr('disabled', true)
+	$('#sltContado').parent().removeClass('d-none')
 });
 
 $('#sltEstadoDni').change(()=>{
@@ -942,7 +960,8 @@ $('#btnEmitirBoletav2').click(function() {
 					dni: $('#txtDniBoleta').val(),
 					razon: $('#txtRazonBoleta').val(),
 					direccion: $('#txtDireccionBoleta').val(),
-					contado: $('#sltContado').val()
+					contado: $('#sltContado').val(),
+					adelanto: $('#txtAdelanto').val()
 				});
 			}
 			var jsonProductos = [];
@@ -1016,7 +1035,8 @@ $('#btnEmitirFacturav2').click(function() {
 				dni: $('#txtDniBoleta').val(),
 				razon: $('#txtRazonBoleta').val(),
 				direccion: $('#txtDireccionBoleta').val(),
-				contado: $('#sltContado').val()
+				contado: $('#sltContado').val(),
+				adelanto: $('#txtAdelanto').val()
 			});
 		}
 		var jsonProductos= [];
