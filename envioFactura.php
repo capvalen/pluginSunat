@@ -94,7 +94,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 					console.log( response.data );
 					if(response.data[0] == 'Archivo Zip creado'){
 						let filename = `Sunat_txt_${response.data[1]}.zip`
-						fetch(`comprobantes/datosSunat${response.data[1]}.zip`).then(function(t) {
+						fetch(`comprobantes/datosSunat_${response.data[1]}.zip`).then(function(t) {
 							return t.blob().then((b)=>{
 								var a = document.createElement("a");
 								a.href = URL.createObjectURL(b);

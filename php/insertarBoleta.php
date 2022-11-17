@@ -85,11 +85,11 @@ if($_POST['jsonCliente'][0]['tipo'] == '7'){
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
-  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`) 
+  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`) 
 VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, CONVERT_TZ(NOW(), '+00:00', '-05:00' ),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1, CONVERT_TZ(NOW(), '+00:00', '-05:00') , '{$_POST['cliDireccion']}', '' );";
+	1, CONVERT_TZ(NOW(), '+00:00', '-05:00') , '{$_POST['cliDireccion']}', '', {$_POST['jsonCliente'][0]['contado']}, {$_POST['jsonCliente'][0]['adelanto']} );";
 	//echo $sql;
 $resultado=$cadena->query($sql);
 

@@ -63,11 +63,13 @@ function actualizarDB($archivoConFirma, $dirBase){
 	$tempDetalle = $dirBase . $archivoConFirma.'.det';
 	$tempLeyenda = $dirBase . $archivoConFirma.'.ley';
 	$tempTri = $dirBase . $archivoConFirma.'.tri';
+	$tempPag = $dirBase . $archivoConFirma.'.pag';
 
 	if(file_exists($tempCabecera)){ unlink($tempCabecera); }
 	if(file_exists($tempDetalle)){ unlink($tempDetalle); }
 	if(file_exists($tempLeyenda)){ unlink($tempLeyenda); }
 	if(file_exists($tempTri)){ unlink($tempTri); }
+	if(file_exists($tempPag)){ unlink($tempPag); }
 		
 }
 
