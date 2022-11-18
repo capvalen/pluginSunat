@@ -47,7 +47,7 @@ if( in_array( $rowSeries['queDoc'] , ['PROFORMA', 'TICKET INTERNO']) ){ $factura
 $nombreArchivo = $rucEmisor.$caso.$factura ; 
 
 
-$sqlBase="select totalFinal from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
+$sqlBase="SELECT totalFinal from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
 $resultadoBase=$cadena->query($sqlBase);
 $rowBase=$resultadoBase->fetch_assoc();
 	
@@ -62,7 +62,7 @@ $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'
 
 
 
-$sqlCabeza="select * from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}';";
+$sqlCabeza="SELECT * from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}';";
 
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
@@ -118,15 +118,20 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 	<div class="border bordeDelgado p-2 container-fluid">
 	<div class="row p-2">
 		<div class="col-8">
-			<p class="text-capitalize mb-0"><strong>Señor(es):</strong> <?=  $rowC['razonSocial']; ?> </p>
+			<p class="mb-0"><strong>Señor(es):</strong> <span class="text-capitalize"><?=  $rowC['razonSocial']; ?></span> </p>
 			<p class="text-capitalize mb-0"><strong>Domicilio:</strong> <?= ($rowC['cliDireccion'] =='') ? '-' : $rowC['cliDireccion']; ?></p>
 			<p class="mb-0"><strong>N° Documento:</strong> <?= $rowC['dniRUC']; ?></p>
+			<p class="mb-0"><strong>Tipo pago:</strong> <?= ($rowC['esContado']==1)? 'Contado':'Crédito'; ?></p>
 			
 		</div>
 		<div class="col">
 		<br>
 		<p class="mb-0"><strong>Fecha de emisión:</strong> <?php echo $fecha->format('d/m/Y'); ?></p>
 		<p class="mb-0"><strong>Tipo Moneda:</strong> Soles</p>
+		<?php if($rowC['esContado']==2):?>
+		<p class="mb-0"><strong>Deuda:</strong> <?= ($rowC['esContado']==1)? '0.00': number_format($rowC['totalFinal']-$rowC['adelanto'],2) ; ?></p>
+		<?php endif;?>
+
 		</div>
 	</div>
 	</div>
@@ -222,7 +227,7 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 </div>
 <div class="row">
 	<div class="col">
-		<p class="small">Puede ser consultada en: https://grupoeuroandino.com/facturas/ <br/>Visble en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
+		<p class="small">Puede ser consultada en: https://grupoeuroandino.com/facturas/ <br/>Visible en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
 	</div>
 </div>
 </section>

@@ -16,6 +16,7 @@ include "generales.php"; ?>
 
 <style>
 	.modal-xl { max-width: 95vw!important;}
+	.table-responsive{min-height: 70vh;}
 </style>
 <?php include 'menu-wrapper.php'; ?>
 
@@ -67,6 +68,8 @@ include "generales.php"; ?>
 						<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
 						<!-- <th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th> -->
 						<th data-sort="float"><i class="icofont-expand-alt"></i> Total</th>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> T.Pago</th>
+						<th data-sort="string"><i class="icofont-expand-alt"></i> Debe</th>
 						<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 						<th>@</th>
 					</tr>
@@ -164,9 +167,10 @@ include "generales.php"; ?>
 					?>
 					<select class="form-control" id="sltSeriesBoleta">
 						<option value="series" selected>Series</option>
-						<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
-						<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
-						<option id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
+						<option value="<?= $rowSerieBoleta['serieBoleta']; ?>" id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
+						<option value="<?= $rowSerieBoleta['optFactura']; ?>" id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
+						<option value="<?= $rowSerieBoleta['serieOpcional']; ?>" id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
+						<option value="<?= $rowSerieBoleta['serieOpcional2']; ?>" id="optOpcional2" disabled><?= $rowSerieBoleta['serieOpcional2']; ?></option>
 					</select>
 					</div>
 
@@ -191,15 +195,15 @@ include "generales.php"; ?>
 								</div> -->
 							</div>
 							<div class="col-12 col-md-3">
-								<input type="text"  class="form-control soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' readonly autocomplete="off">
+								<input type="text"  class="form-control soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' autocomplete="off">
 							</div>
 							<div class="col-12 col-md-7">
-								<input type="text"  class="form-control text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly autocomplete="off">
+								<input type="text"  class="form-control text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' autocomplete="off">
 							</div>
 						</div>
 						<div class="row">
 							<div class="col">
-								<input type="text"  class="form-control text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly autocomplete="off">
+								<input type="text"  class="form-control text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' autocomplete="off">
 							</div>
 						</div>
 					</div>
@@ -764,6 +768,8 @@ $('#AEmitirBoleta').click(function() {
 	$.soy="boleta";
 	$('#optBoleta').attr('disabled',false);
 	$('#optFactura').attr('disabled',true);
+	$('#optOpcional').attr('disabled',false);
+	$('#optOpcional2').attr('disabled',true);
 	$('#txtDniBoleta').attr('placeholder', 'D.N.I.');
 	$('#txtRazonBoleta').attr('placeholder', 'Nombres y apellidos');
 	$('#btnEmitirBoletav2').removeClass('d-none');
@@ -775,13 +781,14 @@ $('#AEmitirBoleta').click(function() {
 	$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'));
 	$('#queGenero').text('Boleta de venta');
 	$('#modalEmisionBoleta').modal('show');
-	$('#sltSeriesBoleta').attr('disabled', false)
 	$('#sltContado').parent().addClass('d-none')
 });
 $('#AEmitirFactura').click(function() {
 	$.soy="factura";
 	$('#optBoleta').attr('disabled',true);
 	$('#optFactura').attr('disabled',false);
+	$('#optOpcional').attr('disabled',true);
+	$('#optOpcional2').attr('disabled',false);
 	$('#txtDniBoleta').attr('placeholder', 'R.U.C.');
 	$('#txtRazonBoleta').attr('placeholder', 'Razón social');
 	$('#btnEmitirBoletav2').addClass('d-none');
@@ -792,7 +799,6 @@ $('#AEmitirFactura').click(function() {
 	$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'));
 	$('#queGenero').text('Factura');
 	$('#modalEmisionBoleta').modal('show');
-	$('#sltSeriesBoleta').attr('disabled', true)
 	$('#sltContado').parent().removeClass('d-none')
 });
 
@@ -802,26 +808,30 @@ $('#sltEstadoDni').change(()=>{
 		case '0':
 			$('#txtDniBoleta').attr('placeholder', 'No DOC.')
 			$('#txtRazonBoleta').attr('placeholder', 'Sin datos')
-			$('#txtDniBoleta').val('00000000').attr('readonly', true);
-			$('#txtRazonBoleta').val('Cliente simple').attr('readonly', true);
-			$('#txtDireccionBoleta').attr('readonly', true).val('');
+			$('#txtDniBoleta').val('00000000');
+			$('#txtRazonBoleta').val('Cliente simple');
+			$('#txtDireccionBoleta');
 			break;
 		case '1':
 			$('#txtDniBoleta').attr('placeholder', 'D.N.I.')
 			$('#txtRazonBoleta').attr('placeholder', 'Nombres y apellidos')
+			$('#txtDniBoleta').val('');
+			$('#txtRazonBoleta').val('');
+			$('#txtDireccionBoleta').val('');
+			break;
 		case '7':
 			$('#txtDniBoleta').attr('placeholder', 'N° Pasaporte')
 			$('#txtRazonBoleta').attr('placeholder', 'Nombres y apellidos')
-			$('#txtDniBoleta').val('').attr('readonly', false);
-			$('#txtRazonBoleta').val('').attr('readonly', false);
-			$('#txtDireccionBoleta').attr('readonly', false).val('');
+			$('#txtDniBoleta').val('');
+			$('#txtRazonBoleta').val('');
+			$('#txtDireccionBoleta').val('');
 			break;
 		case '6':
 			$('#txtDniBoleta').attr('placeholder', 'R.U.C.')
 			$('#txtRazonBoleta').attr('placeholder', 'Razón social')
-			$('#txtDniBoleta').val('').attr('readonly', false);
-			$('#txtRazonBoleta').val('').attr('readonly', false);
-			$('#txtDireccionBoleta').attr('readonly', false).val('');
+			$('#txtDniBoleta').val('');
+			$('#txtRazonBoleta').val('');
+			$('#txtDireccionBoleta').val('');
 			break;
 	}
 })
@@ -936,7 +946,13 @@ $('#btnEmitirBoletav2').click(function() {
 
 	promesaCompletoTodo.then(resPromesa => {
 		
-		if( $('#sltSeriesBoleta').val()=='series'){
+		if($('#txtDniBoleta').val()=='' && $.queSoy=='boleta'){
+			$('#txtDniBoleta').focus();
+			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No es un DNI válido').parent().removeClass('d-none');
+		}else if( $.queSoy=='factura'){
+			$('#txtDniBoleta').focus();
+			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> No es un RUC válido').parent().removeClass('d-none');			
+		}else if( $('#sltSeriesBoleta').val()=='series'){
 			$('#sltSeriesBoleta').focus();
 			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
 		}else if( $('.cardHijoProducto').first().find('#sltTemporal').selectpicker('val')==null ){
@@ -954,16 +970,28 @@ $('#btnEmitirBoletav2').click(function() {
 		}
 		else{
 			var jsonCliente= [];
-			if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
-				jsonCliente.push({
-					tipo: $('#sltEstadoDni').val(),
-					dni: $('#txtDniBoleta').val(),
-					razon: $('#txtRazonBoleta').val(),
-					direccion: $('#txtDireccionBoleta').val(),
-					contado: $('#sltContado').val(),
-					adelanto: $('#txtAdelanto').val()
-				});
+			var dniRc ='', razon='';
+			if($('#txtDniBoleta').val()!=''){
+				dniRc=$('#txtDniBoleta').val();
+				razon=$('#txtRazonBoleta').val()
+			}else{
+				dniRc='00000000';
+				if($('#txtRazonBoleta').val()==''){
+					razon='Cliente sin documento';
+				}else{
+					razon=$('#txtRazonBoleta').val()
+				}
 			}
+			
+			jsonCliente.push({
+				tipo: $('#sltEstadoDni').val(),
+				dni: dniRc,
+				razon: razon,
+				direccion: $('#txtDireccionBoleta').val(),
+				contado: $('#sltContado').val(),
+				adelanto: $('#txtAdelanto').val()
+			});
+			
 			var jsonProductos = [];
 			$.each( $('.cardHijoProducto'), function (i, elem) {
 				var productVariable ='';
@@ -986,16 +1014,9 @@ $('#btnEmitirBoletav2').click(function() {
 				}
 				
 			});
-			var dniRc ='', razon='';
-			if($('#txtDniBoleta').val()!=''){
-				dniRc=$('#txtDniBoleta').val();
-				razon=$('#txtRazonBoleta').val()
-			}else{
-				dniRc='00000000';
-				razon='Cliente sin documento';
-			}
 			
-			$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(),jsonProductos: jsonProductos, jsonCliente:jsonCliente, fecha: $('#txtFechaComprobante').val() }}).done(function(resp) { //  placa: $('#txtPlacaBoleta').val(),
+			
+			$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(),jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val() }}).done(function(resp) { //  placa: $('#txtPlacaBoleta').val(),
 				console.log(resp)
 				$.jTicket = JSON.parse(resp); console.log( $.jTicket );
 				if($.jTicket.length >=1){
@@ -1004,6 +1025,7 @@ $('#btnEmitirBoletav2').click(function() {
 				}
 			});
 		}
+
 
 	})
 
@@ -1029,16 +1051,24 @@ $('#btnEmitirFacturav2').click(function() {
 		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none');
 	}else{
 		var jsonCliente= [];
-		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
-			jsonCliente.push({
-				tipo: $('#sltEstadoDni').val(),
-				dni: $('#txtDniBoleta').val(),
-				razon: $('#txtRazonBoleta').val(),
-				direccion: $('#txtDireccionBoleta').val(),
-				contado: $('#sltContado').val(),
-				adelanto: $('#txtAdelanto').val()
-			});
+		var dniRc ='', razon='';
+		if($('#txtDniBoleta').val()!=''){
+			dniRc=$('#txtDniBoleta').val();
+			razon=$('#txtRazonBoleta').val()
+		}else{
+			dniRc='00000000';
+			razon='Cliente sin documento';
 		}
+		
+		jsonCliente.push({
+			tipo: $('#sltEstadoDni').val(),
+			dni: dniRc,
+			razon: razon,
+			direccion: $('#txtDireccionBoleta').val(),
+			contado: $('#sltContado').val(),
+			adelanto: $('#txtAdelanto').val()
+		});
+		
 		var jsonProductos= [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
 			if( $(elem).find('.sltFiltroProductos').selectpicker('val')!='' ){
@@ -1059,14 +1089,7 @@ $('#btnEmitirFacturav2').click(function() {
 				});
 		}
 		});
-		var dniRc ='', razon='';
-		if($('#txtDniBoleta').val()!=''){
-			dniRc=$('#txtDniBoleta').val();
-			razon=$('#txtRazonBoleta').val()
-		}else{
-			dniRc='00000000';
-			razon='Cliente sin documento';
-		}
+		
 		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val() }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
 			console.log(resp)
 			$.jTicket = JSON.parse(resp); console.log( $.jTicket );
