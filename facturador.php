@@ -168,7 +168,7 @@ include "generales.php"; ?>
 					<select class="form-control" id="sltSeriesBoleta">
 						<option value="series" selected>Series</option>
 						<option value="<?= $rowSerieBoleta['serieBoleta']; ?>" id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
-						<option value="<?= $rowSerieBoleta['optFactura']; ?>" id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
+						<option value="<?= $rowSerieBoleta['serieFactura']; ?>" id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
 						<option value="<?= $rowSerieBoleta['serieOpcional']; ?>" id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
 						<option value="<?= $rowSerieBoleta['serieOpcional2']; ?>" id="optOpcional2" disabled><?= $rowSerieBoleta['serieOpcional2']; ?></option>
 					</select>
