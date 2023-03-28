@@ -1376,8 +1376,26 @@ function borrarDefinitivamente(){
 		}
 	});
 }
+function compartir(serie, correlativo){ 
+	// Verificamos si el navegador tiene soporte para el API compartir
+	if ('share' in navigator) {
+		navigator.share({
+			title: "Contenido",
+			text: `Su Comprobante ${serie}-${correlativo} puede ser revisado online`,
+			url: `./printComprobanteA4.php?serie=${serie}&correlativo=${correlativo}`
+		})
+		// Mensaje en Consola cuando se presiona el botón de compartir 
+		.then(() => {
+			console.log("Contenido Compartido!");
+		})
+		.catch(console.error);
+	} else {
+		// Si el navegador no tiene soporte para la API compartir, le enviamos un mensaje al usuario
+		alert('Lo siento, este navegador no tiene soporte para recursos compartidos.')
+	}
+}
 
-<?php }?>
+<?php } //Fin de CkPower ?>
 </script>
 <?php include "piePagina.php"; ?>
 </body>

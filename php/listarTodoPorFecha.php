@@ -72,13 +72,17 @@ while($row=$resultado->fetch_assoc()){
 					<button class="btn btn-outline-secondary btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
 					<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera d-none d-sm-block" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
 					<button class="btn btn-outline-secondary btn-sm border border-light imprPDFFuera d-block d-sm-none" data-toggle="tooltip" data-placement="top" title="Imprimir PDF"><i class="icofont-print"></i></button>
+					<!-- Boton compartir -->
+					<button class="btn btn-outline-primary btn-sm border border-light  d-block d-sm-none" onclick="compartir(`<?= $row['factSerie']?>`, `<?= $row['factCorrelativo'];?>`)" data-toggle="tooltip" data-placement="top" title="Compartir"><i class="icofont-share"></i></button>
+					<!-- Fin Boton compartir -->
 					
 
 
 				<?php if($_COOKIE['ckPower']==1){ ?>
 					<button class="btn btn-outline-danger btn-sm border border-light btnDarBajas" data-toggle="tooltip" data-placement="top" title="Dar de baja" data-boleta="<?= $row['factTipoDocumento'];?>" data-baja="<?= $row['idComprobante'];?>"><i class="icofont-download-alt"></i></button>
 				
-				<?php } }else{
+				<?php }
+				}else{
 					echo '<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>';
 				}
 				?>
