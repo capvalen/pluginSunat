@@ -94,27 +94,25 @@ thead tr th{cursor: pointer;}
 		</div>
 		
 
-		<div class="table-responsive">
-			<table class="table table-hover mt-3" id="tablaCabeceras" >
-				<thead>
-					<tr>
-						<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
-						<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
-						<th data-sort="string"><i class="icofont-expand-alt"></i> Correlativo</th>
-						<th data-sort="int"><i class="icofont-expand-alt"></i> Fecha y Hora</th>
-						<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
-						<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
-						<th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th>
-						<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
-						<th>@</th>
-					</tr>
-				</thead>
-				<tbody>
+		<table class="table table-hover mt-3" id="tablaCabeceras" >
+			<thead>
+				<tr>
+					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Código</th>
+					<th data-sort="int"><i class="icofont-expand-alt"></i> Fecha y Hora</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
+					<th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th>
+					<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
+					<th>@</th>
+				</tr>
+			</thead>
+			<tbody>
 			
-				</tbody>
-			</table>
-		</div>
-		<div class="d-none table-responsive" id="divTablaSysCont"></div>
+			</tbody>
+		</table>
+		<div class="d-none" id="divTablaSysCont"></div>
 
 	</div>
 </section>

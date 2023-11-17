@@ -55,7 +55,7 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 
 		$tributo = $rowCabecera['ideTributo'] . $separador . $rowCabecera['nomTributo'] . $separador .  $rowCabecera['codTipTributo']  . $separador . $rowCabecera['mtoBaseImponible'] . $separador . $rowCabecera['mtoTributo'] . $separador;
 			if( $rowCabecera['factExonerados'] >0){
-				$tributo = $tributo . "\n9997|EXO|VAT|".round( $totFin ,2)."|0.00|";
+				$tributo = $tributo . "\n9997|EXO|VAT|".round($rowCabecera['sumImpVenta'],2)."|0.00|";
 			}
 
 			$fTributo = fopen("{$path}/{$nombreArchivo}.tri", "w");
@@ -63,22 +63,7 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 			fclose($fTributo);
 
 		/* ************ FIN DE CABECERA *************** */
-
-		/* ************ INICIO AL CONTADO *************** */
-		
-			if( $rowCabecera['factTipoDocumento']==1 ):
-				if( $rowCabecera['esContado']==1 ){
-					$contado = "Contado" . $separador . 0 . $separador . $monedaC . $separador;
-				}else{
-					$contado = "Credito" . $separador . floatval($rowCabecera['adelanto']) - floatval($totFin) . $separador . $monedaC . $separador;
-				}
-
-				$fContado = fopen("{$path}/{$nombreArchivo}.pag", "w");
-				fwrite($fContado, "{$contado}");
-				fclose($fContado);
-			endif;
-		/* ************ FIN DE AL CONTADO *************** */
-			}
+		}
 
 		/* ************ INICIO DE DETALLE *************** */
 
@@ -119,7 +104,6 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 			fclose($fLeyenda);
 
 		/* ************ FIN DE DETALLES *************** */
-		
 		$i++;
 	}
 }
@@ -131,7 +115,7 @@ require_once('darBajas_todas.php');
 
 $zip = new ZipArchive();
 $idUnico = uniqid();
-$baseZip = "datosSunat_". $idUnico .".zip";
+$baseZip = "datosSunat". $idUnico .".zip";
 $nombreArchivoZip = $path . "/". $baseZip;
 //echo $nombreArchivoZip;
 if (!$zip->open($nombreArchivoZip, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {

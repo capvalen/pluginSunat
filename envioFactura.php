@@ -23,8 +23,8 @@ if( !isset($_COOKIE['ckUsuario']) ){
 	<h1>Enviar facturas</h1>
 	<p>Todas las facturas que no han sido enviadas aún a SUNAT. </p>
 	<div class="row">
-		<button class="btn btn-outline-primary mb-3" @click="generarComprobantes()"><i class="icofont-copy"></i> Generar comprobantes TXT</button>
-		<button class="btn btn-outline-primary mx-2 mb-3" @click="actualizarDB()"><i class="icofont-copy"></i> Actualizar DB</button>
+		<button class="btn btn-outline-primary mb-3" @click="enviarComprobantes()"><i class="icofont-copy"></i> Generar comprobantes TXT</button>
+		<button class="btn btn-outline-primary ml-2 mb-3" @click="actualizarDB()"><i class="icofont-copy"></i> Actualizar DB</button>
 	</div>
 	<table class="table table-hover">
 		<thead>
@@ -84,7 +84,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 				}
 			}
 		},
-		generarComprobantes(){
+		enviarComprobantes(){
 			axios('php/limpiarServidorSunat.php')
 			.then((response)=> {console.log( console.log(response.data));
 				axios.post('php/crearArchivosFacturacion.php', {
@@ -94,7 +94,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 					console.log( response.data );
 					if(response.data[0] == 'Archivo Zip creado'){
 						let filename = `Sunat_txt_${response.data[1]}.zip`
-						fetch(`comprobantes/datosSunat_${response.data[1]}.zip`).then(function(t) {
+						fetch(`comprobantes/datosSunat${response.data[1]}.zip`).then(function(t) {
 							return t.blob().then((b)=>{
 								var a = document.createElement("a");
 								a.href = URL.createObjectURL(b);

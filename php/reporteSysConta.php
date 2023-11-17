@@ -26,8 +26,6 @@
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Dólares</th>
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Fecha Vencimiento</th>
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Condición</th>
-			<th data-sort="string"><i class="icofont-expand-alt"></i> Contado</th>
-			<th data-sort="string"><i class="icofont-expand-alt"></i> Adelanto</th>
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
 		</tr>
 	</thead>
@@ -39,7 +37,7 @@ include "conexion.php";
 
 
 $sql= "SELECT date_format(`fechaEmision`, '%d/%m/%Y') as fechaEmision, `factTipoDocumento`, FORMAT(totalFinal,2) as totalFinal, `factSerie`,`factCorrelativo`, `tipDocUsuario`, `dniRUC`, upper(`razonSocial`) as `razonSocial`, 
-`totalFinal`, `factExonerados`, `costoFinal`, `IGVFinal`, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2' then 'De baja' end as comprobanteEmitidoDescr, esContado, adelanto
+`totalFinal`, `factExonerados`, `costoFinal`, `IGVFinal`, case `comprobanteEmitido` when 1 then 'Emitido' when 0 then 'Sin emitir' when '2' then 'De baja' end as comprobanteEmitidoDescr
 FROM `fact_cabecera` WHERE `fechaEmision` BETWEEN '{$_POST['fecha1']}' and '{$_POST['fecha2']}' and factSerie<>''; ";
 $resultado=$cadena->query($sql);
 if($resultado->num_rows>=1){
@@ -55,7 +53,7 @@ while($row=$resultado->fetch_assoc()){ ?>
 	<td> <?= $row['factCorrelativo'];?> </td>
 	<td> <?= $row['tipDocUsuario'];?> </td>
 	<td class="tableexport-string"> <?= $row['dniRUC'];?> </td>
-	<td style="white-space: nowrap;"> <?= $row['razonSocial'];?> </td>
+	<td> <?= $row['razonSocial'];?> </td>
 	<td> 0.00 </td>
 	<td class="tableexport-number"> <?= str_replace(',','',$row['costoFinal']);?> </td>
 	<td> <?= str_replace(',','',number_format($row['factExonerados'],2)); ?> </td>
@@ -73,8 +71,6 @@ while($row=$resultado->fetch_assoc()){ ?>
 	<td> 0.00 </td>
 	<td> 00/00/0000 </td>
 	<td> - </td>
-	<td> <?= ( $row['esContado']=='1' )? 'Contado' : 'Crédito'; ?> </td>
-	<td> <?= ( $row['esContado']=='1' )? 0 : $row['totalFinal'] - $row['adelanto']; ?> </td>
 	<td> <?= $row['comprobanteEmitidoDescr']; ?> </td>
 </tr>
 <?php 

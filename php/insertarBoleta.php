@@ -4,7 +4,6 @@ include __DIR__ . '/conexion.php';
 include __DIR__ . './../generales.php';
 require __DIR__ . "./../NumeroALetras.php";
 
-var_dump($_POST); die();
 if(isset($_POST['jsonCliente'])){
 
 	$sqlCli="INSERT INTO clientes (cliRuc, cliRazonSocial, cliDomicilio, cliActivo)
@@ -71,26 +70,23 @@ if($filasCorrelativo==0){
 $factura =  $serie.'-'.$correlativo;
 
 $nombreArchivo = $rucEmisor.$caso.$factura ;
-if($_POST['jsonCliente'][0]['tipo'] == '7'){
-	$tipoDoc = '7';
-}else{
-	if(strlen($_POST['dniRUC'])==11){
-		$tipoDoc = '6';
-	}else if(strlen($_POST['dniRUC'])==8){
-		$tipoDoc = '1';
-	}else if(strlen($_POST['dniRUC'])<8){
-		$tipoDoc = '0';
-	}
+
+if(strlen($_POST['dniRUC'])==11){
+	$tipoDoc = '6';
+}else if(strlen($_POST['dniRUC'])==8){
+	$tipoDoc = '1';
+}else if(strlen($_POST['dniRUC'])<8){
+	$tipoDoc = '0';
 }
 
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
-  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`) 
+  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`) 
 VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, CONVERT_TZ(NOW(), '+00:00', '-05:00' ),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1, CONVERT_TZ(NOW(), '+00:00', '-05:00') , '{$_POST['cliDireccion']}', '', {$_POST['jsonCliente'][0]['contado']}, {$_POST['jsonCliente'][0]['adelanto']} );";
+	1, CONVERT_TZ(NOW(), '+00:00', '-05:00') , '{$_POST['cliDireccion']}', '' );";
 	//echo $sql;
 $resultado=$cadena->query($sql);
 
