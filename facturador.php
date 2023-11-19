@@ -33,7 +33,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	</section>
 </div>
 <section>
-	<div class="container-fluid mt-5 ">
+	<div class="container-fluid mt-5 mb-5 ">
 		<div class="row">
 			<div class="col-md-3 text-center">
 				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto'>
@@ -55,7 +55,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 		</div>
 		
 		<div class="table-responsive">
-			<table class="table table-hover mt-3" id="tablaPrincipal">
+			<table class="table table-hover mt-3 mb-5 pb-5" id="tablaPrincipal">
 				<thead>
 					<tr>
 						<th data-sort="int"><i class="bi bi-arrow-down-short"></i> N°</th>
@@ -86,9 +86,9 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	</div>
 </section>
 
-<footer class="bg-dark p-3 text-white text-center mt-4">
+<footer class="bg-dark p-3 text-white text-center mt-1 ">
 	<p class="mb-0"><i class="bi bi-bookmark"></i>  <small><?php include 'php/version.php';?></small></p>
-	<p><i class="bi bi-bookmark"></i> Facturador SFS 2.0</p>
+	<p class="mb-1"><i class="bi bi-bookmark"></i> Facturador SFS 2.0</p>
 </footer>
 
 <div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog" data-backdrop="static" >
@@ -923,6 +923,16 @@ $('#btnEmitirBoletav2').click(function() {
 					adelanto: parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
 					montoCredito:$('#txtMontoCredito').val()
 				});
+			}else{
+				jsonCliente.push({
+					dni:'00000000',
+					razon: 'Cliente sin documento',
+					direccion: '',
+					contado: !document.getElementById('chkCreditos').checked ? 1 : 2, //1:contado, 2:credito
+					fechaCredito : $('#txtDateVencimiento').val(),
+					adelanto: parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
+					montoCredito:$('#txtMontoCredito').val()
+				})
 			}
 			var jsonProductos = [];
 			$.each( $('.cardHijoProducto'), function (i, elem) {
@@ -971,6 +981,8 @@ $('#btnEmitirBoletav2').click(function() {
 	
 });
 $('#btnEmitirFacturav2').click(function() {
+	pantallaOver(true)
+
 	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
 	if( $('#sltSeriesBoleta').val()=='series'){
 		$('#sltSeriesBoleta').focus();
@@ -993,8 +1005,22 @@ $('#btnEmitirFacturav2').click(function() {
 		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
 			jsonCliente.push({dni: $('#txtDniBoleta').val(),
 				razon: $('#txtRazonBoleta').val(),
-				direccion: $('#txtDireccionBoleta').val()
+				direccion: $('#txtDireccionBoleta').val(),
+				contado: !document.getElementById('chkCreditos').checked ? 1 : 2, //1:contado, 2:credito
+				fechaCredito : $('#txtDateVencimiento').val(),
+				adelanto: parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
+				montoCredito:$('#txtMontoCredito').val()
 			});
+		}else{
+			jsonCliente.push({
+				dni:'00000000',
+				razon: 'Cliente sin documento',
+				direccion: '',
+				contado: !document.getElementById('chkCreditos').checked ? 1 : 2, //1:contado, 2:credito
+				fechaCredito : $('#txtDateVencimiento').val(),
+				adelanto: parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
+				montoCredito:$('#txtMontoCredito').val()
+			})
 		}
 		var jsonProductos= [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
@@ -1031,6 +1057,7 @@ $('#btnEmitirFacturav2').click(function() {
 				$('#modalEmisionBoleta').modal('hide');
 				$('#modalArchivoBien').modal('show');
 			}
+			pantallaOver(false)
 		});
 	}
 });

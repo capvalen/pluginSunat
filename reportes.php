@@ -8,19 +8,7 @@ include "generales.php"; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Facturador electrónico</title>
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="icofont.min.css">
-	<link rel="stylesheet" href="css/bootstrap-select.min.css">
-	<link rel="stylesheet" href="css/anksunamun.css">
-	<link rel="stylesheet" href="css/bootstrap-datepicker.min.css">
-	<link rel="stylesheet" href="css/tableexport.min.css">
-	<link rel="shortcut icon" href="images/VirtualCorto.png" type="image/png">
-
-
+	<?php include 'headers.php'; ?>
 </head>
 <body>
 <style>
@@ -88,8 +76,8 @@ thead tr th{cursor: pointer;}
 					}	
 						?>
 				</select>
-				<button class="btn btn-outline-primary ml-3" id="btnBuscarReporte"><i class="icofont-search-2"></i></button>
-				<button class="btn btn-outline-success ml-3 d-none" id="btnGuardarReporte"><i class="icofont-file-excel"></i> Guardar reporte</button>
+				<button class="btn btn-outline-primary ml-3" id="btnBuscarReporte"><i class="bi bi-search"></i></button>
+				<button class="btn btn-outline-success ml-3 d-none" id="btnGuardarReporte"><i class="bi bi-file-earmark-excel"></i> Guardar reporte</button>
 			</div>
 		</div>
 		
@@ -128,14 +116,8 @@ thead tr th{cursor: pointer;}
 
 
 <?php include "php/modal.php"; ?>
+<?php include "footer.php"; ?>
 
-<script src="js/jquery.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/impotem.js?version=1.0.7"></script>
-<script src="js/moment.js"></script>
-<script src="js/bootstrap-select.js"></script>
-<script src="js/stupidtable.js"></script>
 <script src="js/bootstrap-datepicker.js?version=1.0.1"></script>
 <script src="js/xlsx.core.min.js"></script>
 <script src="js/FileSaver.min.js"></script>
