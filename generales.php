@@ -56,4 +56,6 @@ $ventaInvoce = '11.80';
 $valorVentaInvoce='10.00';
 $gratuito ='0.00';
 
+$token = '';
+
 ?>

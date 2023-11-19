@@ -63,6 +63,20 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 			fclose($fTributo);
 
 		/* ************ FIN DE CABECERA *************** */
+
+		/* ************ INICIO AL CONTADO *************** */
+		
+		if( $rowCabecera['factTipoDocumento']==1 ):
+			if( $rowCabecera['esContado']==1 ){
+				$contado = "Contado" . $separador . 0 . $separador . $monedaC . $separador;
+			}else{
+				$contado = "Credito" . $separador . floatval($rowCabecera['adelanto']) - floatval($totFin) . $separador . $monedaC . $separador;
+			}
+			$fContado = fopen("{$path}/{$nombreArchivo}.pag", "w");
+			fwrite($fContado, "{$contado}");
+			fclose($fContado);
+		endif;
+		/* ************ FIN DE AL CONTADO *************** */
 		}
 
 		/* ************ INICIO DE DETALLE *************** */

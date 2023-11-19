@@ -4,7 +4,7 @@ include "generales.php";
 
 if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	die(); }
-include "generales.php"; ?>
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,38 +33,40 @@ include "generales.php"; ?>
 	</section>
 </div>
 <section>
-	<div class="container-fluid mt-5 px-md-5">
+	<div class="container-fluid mt-5 ">
 		<div class="row">
 			<div class="col-md-3 text-center">
 				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto'>
 			</div>
 			<div class="col ml-4">
 				<h3 class="display-4">Facturación Electrónica</h3>
-				<small class="text-muted">Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
+				<small class="text-muted"><i class="bi bi-person"></i> Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 				<div class="row d-flex justify-content-between">
-					<div class="col-sm-3"><input type="date" class="form-control text-center" id="fechaFiltro"></div>
-					<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="icofont-refresh"></i> Actualizar</button></div>
+					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-calendar2-event"></i> Filtro por fecha</small><input type="date" class="form-control text-center" id="fechaFiltro"></div>
+					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-funnel"></i> Filtro texto</small><input type="text" autocomplete="off" class="form-control" id="txtFiltro"></div>
+					<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="bi bi-arrow-clockwise"></i> Actualizar</button></div>
 				</div>
-			</div></div>
-			<hr>
-			<div class="container mx-auto mt-4 row" style="color: #7030a0">
-				<div class="col"><strong>N° Comprobantes: <span id="strCantdad"></span></strong></div>
-				<div class="col"><strong>Total S/ <span id="strTotal"></span></strong></div>
 			</div>
+			
+		</div>
+		<div class="container mx-auto mt-4 row" style="color: #7030a0">
+			<div class="col"><strong>N° Comprobantes: <span id="strCantdad"></span></strong></div>
+			<div class="col"><strong>Venta total: S/ <span id="strTotal"></span></strong></div>
+		</div>
 		
 		<div class="table-responsive">
 			<table class="table table-hover mt-3" id="tablaPrincipal">
 				<thead>
 					<tr>
-						<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
-						<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo</th>
-						<th data-sort="string"><i class="icofont-expand-alt"></i> Código</th>
-						<th data-sort="int"><i class="icofont-expand-alt"></i> Hora</th>
-						<th data-sort="string"><i class="icofont-expand-alt"></i> Cliente</th>
-						<th data-sort="float"><i class="icofont-expand-alt"></i> I.G.V.</th>
-						<!-- <th data-sort="float"><i class="icofont-expand-alt"></i> Monto</th> -->
-						<th data-sort="float"><i class="icofont-expand-alt"></i> Total</th>
-						<th data-sort="string"><i class="icofont-expand-alt"></i> Estado</th>
+						<th data-sort="int"><i class="bi bi-arrow-down-short"></i> N°</th>
+						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Tipo</th>
+						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Código</th>
+						<th data-sort="int"><i class="bi bi-arrow-down-short"></i> Hora</th>
+						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Cliente</th>
+						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> I.G.V.</th>
+						<!-- <th data-sort="float"><i class="bi bi-arrow-down-short"></i> Monto</th> -->
+						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> Total</th>
+						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Estado</th>
 						<th>@</th>
 					</tr>
 				</thead>
@@ -77,17 +79,17 @@ include "generales.php"; ?>
 						<td>Cliente sin DNI</td>
 						<td>55.00</td>
 						<td>Emitido</td>
-						<td>
-							<button class="btn btn-outline-primary btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
-							<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="icofont-paper"></i></button>
-							<button class="btn btn-outline-success btn-sm border border-light" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="icofont-print"></i></button>
-						</td>
 					</tr> -->
 				</tbody>
 			</table>
 		</div>
 	</div>
 </section>
+
+<footer class="bg-dark p-3 text-white text-center mt-4">
+	<p class="mb-0"><i class="bi bi-bookmark"></i>  <small><?php include 'php/version.php';?></small></p>
+	<p><i class="bi bi-bookmark"></i> Facturador SFS 2.0</p>
+</footer>
 
 <div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog" data-backdrop="static" >
 	<div class="modal-dialog modal-dialog-centered" role="document">
@@ -100,9 +102,9 @@ include "generales.php"; ?>
 			</div>
 			<div class="modal-body">
 				<p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
-				<button class="btn btn-outline-primary" id="btnPrintTicketera"><i class="icofont-paper"></i> Imprimir en ticketera</button>
-				<button class="btn btn-outline-success d-none d-sm-block" id="btnPrintA4"><i class="icofont-print"></i> Generar A4</button>
-				<button class="btn btn-outline-success d-block d-sm-none" id="btnPrintPDF"><i class="icofont-print"></i> Generar PDF</button>
+				<button class="btn btn-outline-primary" id="btnPrintTicketera"><i class="bi bi-clipboard2"></i> Imprimir en ticketera</button>
+				<button class="btn btn-outline-success d-none d-sm-block" id="btnPrintA4"><i class="bi bi-printer"></i> Generar A4</button>
+				<button class="btn btn-outline-success d-block d-sm-none" id="btnPrintPDF"><i class="bi bi-printer"></i> Generar PDF</button>
 
 			</div>
 			<div class="modal-footer d-none">
@@ -119,59 +121,98 @@ include "generales.php"; ?>
 		<div class="modal-content">
 			<div class="modal-body">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<i class="icofont-close-circled"></i>
+				<i class="bi bi-x"></i>
 				</button>
-				<h4 class="py-3 hTitulo"><i class="icofont-paper"></i> Generar: <span id="queGenero"></span> Electrónica</h4>
-				<div class="form-inline">
-				<div class="form-check mb-3">
-					<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
-					<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
-				</div>
-				<div class="form-check mb-3 ml-5 d-none">
-					<label for="">Placa de vehículo:</label>
-					<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
-				</div>
-				<div class="form-inline  pl-3">
-				<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
-					<?php include "php/listarTodosClientes.php";?>
-				</select>
-				</div>
-				<div class="form-inline  ml-auto">
-					<label class="pr-3  text-muted mt-2" for=""><strong>Fecha:</strong></label>
-					<input type="date" class="form-control  mr-2" id="txtFechaComprobante">
-					<label class="pr-3 text-muted mt-2" for=""><strong>Serie:</strong></label>
-					<div class="dropdown my-3">
-					<?php 
-						$sqlSerieBoleta="SELECT * FROM `fact_series`";
-						$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
-						$rowSerieBoleta=$resultadoSerieBoleta->fetch_assoc();
-					?>
-					<select class="form-control" id="sltSeriesBoleta">
-						<option value="series" selected>Series</option>
-						<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
-						<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
-						<option id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
-					</select>
+				<h4 class="py-3 hTitulo"><i class="bi bi-clipboard2"></i> Generar: <span id="queGenero"></span> Electrónica</h4>
+				<div class="row">
+					<div class="col">
+						<div class="checkbox checkbox-success mb-3">
+							<input id="checkbox2" class="styled" type="checkbox" id="chkFecha" onchange="mostrarFecha()">
+							<label for="checkbox2">Fecha</label>
+						</div>
 					</div>
-
+					<div class="col">
+						<!-- <div class="form-check mb-3">
+							<input class="form-check-input" type="checkbox" value="" id="chkSerie" >
+							<label class="form-check-label" for="chkSerie" >Serie</label>
+						</div> -->
+						<div class="checkbox checkbox-success mb-3">
+							<input id="checkbox3" class="styled" type="checkbox" id="chkSerie" onchange="mostrarSeries()">
+							<label for="checkbox3">Serie</label>
+						</div>
+					</div>
+					<div class="col">
+						<div class="checkbox checkbox-success mb-3">
+							<input id="chkCreditos" class="styled" type="checkbox" id="chkPago" onchange="mostrarCreditos()">
+							<label for="chkCreditos">Pago al contado</label>
+						</div>
+					</div>
 				</div>
+				<div class="card d-none mb-2" id="cardAtributos">
+					<div class="card-body form-inline">
+						<div class="form-check mb-3 d-none">
+							<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
+							<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
+						</div>
+						<div class="form-check mb-3 ml-5 d-none">
+							<label for="">Placa de vehículo:</label>
+							<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
+						</div>
+						<div class="form-inline  d-none pl-3">
+						<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
+							<?php include "php/listarTodosClientes.php";?>
+						</select>
+						</div>
+						<div class="form-inline d-none" id="divFecha">
+							<label class="pr-3  text-muted mt-2" for=""><strong>Fecha:</strong></label>
+							<input type="date" class="form-control  mr-2" id="txtFechaComprobante">
+						</div>
+					
+						<div class="form-inline d-none" id="divSeries">
+							<label class="pr-3 text-muted mt-2" for=""><strong>Serie:</strong></label>
+							<div class="dropdown my-3">
+							<?php
+								$sqlSerieBoleta="SELECT * FROM `fact_series`";
+								$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
+								$rowSerieBoleta=$resultadoSerieBoleta->fetch_assoc();
+							?>
+							<select class="form-control" id="sltSeriesBoleta">
+								<option value="series" selected>Series</option>
+								<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
+								<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
+								<option id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
+							</select>
+							</div>
+						</div>
+						<div class="form-inline d-none" id="divCreditos">
+							<label for="">Fecha de vencimiento:</label>
+							<input type="date" class="form-control mx-2" id="txtDateVencimiento">
+							<label for="">Crédito S/</label>
+							<input type="number" class="form-control mx-2" id="txtMontoCredito">
+						</div>
+					</div>
 				</div>
 			
 				
-				<div id="divDatosCliente" class="d-none card mb-3">
+				<div id="divDatosCliente" class=" card mb-3">
 					<div class="card-body">
 						<p class="text-muted "><strong>Datos del cliente:</strong></p>
-						<div class="row mb-3">
+						<div class="row mb-2">
 							<div class="col-4">
-								<input type="text"  class="form-control ml-2 soloNumeros" id="txtDniBoleta" value="" placeholder='Dni' readonly autocomplete="off">
+								<div class="input-group mb-2">
+									<input type="text" class="form-control ml-2 soloNumeros" id="txtDniBoleta" placeholder="Dni o RUC" autocomplete="off">
+									<div class="input-group-append">
+										<button class="btn btn-outline-secondary" type="button" id="button-addon1" onclick="buscarReniec()"><img src="images/reniec.png" width="16"> Reniec</button>
+									</div>
+								</div>
 							</div>
 							<div class="col-8">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' readonly autocomplete="off">
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' autocomplete="off">
 							</div>
 						</div>
 						<div class="row">
 							<div class="col">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' readonly autocomplete="off">
+								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' autocomplete="off">
 							</div>
 						</div>
 					</div>
@@ -197,7 +238,7 @@ include "generales.php"; ?>
 						<div id="divProductos">
 							<?php include "php/filaNueva.php";?>
 						</div>
-						<button class="btn btn-outline-success btn-sm mt-2" id="btnAgregarProducto"><i class="icofont-ui-add"></i> Agregar más produtos</button>
+						<button class="btn btn-outline-success btn-sm mt-2" id="btnAgregarProducto"><i class="bi bi-plus-lg"></i> Agregar más produtos</button>
 					</div>
 				</div>
 				<div class='my-3 '>
@@ -222,11 +263,11 @@ include "generales.php"; ?>
 					<label for="" class="col-sm-4 col-form-label d-none"><small>Vuelto: S/<span id="spanVuelto"></span></small></label>
 				</div>
 				<div class="col mt-2 mt-md-0">
-					<button type="button" class="btn btn-outline-success float-right d-none" id="btnEmitirFacturav2" ><i class="icofont-paper"></i> Emitir Factura</button>
-					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="icofont-paper"></i> Emitir Boleta</button>
+					<button type="button" class="btn btn-outline-success float-right d-none" id="btnEmitirFacturav2" ><i class="bi bi-bookmark-star"></i> Emitir Factura</button>
+					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="bi bi-bookmark-star"></i> Emitir Boleta</button>
 				</div>
 				<div class="container-fluid row mt-3 d-flex justify-content-end d-none" id="">
-					<span id="spanLimiteSobrepasado" style="background: #e6330a!important;"><span class=""><i class="icofont-chat"></i> Se sobrepasó el límite máximo en comprobantes.</span></span>
+					<span id="spanLimiteSobrepasado" style="background: #e6330a!important;"><span class=""><i class="bi bi-chat-dots"></i> Se sobrepasó el límite máximo en comprobantes.</span></span>
 				</div>
 			</div>
 		</div>
@@ -349,7 +390,7 @@ include "generales.php"; ?>
 			</div>
 			<div class="modal-footer">
 				<p class="text-danger d-none" id="pError3"></p>
-				<button type="button" class="btn btn-primary" id="btnUpdatePrecios"><i class="icofont-refresh"></i> Actualizar precios</button>
+				<button type="button" class="btn btn-primary" id="btnUpdatePrecios"><i class="bi bi-arrow-clockwise"></i> Actualizar precios</button>
 			</div>
 		</div>
 	</div>
@@ -372,8 +413,7 @@ include "generales.php"; ?>
 			</div>
 			<div class="modal-footer">
 				<p class="text-danger d-none" id="pErrorBajas"></p>
-				<!-- <button type="button" class="btn btn-outline-secondary" data-dismiss="modal"><i class="icofont-close"></i> Cancelar operación</button> -->
-				<button type="button" class="btn btn-danger" id="btnDarbaja"><i class="icofont-download-alt"></i> Dar de Baja</button>
+				<button type="button" class="btn btn-danger" id="btnDarbaja"><i class="bi bi-download"></i> Dar de Baja</button>
 			</div>
 		</div>
 	</div>
@@ -387,7 +427,7 @@ include "generales.php"; ?>
 			</div>
 			<div class="modal-footer">
 				<p class="text-danger d-none" id="pError3"></p>
-				<button type="button" class="btn btn-success" id="btnDarbaja"  data-dismiss="modal"><i class="icofont-check"></i> Ok</button>
+				<button type="button" class="btn btn-success" id="btnDarbaja"  data-dismiss="modal"><i class="bi bi-check-lg"></i> Ok</button>
 			</div>
 		</div>
 	</div>
@@ -411,18 +451,11 @@ include "generales.php"; ?>
 <?php } ?>
 
 <div id="overlay">
-	<div class="text"><span id="hojita"><i class="icofont icofont-leaf"></i></span> <p id="pFrase"> Solicitando los datos a Sunat... <br> <span>«Pregúntate si lo que estás haciendo hoy <br> te acerca al lugar en el que quieres estar mañana» <br> Walt Disney</span></p></div>
+	<div class="text"><span id="hojita"><i class="bi bi-circle-half"></i></span> <p id="pFrase"> Solicitando los datos a Sunat... <br> <span>«Pregúntate si lo que estás haciendo hoy <br> te acerca al lugar en el que quieres estar mañana» <br> Walt Disney</span></p></div>
 </div>
 
 <?php include "php/modal.php"; ?>
-
-<script src="js/jquery.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/impotem.js?version=1.0.15"></script>
-<script src="js/moment.js"></script>
-<script src="js/bootstrap-select.js"></script>
-<script src="js/stupidtable.js"></script>
+<?php include "footer.php"; ?>
 
 <script>
 $(document).ready(function(){
@@ -433,7 +466,7 @@ $(document).ready(function(){
 		//console.log(resp)
 		console.info( '\033[35mLista de precios:' );
 		$.precios = JSON.parse(resp);
-		//console.log( $.precios );
+		console.log( $.precios );
 	});
 	$('#fechaFiltro').val( moment().format('YYYY-MM-DD'));
 	$('[data-toggle="tooltip"]').tooltip();
@@ -453,7 +486,6 @@ $(document).ready(function(){
 			$('#tablaPrincipal tbody').append(resp).anotherJqueryMethod;
 			$('[data-toggle="tooltip"]').tooltip();
 			sumarGenerados()
-			
 		});
 	});
 });
@@ -726,7 +758,7 @@ $('#btnRefresh').click(function() {
 $('#AEmitirBoleta').click(function() {
 	$('#optBoleta').attr('disabled',false);
 	$('#optFactura').attr('disabled',true);
-	$('#txtDniBoleta').attr('placeholder', 'D.N.I.');
+	$('#txtDniBoleta').attr('placeholder', 'DNI. o RUC.');
 	$('#txtRazonBoleta').attr('placeholder', 'Nombres y apellidos');
 	$('#btnEmitirBoletav2').removeClass('d-none');
 	$('#btnEmitirFacturav2').addClass('d-none');
@@ -754,17 +786,19 @@ $('#AEmitirFactura').click(function() {
 $('#chkEstadoDni').change(function() {
 	if($('#chkEstadoDni').prop('checked')	){
 		$('#labelEstadoDni').text('Cliente anónimo');
-		$('#divDatosCliente').addClass('d-none');
-		$('#txtDniBoleta').attr('readonly', true).val('');
-		$('#txtRazonBoleta').attr('readonly', true).val('');
-		$('#txtDireccionBoleta').attr('readonly', true).val('');
+		//$('#divDatosCliente').addClass('d-none');
+		//$('#txtDniBoleta').attr('readonly', true).val('');
+		//$('#txtRazonBoleta').attr('readonly', true).val('');
+		//$('#txtDireccionBoleta').attr('readonly', true).val('');
 		$('.selectpicker').selectpicker('val', -1);
+		$('#txtDniBoleta').focus();
 	}else{
 		$('#labelEstadoDni').text('Cliente con Documento');
-		$('#divDatosCliente').removeClass('d-none');
-		$('#txtRazonBoleta').attr('readonly', false);
-		$('#txtDireccionBoleta').attr('readonly', false);
-		$('#txtDniBoleta').attr('readonly', false).focus();
+		//$('#divDatosCliente').removeClass('d-none');
+		//$('#txtRazonBoleta').attr('readonly', false);
+		//$('#txtDireccionBoleta').attr('readonly', false);
+		//$('#txtDniBoleta').attr('readonly', false).focus();
+		$('#txtDniBoleta').focus();
 	}
 });
 $('#divProductos').on('keyup','.campoSubTotal', function() {	
@@ -838,6 +872,7 @@ function sumaTodo() {
 $('#btnEmitirBoletav2').click(function() {
 	
 	/* console.log( resuelve() ); */
+	pantallaOver(true)
 	
 	const promesaCompletoTodo = new Promise((resolve, reject) => {
 		var truncado = false;
@@ -848,7 +883,7 @@ $('#btnEmitirBoletav2').click(function() {
 			}
 			if( i== $('.cardHijoProducto').length -1 && truncado ==true ){
 				//console.log( 'vacio1' );
-				$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Existen conceptos vacíos en uno de los items').parent().removeClass('d-none');
+				$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Existen conceptos vacíos en uno de los items').parent().removeClass('d-none');
 				reject('falta datos');
 			}else if( i== $('.cardHijoProducto').length -1 && truncado ==false ){
 				//console.log( 'completo todo' );
@@ -862,26 +897,31 @@ $('#btnEmitirBoletav2').click(function() {
 		
 		if( $('#sltSeriesBoleta').val()=='series'){
 			$('#sltSeriesBoleta').focus();
-			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
+			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none'); pantallaOver(false);
 		}else if( $('.cardHijoProducto').first().find('#sltTemporal').selectpicker('val')==null ){
-			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un producto').parent().removeClass('d-none');
+			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste seleccionar un producto').parent().removeClass('d-none'); pantallaOver(false);
 		}else if( $('.cardHijoProducto').first().find('.esMoneda').val()=='0.00' || $('.cardHijoProducto').first().find('.esMoneda').val()==0 || $('.cardHijoProducto').first().find('.campoPrecioUnit').val()=='0.00' || $('.cardHijoProducto').first().find('.campoPrecioUnit').val()==0 ){
-			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste ingresar una cantidad / precio').parent().removeClass('d-none');
+			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste ingresar una cantidad / precio').parent().removeClass('d-none'); pantallaOver(false);
 		}else if( $('.cardHijoProducto').first().find('#sltfiltroTemporal').selectpicker('val')==null ){
-			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar una unidad').parent().removeClass('d-none');
+			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste seleccionar una unidad').parent().removeClass('d-none'); pantallaOver(false);
 		}else if( $('#spTotalBoleta').text()=='0.00' ){
-			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none');
+			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none'); pantallaOver(false);
 		}else if( $('.cardHijoProducto').first().find('.sltFiltroProductos').selectpicker('val')== null ){
-			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none');	
+			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none'); pantallaOver(false)	;
 		}else if( parseFloat($('#spTotalBoleta').text())>700 && $('#txtDniBoleta').val().length<8 ){
-			$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Ésta boleta por ser mayor a S/ 700.00 requiere DNI').parent().removeClass('d-none');
+			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Ésta boleta por ser mayor a S/ 700.00 requiere DNI').parent().removeClass('d-none'); pantallaOver(false);
 		}
 		else{
 			var jsonCliente= [];
+
 			if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
 				jsonCliente.push({dni: $('#txtDniBoleta').val(),
 					razon: $('#txtRazonBoleta').val(),
-					direccion: $('#txtDireccionBoleta').val()
+					direccion: $('#txtDireccionBoleta').val(),
+					contado: !document.getElementById('chkCreditos').checked ? 1 : 2, //1:contado, 2:credito
+					fechaCredito : $('#txtDateVencimiento').val(),
+					adelanto: parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
+					montoCredito:$('#txtMontoCredito').val()
 				});
 			}
 			var jsonProductos = [];
@@ -922,6 +962,7 @@ $('#btnEmitirBoletav2').click(function() {
 					$('#modalEmisionBoleta').modal('hide');
 					$('#modalArchivoBien').modal('show');
 				}
+				pantallaOver(false)
 			});
 		}
 
@@ -933,20 +974,20 @@ $('#btnEmitirFacturav2').click(function() {
 	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
 	if( $('#sltSeriesBoleta').val()=='series'){
 		$('#sltSeriesBoleta').focus();
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
 	}/* else if( $('#txtPlacaBoleta').val()==''){
 		$('#txtPlacaBoleta').focus();
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> La placa del automóvil tiene que ser rellenado').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> La placa del automóvil tiene que ser rellenado').parent().removeClass('d-none');
 	} */else if( $('#txtDniBoleta').val().length!=11 ){
 		$('#txtDniBoleta').focus();
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> El RUC del cliente, no es correcto').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> El RUC del cliente, no es correcto').parent().removeClass('d-none');
 	}else if( $('#txtRazonBoleta').val()=='' ){
 		$('#txtRazonBoleta').focus();
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> La razón social no puede estar en blanco').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> La razón social no puede estar en blanco').parent().removeClass('d-none');
 	}else if( $('#spTotalBoleta').text()=='0.00' ){
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none');
 	}else if( $('.cardHijoProducto').first().find('.sltFiltroProductos').selectpicker('val')== null ){
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none');
 	}else{
 		var jsonCliente= [];
 		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
@@ -1034,9 +1075,9 @@ $('#sltFiltroClientes').on('changed.bs.select', function (e, clickedIndex, isSel
 $('#btnAgregarProducto').click(function() {
 	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
 	if( !$.isNumeric($('#divProductos .sltFiltroProductos').last().selectpicker('val')) ){
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Falta seleccionar un producto').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Falta seleccionar un producto').parent().removeClass('d-none');
 	}else if( $('#divProductos .sltFiltroUnidad').last().selectpicker('val')==null ){
-		$('#modalEmisionBoleta .lblError').html('<i class="icofont-cat-alt-3"></i> Olvidó rellenar una unidad').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidó rellenar una unidad').parent().removeClass('d-none');
 	}else{
 		$.ajax({url: 'php/filaNueva.php', type: 'POST' }).done(function(resp) {
 			//console.log(resp)
@@ -1047,13 +1088,15 @@ $('#btnAgregarProducto').click(function() {
 });
 $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, clickedIndex, isSelected, previousValue) {
 	var padre = $(this).parent().parent(); //.parent()
-	console.log( padre );
+	//console.log( padre );
 	
-	if( $(this).selectpicker('val')!=null && $(this).selectpicker('val')!='' ){
-		var queProd= $(this).selectpicker('val');
+	if( $('.sltFiltroProductos').selectpicker('val')!=null && $('.sltFiltroProductos').selectpicker('val')!='' ){
+		var queProd= $('.sltFiltroProductos').selectpicker('val');
+		
+		//padre.find('.campoPrecioUnit').val
 		$.each( $.precios , function(i, prodObj){
 			if(prodObj.idProductos==queProd){
-				//console.log(  prodObj.prodPrecio );
+				//console.log('es pecio', prodObj.prodPrecio );
 				//padre.find('.sltFiltroUnidad').selectpicker('val', '3')
 				padre.attr('data-producto', prodObj.idProductos );
 				padre.find('.sltFiltroUnidad #sltfiltroTemporal').selectpicker('val', prodObj.undSunat ).selectpicker('refresh');;
@@ -1137,31 +1180,53 @@ $('#divProductos').on('click', '.optPrecios', function (e) {
 	}
 	
 });
+var divFecha = document.getElementById('divFecha');
+var divSeries = document.getElementById('divSeries');
+var divCreditos = document.getElementById('divCreditos');
+function mostrarFecha(){ divFecha.classList.toggle('d-none'); ocultarPadre() }
+function mostrarSeries(){ divSeries.classList.toggle('d-none'); ocultarPadre() }
+function mostrarCreditos(){
+	$('#txtDateVencimiento').val(moment().add(1, 'day').format('YYYY-MM-DD'))
+	$('#txtMontoCredito').val($('#spTotalBoleta').text())
+	divCreditos.classList.toggle('d-none'); ocultarPadre()
+}
+function ocultarPadre(){
+	if($('#cardAtributos .d-none').length == 6 ){ //total de d-none ocultos
+		$('#cardAtributos').addClass('d-none')
+	}else{
+		$('#cardAtributos').removeClass('d-none')
+	}
+}
 
 $("#txtDniBoleta").keyup(function(e){
-		var code = e.which; 
-		if( code==13 ){ e.preventDefault(); // console.log( 'enter' );
-		pantallaOver(true);
-		if( $("#txtDniBoleta").val().length>0 ){
-			$.ajax({url: 'php/dataSunat.php', type: 'POST', data: { ruc: $('#txtDniBoleta').val() }}).done(function(resp) {
-				//console.log(resp)
-				try {
-					dato = JSON.parse(resp);
-					if(dato.length=!0){	
-						//console.log( dato.razon_social );
-						$('#txtRazonBoleta').val( dato.razon_social);
-						$('#txtDireccionBoleta').val( dato.domicilio_fiscal);
-					}
-				} catch (error) {
-					
-				}
-				
-				$('#txtRazonBoleta').focus();
-				pantallaOver(false);
-			});
-	 	 }
-		}
+	var code = e.which; 
+	if( code==13 ){ e.preventDefault();
+		buscarReniec();
+	}
 });
+function buscarReniec(){
+	pantallaOver(true);
+	$('#txtDniBoleta').val( $.trim($('#txtDniBoleta').val()) )
+	$('#txtRazonBoleta').focus();
+	if( [8,11].includes($("#txtDniBoleta").val().length) ){ //es mayor a 8 digitos
+		$.ajax({url: 'php/dataSunat.php', type: 'POST', data: { ruc: $('#txtDniBoleta').val() }}).done(function(resp) {
+			//console.log(resp)
+			try {
+				dato = JSON.parse(resp);
+				if(dato.length=!0){	
+					//console.log( dato.razon_social );
+					$('#txtRazonBoleta').val( dato.razon_social);
+					$('#txtDireccionBoleta').val( dato.domicilio_fiscal);
+				}
+			} catch (error) {}
+			pantallaOver(false);
+		});
+	}else{
+		alertify.error('<i class="bi bi-exclamation-diamond"></i> Datos del DNI no son correctos.', 10000);
+		pantallaOver(false);
+	}
+	
+}
 
 $('#txtPagaCuanto').keyup(function() {
 	calcularVuelto()
@@ -1195,6 +1260,19 @@ function transformar(){
 		location.reload();
 	});
 }
+$('#txtFiltro').keyup(e=>{
+	if (e.keyCode === 13) {
+		if($('#txtFiltro').val()==''){
+			$('#btnRefresh').click()
+		}else{
+			$('#tablaPrincipal tbody').html('')
+			$.ajax({url:'php/listarTodoPorFecha.php', type: 'POST', data: {texto: $('#txtFiltro').val().replace('-', '%') }}).done(resp=>{
+				$('#tablaPrincipal tbody').html(resp)
+				sumarGenerados();
+			})
+		}
+	}
+})
 
 
 <?php if($_COOKIE['ckPower']==1){ ?>
@@ -1215,7 +1293,7 @@ $('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {
 });
 $('#btnDarbaja').click(function() {
 	if( $.bajaComprobante =='factura' && $('#txtConceptoBaja').val()=='' ){
-		$('#pErrorBajas').html('<i class="icofont-cat-alt-3"></i>  Falta ingresar un motivo de baja');
+		$('#pErrorBajas').html('<i class="bi bi-chat-dots"></i>  Falta ingresar un motivo de baja');
 		$('#pErrorBajas').removeClass('d-none');
 	}else{
 		$.ajax({url: 'php/darBajas.php', type: 'POST', data: { concepto: $('#txtConceptoBaja').val(), boleta: $(this).attr('data-boleta'), id: $(this).attr('data-baja') }}).done(function(resp) {

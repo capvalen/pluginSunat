@@ -4,7 +4,7 @@ $server="localhost";
 /* Net	*/
 $username="root";
 $password="*123456*";
-$db= "pluginsunat";
+$db= "consorcio";
 
 $cadena= mysqli_connect($server,$username,$password)or die("No se ha podido establecer la conexion");
 $sdb= mysqli_select_db($cadena,$db)or die("La base de datos no existe");

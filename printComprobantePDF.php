@@ -221,7 +221,7 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 </div>
 </div>
 </div>
-<div class="row">
+<div class="row d-none">
 	<div class="col">
 		<p class="small">Puede ser consultada en: https://grupoeuroandino.com/facturas/ <br/>Visble en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
 	</div>

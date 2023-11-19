@@ -10,9 +10,8 @@ if(isset($_POST['jsonCliente'])){
 	SELECT * FROM (SELECT '{$_POST['jsonCliente'][0]['dni']}', '{$_POST['jsonCliente'][0]['razon']}', '{$_POST['jsonCliente'][0]['direccion']}',1) AS tmp
 	WHERE NOT EXISTS (
 			SELECT cliRuc FROM clientes WHERE cliRuc = '{$_POST['jsonCliente'][0]['dni']}'
-	) LIMIT 1;";
+	) LIMIT 1;"; 
 	$cadena->query($sqlCli);
-
 }
 
 $caso = "-0{$_POST['emitir']}-"; // 01 para factura, 03 para boleta
@@ -82,13 +81,20 @@ if(strlen($_POST['dniRUC'])==11){
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
-  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`) 
+  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`) 
 VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, CONVERT_TZ(NOW(), '+00:00', '-05:00' ),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1, CONVERT_TZ(NOW(), '+00:00', '-05:00') , '{$_POST['cliDireccion']}', '' );";
+	1, now(), '{$_POST['cliDireccion']}', '', {$_POST['jsonCliente'][0]['contado']}, {$_POST['jsonCliente'][0]['adelanto']} );";
+	//HORA CUANDO ESTA EN EL SERVIDOR: CONVERT_TZ(NOW(), '+00:00', '-05:00') 
+	//HORA CUANDO ESTA EN LOCAL: NOW()
 	//echo $sql;
 $resultado=$cadena->query($sql);
+$idFactura = $cadena->insert_id;
+if($_POST['jsonCliente'][0]['contado']=='2'){
+	$sqlCredito = "INSERT INTO `fact_credito`(`idFactura`, `fecha`, `credito`) VALUES ( {$idFactura}, '{$_POST['jsonCliente'][0]['fechaCredito']}', {$_POST['jsonCliente'][0]['montoCredito']} );";
+	$resultadoCredito = $cadena->query($sqlCredito);
+}
 
 $sqlProd  =''; 
 for ($i=0; $i < count($productos) ; $i++) { 
@@ -211,6 +217,12 @@ if( $exonerados >0 ){
 $fTributo = fopen("{$directorio}{$nombreArchivo}.tri", "w");
 fwrite($fTributo, "{$tributo}");
 fclose($fTributo);
+
+//************* Actualización de pagos ************** */
+if($_POST['emitir']=='1'){ //caso de factura
+	
+}
+//************* Fin de actualización de pagos ************** */
 
 
 }

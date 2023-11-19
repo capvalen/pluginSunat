@@ -9,18 +9,8 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Facturador electrónico</title>
-	<link rel="stylesheet" href="css/bootstrap.min.css" integrity="" crossorigin="anonymous">
-	<link rel="stylesheet" href="icofont.min.css">
-	<link rel="stylesheet" href="css/bootstrap-select.min.css">
-	<link rel="stylesheet" href="css/anksunamun.css">
-	<link rel="shortcut icon" href="images/VirtualCorto.png" type="image/png">
-	<link rel="stylesheet" href="css/colorsmaterial.css">
-	<link rel="stylesheet" href="css/alertify.min.css">
-
+	<?php include ('headers.php');?>
 
 </head>
 <body>
@@ -84,14 +74,14 @@ thead tr th{cursor: pointer;}
 		<div class="card mt-3">
 			<div class="card-body row">
 				<div class="col-12 col-md-6 form-inline my-2">
-					<label class="my-1 mr-2" for="">Buscar Producto: </label>
+					<label class="my-1 mr-2" for=""><i class="bi bi-funnel"></i> Buscar Producto: </label>
 					<input type="search" class="form-control" id="txtProductoBuscar" placeholder='Buscar Producto' autocomplete="nope">
 				</div>
 				<div class="col-12 col-md-3 d-flex justify-content-end my-2">
-					<button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="icofont-ui-rate-add"></i> Agregar nuevo producto</button>
+					<button class="btn btn-outline-primary " id="btnAgregarProducto"><i class="bi bi-plus-circle"></i> Agregar nuevo producto</button>
 				</div>
 				<div class="col-12 col-md-3 d-flex justify-content-end my-2">
-					<button class="btn btn-outline-success " id="btnExportarProductos"><i class="icofont-file-excel"></i> Exportar productos</button>
+					<button class="btn btn-outline-success " id="btnExportarProductos"><i class="bi bi-file-earmark-excel"></i> Exportar productos</button>
 				</div>
 			</div>
 		</div>

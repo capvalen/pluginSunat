@@ -1,0 +1,1 @@
+ALTER TABLE `fact_cabecera` ADD `esContado` INT NULL COMMENT '1=contado, 2= credito' AFTER `serieBaja`, ADD `adelanto` FLOAT NOT NULL AFTER `esContado`;

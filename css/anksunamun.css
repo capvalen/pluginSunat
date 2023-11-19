@@ -15,3 +15,13 @@
 	border-color: #756782;
 	box-shadow: 0 0 0 0.2rem rgb(104 15 202 / 32%);
 }
+.alertify-notifier .ajs-message.ajs-error{
+	background: rgb(213 23 23 / 95%)!important;
+	color:white;
+}
+.alertify-notifier.ajs-right .ajs-message.ajs-visible{
+	width: 320px!important;
+}
+.alertify-notifier.ajs-right {
+	right: 50px!important;
+}

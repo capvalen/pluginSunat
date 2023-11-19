@@ -62,7 +62,7 @@ $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'
 
 
 
-$sqlCabeza="select * from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}';";
+$sqlCabeza="SELECT * from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}';";
 
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
@@ -96,7 +96,8 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 
 <div class="row">
 <div class="col-sm-6 ">
-	<img src="images/empresa.jpg" alt="" class="w-50" >
+	<img src="images/empresa.jpg" alt="" class="w-75" >
+	<img src="images/empresa.png" alt="" class="w-75" >
 	
 </div>
 <div class="col-sm-6 mt-5 mb-2 text-center " class="">
@@ -220,7 +221,7 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 </div>
 </div>
 </div>
-<div class="row">
+<div class="row d-none">
 	<div class="col">
 		<p class="small">Puede ser consultada en: https://grupoeuroandino.com/facturas/ <br/>Visble en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
 	</div>
