@@ -65,7 +65,6 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 		/* ************ FIN DE CABECERA *************** */
 
 		/* ************ INICIO AL CONTADO *************** */
-		
 		if( $rowCabecera['factTipoDocumento']==1 ):
 			if( $rowCabecera['esContado']==1 ){
 				$contado = "Contado" . $separador . 0 . $separador . $monedaC . $separador;

@@ -94,10 +94,10 @@ function buscarRUC($token, $ruc){
 	curl_close($curl);
 	// Datos de empresas según padron reducido
 	$empresa = json_decode($response);
-	
+	//var_dump( $empresa); die();
 	$fila = array(
 		"razon_social" => $empresa->razonSocial,
-		"domicilio_fiscal" => $empresa->direccion,
+		"domicilio_fiscal" => $empresa->direccion . " - ".$empresa->provincia ." - ". $empresa->departamento,
 		"activo" => $empresa->estado
 	);
 	echo json_encode($fila);

@@ -92,7 +92,7 @@ VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, CONVERT_TZ
 $resultado=$cadena->query($sql);
 $idFactura = $cadena->insert_id;
 if($_POST['jsonCliente'][0]['contado']=='2'){
-	$sqlCredito = "INSERT INTO `fact_credito`(`idFactura`, `fecha`, `credito`) VALUES ( {$idFactura}, '{$_POST['jsonCliente'][0]['fechaCredito']}', {$_POST['jsonCliente'][0]['montoCredito']} );";
+	$sqlCredito = "INSERT INTO `fact_credito`(`idFactura`, `fecha`, `credito`) VALUES ( {$idFactura}, '{$_POST['jsonCliente'][0]['fechaCredito']}', {$_POST['jsonCliente'][0]['adelanto']} );";
 	$resultadoCredito = $cadena->query($sqlCredito);
 }
 
@@ -218,11 +218,23 @@ $fTributo = fopen("{$directorio}{$nombreArchivo}.tri", "w");
 fwrite($fTributo, "{$tributo}");
 fclose($fTributo);
 
-//************* Actualización de pagos ************** */
-if($_POST['emitir']=='1'){ //caso de factura
-	
-}
-//************* Fin de actualización de pagos ************** */
+
+/* ************ INICIO AL CONTADO *************** */		
+if( $_POST['emitir']==1 ):
+	if( $_POST['jsonCliente'][0]['contado']==1 ){ // 1 = contado
+		$contado = "CONTADO" . $separador . 0 . $separador . $monedaC . $separador;
+	}else{
+		$contado = "CREDITO" . $separador . floatval($totFin) - floatval($rowC['adelanto'])  . $separador . $monedaC . $separador;
+		$fecha = floatval($totFin) - floatval($rowC['adelanto']). $separador . $_POST['jsonCliente'][0]['fechaCredito'] .$separador. $monedaC. $separador;
+		$fFecha = fopen("{$directorio}{$nombreArchivo}.dpa", "w");
+		fwrite($fFecha, "{$fecha}");
+		fclose($fFecha);
+	}
+	$fContado = fopen("{$directorio}{$nombreArchivo}.pag", "w");
+	fwrite($fContado, "{$contado}");
+	fclose($fContado);
+endif;
+/* ************ FIN DE AL CONTADO *************** */
 
 
 }
