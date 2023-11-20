@@ -25,7 +25,7 @@ $serie = $_POST['queSerie'];
 
 $hoy = new DateTime();
 if( $_POST['fecha']== $hoy->format('Y-m-d') ){
-	$fecha = "CONVERT_TZ(NOW(), '+00:00', '-05:00' )";
+	$fecha = "NOW()"; //"CONVERT_TZ(NOW(), '+00:00', '-05:00' )";
 }else{
 	//$fecha = "'".$_POST['fecha']."'";
 	$fecha = "'{$_POST['fecha']}'";
@@ -82,7 +82,7 @@ $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSer
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
   `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`) 
-VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, CONVERT_TZ(NOW(), '+00:00', '-05:00' ),{$tipoDoc},
+VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, NOW(),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
 	1, now(), '{$_POST['cliDireccion']}', '', {$_POST['jsonCliente'][0]['contado']}, {$_POST['jsonCliente'][0]['adelanto']} );";
@@ -122,7 +122,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
 		 (null,  concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['descripcionProducto']}',
-		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, CONVERT_TZ(NOW(), '+00:00', '-05:00' ), {$productos[$i]['afecto']}, {$productos[$i]['idProd']}, {$porcentajeIGV});";
+		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, NOW(), {$productos[$i]['afecto']}, {$productos[$i]['idProd']}, {$porcentajeIGV});";
 		 $cadena->query($sqlProd);
 
 		 $_POST['idProd']=$productos[$i]['idProd'];

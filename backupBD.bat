@@ -1,7 +1,7 @@
 @echo off
 
 set dbUser=root
-set dbPassword=**
+set dbPassword=*123456*
 set baseDatos="consorcio"
 set backupDir="C:\backups"
 set mysqldump="C:\xampp\mysql\bin\mysqldump.exe"

@@ -1,14 +1,17 @@
 <?php
+
 /**
  * This file is part of escpos-php: PHP receipt printer library for use with
  * ESC/POS-compatible thermal and impact printers.
  *
- * Copyright (c) 2014-16 Michael Billington < michael.billington@gmail.com >,
+ * Copyright (c) 2014-20 Michael Billington < michael.billington@gmail.com >,
  * incorporating modifications by others. See CONTRIBUTORS.md for a full list.
  *
  * This software is distributed under the terms of the MIT license. See LICENSE.md
  * for details.
  */
+
+declare(strict_types=1);
 
 namespace Mike42\Escpos\PrintConnectors;
 
@@ -100,7 +103,7 @@ class WindowsPrintConnector implements PrintConnector
     /**
      * Valid smb:// URI containing hostname & printer with optional user & optional password only.
      */
-    const REGEX_SMB = "/^smb:\/\/([\s\d\w-]+(:[\s\d\w-]+)?@)?([\d\w-]+\.)*[\d\w-]+\/([\d\w-]+\/)?[\d\w-]+(\s[\d\w-]+)*$/";
+    const REGEX_SMB = "/^smb:\/\/([\s\d\w-]+(:[\s\d\w+-]+)?@)?([\d\w-]+\.)*[\d\w-]+\/([\d\w-]+\/)?[\d\w-]+(\s[\d\w-]+)*$/";
 
     /**
      * @param string $dest
@@ -155,7 +158,7 @@ class WindowsPrintConnector implements PrintConnector
             throw new BadMethodCallException("Printer '" . $dest . "' is not a valid " .
                 "printer name. Use local port (LPT1, COM1, etc) or smb://computer/printer notation.");
         }
-        $this -> buffer = array();
+        $this -> buffer = [];
     }
 
     public function __destruct()
@@ -193,7 +196,7 @@ class WindowsPrintConnector implements PrintConnector
             if ($this -> userPassword == null) {
                 // No password
                 $command = sprintf(
-                    "smbclient %s -U %s -c %s -N",
+                    "smbclient %s -U %s -c %s -N -m SMB2",
                     escapeshellarg($device),
                     escapeshellarg($user),
                     escapeshellarg("print -")
@@ -202,14 +205,14 @@ class WindowsPrintConnector implements PrintConnector
             } else {
                 // With password
                 $command = sprintf(
-                    "smbclient %s %s -U %s -c %s",
+                    "smbclient %s %s -U %s -c %s -m SMB2",
                     escapeshellarg($device),
                     escapeshellarg($this -> userPassword),
                     escapeshellarg($user),
                     escapeshellarg("print -")
                 );
                 $redactedCommand = sprintf(
-                    "smbclient %s %s -U %s -c %s",
+                    "smbclient %s %s -U %s -c %s -m SMB2",
                     escapeshellarg($device),
                     escapeshellarg("*****"),
                     escapeshellarg($user),
@@ -219,7 +222,7 @@ class WindowsPrintConnector implements PrintConnector
         } else {
             // No authentication information at all
             $command = sprintf(
-                "smbclient %s -c %s -N",
+                "smbclient %s -c %s -N -m SMB2",
                 escapeshellarg($device),
                 escapeshellarg("print -")
             );
@@ -242,7 +245,7 @@ class WindowsPrintConnector implements PrintConnector
     {
         throw new Exception("Mac printing not implemented.");
     }
-    
+
     /**
      * Send data to printer -- platform-specific Windows code.
      *
@@ -286,6 +289,9 @@ class WindowsPrintConnector implements PrintConnector
             }
             /* Final print-out */
             $filename = tempnam(sys_get_temp_dir(), "escpos");
+            if ($filename === false) {
+                throw new Exception("Failed to create temp file for printing.");
+            }
             file_put_contents($filename, $data);
             if (!$this -> runCopy($filename, $device)) {
                 throw new Exception("Failed to copy file to printer");
@@ -298,7 +304,7 @@ class WindowsPrintConnector implements PrintConnector
             }
         }
     }
-    
+
     /**
      * @return string Current platform. Separated out for testing purposes.
      */
@@ -312,16 +318,16 @@ class WindowsPrintConnector implements PrintConnector
         }
         return self::PLATFORM_LINUX;
     }
-    
+
     /* (non-PHPdoc)
-	 * @see PrintConnector::read()
-	 */
+     * @see PrintConnector::read()
+     */
     public function read($len)
     {
         /* Two-way communication is not supported */
         return false;
     }
-    
+
     /**
      * Run a command, pass it data, and retrieve its return value, standard output, and standard error.
      *
@@ -333,11 +339,11 @@ class WindowsPrintConnector implements PrintConnector
      */
     protected function runCommand($command, &$outputStr, &$errorStr, $inputStr = null)
     {
-        $descriptors = array(
-                0 => array("pipe", "r"),
-                1 => array("pipe", "w"),
-                2 => array("pipe", "w"),
-        );
+        $descriptors = [
+                0 => ["pipe", "r"],
+                1 => ["pipe", "w"],
+                2 => ["pipe", "w"],
+        ];
         $process = proc_open($command, $descriptors, $fd);
         if (is_resource($process)) {
             /* Write to input */
@@ -359,7 +365,7 @@ class WindowsPrintConnector implements PrintConnector
             return -1;
         }
     }
-    
+
     /**
      * Copy a file. Separated out so that nothing is actually printed during test runs.
      *
@@ -371,17 +377,17 @@ class WindowsPrintConnector implements PrintConnector
     {
         return copy($from, $to);
     }
-    
+
     /**
      * Write data to a file. Separated out so that nothing is actually printed during test runs.
      *
      * @param string $data Data to print
-     * @param string $to Destination file
+     * @param string $filename Destination file
          * @return boolean True if write was successful, false otherwise
      */
-    protected function runWrite($data, $to)
+    protected function runWrite($data, $filename)
     {
-        return file_put_contents($data, $to) !== false;
+        return file_put_contents($filename, $data) !== false;
     }
 
     public function write($data)

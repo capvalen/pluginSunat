@@ -1,6 +1,6 @@
 <?php
 //Rellenar por cada Cliente:
-$dirBaseSunat = 'C:\SFS_v1.3.4.4\sunat_archivos\sfs';
+$dirBaseSunat = 'C:\SFS_v2.0\sunat_archivos\sfs';
 $directorio = $dirBaseSunat. '\DATA/';
 $dirRespuestas = $dirBaseSunat. '\RPTA/';
 $rucEmisor ='10198436670';
@@ -9,7 +9,7 @@ $direccionEmisor = "Psje. Mercaderes 108 Huancayo - Huancayo - Junín";
 $celularEmisor = "(064) 204832";
 $nombrePrint = 'TP300'; //TM-T20II
 
-$casaHost = "pluginsunat";
+$casaHost = "pluginSunat";
 
 
 
@@ -19,7 +19,7 @@ $separador ='|';
 //De la cabecera:
 $tipoOperacion = '0101';
 $fechaVencimiento = '-';
-$domicilioFiscal = '0000';  //cambiar a 1 si es sucursal
+$domicilioFiscal = '0000';
 $descuento = '0.00';
 $sumaCargos ='0.00';
 $anticipos ='0.00';
@@ -33,7 +33,7 @@ $tipoTributo='1000';
 $nombreTributo = 'IGV';
 $tributoExtranjero = 'VAT';
 $afectacion = '10';
-$porcentajeIGV = $_COOKIE['igvGlobal'];
+$porcentajeIGV = $_COOKIE['igvGlobal']; //10 en restaurantes, otros 18
 $porcentajeIGV1 = 1+($porcentajeIGV)/100;
 $tributoISC = '-';
 $codigoISC = '0.00';
@@ -54,7 +54,7 @@ $ventaInvoce = '11.80';
 $valorVentaInvoce='10.00';
 $gratuito ='0.00';
 
-//Actualizacion de Creditos
+//Actualización de créditos
 $monedaC = "PEN";
 $token = '';
 

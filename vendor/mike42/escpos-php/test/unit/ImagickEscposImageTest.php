@@ -2,7 +2,7 @@
 use Mike42\Escpos\ImagickEscposImage;
 use Mike42\Escpos\EscposImage;
 
-class ImagickEscposImageTest extends PHPUnit_Framework_TestCase
+class ImagickEscposImageTest extends PHPUnit\Framework\TestCase
 {
 
     /**
@@ -11,7 +11,7 @@ class ImagickEscposImageTest extends PHPUnit_Framework_TestCase
      */
     public function testImagickBadFilename()
     {
-        $this -> setExpectedException('Exception');
+        $this -> expectException(Exception::class);
         $this -> loadAndCheckImg('not a real file.png', 1, 1, null, null);
     }
     
@@ -52,7 +52,17 @@ class ImagickEscposImageTest extends PHPUnit_Framework_TestCase
             $this -> loadAndCheckImg('black_white.' . $format, 2, 2, "\xc0\x00", array("\x80\x80"));
         }
     }
-    
+
+    /**
+     * @medium
+     */
+    public function testImagickBlackWhiteTall()
+    {
+        // We're very interested in correct column format chopping here at 8 pixels
+        $this -> loadAndCheckImg('black_white_tall.png', 2, 16,
+            "\xc0\xc0\xc0\xc0\xc0\xc0\xc0\xc0\x00\x00\x00\x00\x00\x00\x00\x00", array("\xff\xff", "\x00\x00"));
+    }
+
     /**
      * @medium
      */
@@ -70,12 +80,18 @@ class ImagickEscposImageTest extends PHPUnit_Framework_TestCase
      */
     public function testPdfAllPages()
     {
+        // This is expected to fail on many distributions with an error, due to GhostScript defaults.
+        //   'Exception: not authorized `/path/to/doc.pdf' @error/constitute.c/ReadImage/412'
+        // The defaults were changed to prevent a vulnerability (arbitrary code execution), and can be bypassed if you
+        // trust the source of PDF files.
+        // https://stackoverflow.com/a/52661288/1808534
+        $this -> markTestSkipped('unsupported feature');
         $this -> loadAndCheckPdf('doc.pdf', 1, 1, array("\x00", "\x80"), array(array("\x00"), array("\x80")));
     }
     
     public function testPdfBadFilename()
     {
-        $this -> setExpectedException('Exception');
+        $this -> expectException(Exception::class);
         $this -> loadAndCheckPdf('not a real file', 1, 1, array(), array());
     }
     

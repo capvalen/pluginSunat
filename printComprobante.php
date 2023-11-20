@@ -1,20 +1,28 @@
 <?php
-include('phpqrcode/qrlib.php'); 
+//include('phpqrcode/qrlib.php'); 
 include "generales.php";
 
 
-require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
+//require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\CapabilityProfile;
+
 use Mike42\Escpos\EscposImage; //librería de imagen
 
 
 include "vendor/autoload.php";
 
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
-use Endroid\QrCode\LabelAlignment;
 use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Response\QrCodeResponse;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Writer\ValidationException;
 
 
 $separador ='|';
@@ -22,13 +30,31 @@ $tempDir = './';
 $filename = "qrtemp";
 $body =  $_POST['rucEmisor'] .$separador. $_POST['tipoComprobante'] .$separador. $_POST['serie'] .$separador. $_POST['correlativo'] .$separador. $_POST['igvFinal'] .$separador. $_POST['totalFinal'] . $separador. $_POST['fecha'] . $separador. $_POST['tipoCliente'] . $separador. $_POST['docClient']. $separador ;
 
-$qrCode = new QrCode($body);
+/* $qrCode = new QrCode($body);
 $qrCode->setSize(260);
 $qrCode->setWriterByName('png');
 $qrCode->setMargin(10);
 $qrCode->setEncoding('UTF-8');
 $qrCode->setErrorCorrectionLevel(new ErrorCorrectionLevel(ErrorCorrectionLevel::LOW));
-$qrCode->writeFile(__DIR__.'/qrcode.png');
+$qrCode->writeFile(__DIR__.'/qrcode.png'); */
+
+$writer = new PngWriter();
+
+// Create QR code
+$qrCode = QrCode::create($body)
+    ->setEncoding(new Encoding('UTF-8'))
+    ->setErrorCorrectionLevel(ErrorCorrectionLevel::Low)
+    ->setSize(300)
+    ->setMargin(10)
+    ->setRoundBlockSizeMode(RoundBlockSizeMode::Margin)
+    ->setForegroundColor(new Color(0, 0, 0))
+    ->setBackgroundColor(new Color(255, 255, 255));
+
+
+$result = $writer->write($qrCode);
+
+// Save it to a file
+$result->saveToFile(__DIR__.'/qrcode.png');
 
 
 $productos=$_POST['productos'];
@@ -40,10 +66,14 @@ foreach ($productos as $variable) {
 if($_POST['queEs']!='PROFORMA' && $_POST['queEs']!="NOTA DE PEDIDO"){ $queEs = $_POST['queEs'] . " ELECTRÓNICA"; }else{ $queEs = $_POST['queEs']; }
 if (isset($_POST['ticketera'])){ $nombrePrint= $_POST['ticketera'];}
 
-$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/".$nombrePrint);
-try {
+$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/TP300");
 
-    $tux = EscposImage::load(".\images\casadebarro_black.jpg", false);
+//$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/".$nombrePrint);
+try {
+    $printer = new Printer($connectorV31);
+
+
+    $tux = EscposImage::load("bitmap.jpg", false);
     $tuxQR = EscposImage::load("qrcode.png", false);
 
     $printer = new Printer($connectorV31);
