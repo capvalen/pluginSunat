@@ -4,4 +4,6 @@ CREATE TABLE `facturador` (
  `estado` int(11) NOT NULL DEFAULT 0 COMMENT '0 falta enviar, 1 enviado',
  `factFecha` datetime NOT NULL DEFAULT current_timestamp(),
  PRIMARY KEY (`idFacturador`)
-) ENGINE=MyISAM AUTO_INCREMENT=685 DEFAULT CHARSET=latin1
+) ENGINE=MyISAM AUTO_INCREMENT=685 DEFAULT CHARSET=latin1;
+
+ALTER TABLE `fact_detalle` ADD `idCabecera` INT NOT NULL AFTER `idNegocio`;

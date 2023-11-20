@@ -91,6 +91,7 @@ VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, NOW(),{$ti
 	//echo $sql;
 $resultado=$cadena->query($sql);
 $idFactura = $cadena->insert_id;
+
 if($_POST['jsonCliente'][0]['contado']=='2'){
 	$sqlCredito = "INSERT INTO `fact_credito`(`idFactura`, `fecha`, `credito`) VALUES ( {$idFactura}, '{$_POST['jsonCliente'][0]['fechaCredito']}', {$_POST['jsonCliente'][0]['adelanto']} );";
 	$resultadoCredito = $cadena->query($sqlCredito);
@@ -220,7 +221,7 @@ fclose($fTributo);
 
 
 /* ************ INICIO AL CONTADO *************** */		
-if( $_POST['emitir']==1 ):
+if($_POST['emitir']==1 ): //solo Facturas
 	if( $_POST['jsonCliente'][0]['contado']==1 ){ // 1 = contado
 		$contado = "CONTADO" . $separador . 0 . $separador . $monedaC . $separador;
 	}else{
@@ -235,8 +236,6 @@ if( $_POST['emitir']==1 ):
 	fclose($fContado);
 endif;
 /* ************ FIN DE AL CONTADO *************** */
-
-
 }
 
 

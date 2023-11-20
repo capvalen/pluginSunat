@@ -1210,7 +1210,9 @@ $('#divProductos').on('click', '.optPrecios', function (e) {
 var divFecha = document.getElementById('divFecha');
 var divSeries = document.getElementById('divSeries');
 var divCreditos = document.getElementById('divCreditos');
-function mostrarFecha(){ divFecha.classList.toggle('d-none'); ocultarPadre() }
+function mostrarFecha(){
+	$('#txtDateVencimiento').val(moment().format('YYYY-MM-DD'))
+	divFecha.classList.toggle('d-none'); ocultarPadre() }
 function mostrarSeries(){ divSeries.classList.toggle('d-none'); ocultarPadre() }
 function mostrarCreditos(){
 	$('#txtDateVencimiento').val(moment().add(1, 'day').format('YYYY-MM-DD'))

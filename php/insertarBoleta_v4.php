@@ -82,6 +82,10 @@ if($filasCorrelativo==0){
 	$correlativo = $rowCorrelativo['contador'];
 }
 
+$factura =  $serie.'-'.$correlativo;
+$nombreArchivo = $_POST['empresa']['ruc'].$caso.$factura ;
+
+
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
@@ -89,14 +93,17 @@ $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSer
 VALUES (null,{$_POST['cabecera']['tipo']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
 	'{$_POST['cliente']['dni']}', '{$_POST['cliente']['razon']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1,now(), '{$_POST['cliente']['direccion']}', '', {$_POST['jsonCliente'][0]['contado']}, {$_POST['jsonCliente'][0]['adelanto']} );";
-	//echo $sql;
-
-$factura =  $serie.'-'.$correlativo;
-$nombreArchivo = $_POST['empresa']['ruc'].$caso.$factura ;
+	1,now(), '{$_POST['cliente']['direccion']}', '', {$_POST['cliente']['contado']}, {$_POST['cliente']['adelanto']} );";
 
 $resultado=$cadena->query($sql);
+
 $idCabecera = $cadena->insert_id;
+$idFactura = $idCabecera;
+
+if($_POST['cliente']['contado']=='2'){
+	$sqlCredito = "INSERT INTO `fact_credito`(`idFactura`, `fecha`, `credito`) VALUES ( {$idFactura}, '{$_POST['cliente']['fechaCredito']}', {$_POST['cliente']['montoCredito']} );";
+	$resultadoCredito = $cadena->query($sqlCredito);
+}
 
 $sqlProd  =''; 
 for ($i=0; $i < count($productos) ; $i++) { 
@@ -123,8 +130,9 @@ for ($i=0; $i < count($productos) ; $i++) {
 		
 		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `idCabecera`,`facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
-		 (null, {$idCabecera}, concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['nombre']}',
+		 (null, {$idFactura}, concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['nombre']}',
 		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']}, {$productos[$i]['id']}, {$porcentajeIGV});";
+		 //echo $sqlProd; die();
 		 $cadena->query($sqlProd);
 
 		 $_POST['idProd']=$productos[$i]['id'];
@@ -223,7 +231,22 @@ if($_POST['empresa']['crearArchivo']==1 && $soy!='NOTA DE PEDIDO' ){
 	fwrite($fTributo, "{$tributo}");
 	fclose($fTributo);
 
-
+	/* ************ INICIO AL CONTADO *************** */		
+	if($_POST['cabecera']['tipo']==1 ): //solo Facturas
+		if( $_POST['cliente']['contado']==1 ){ // 1 = contado
+			$contado = "CONTADO" . $separador . 0 . $separador . $monedaC . $separador;
+		}else{
+			$contado = "CREDITO" . $separador . floatval($totFin) - floatval($rowC['adelanto'])  . $separador . $monedaC . $separador;
+			$fecha = floatval($totFin) - floatval($rowC['adelanto']). $separador . $_POST['cliente']['fechaCredito'] .$separador. $monedaC. $separador;
+			$fFecha = fopen("{$directorio}{$nombreArchivo}.dpa", "w");
+			fwrite($fFecha, "{$fecha}");
+			fclose($fFecha);
+		}
+		$fContado = fopen("{$directorio}{$nombreArchivo}.pag", "w");
+		fwrite($fContado, "{$contado}");
+		fclose($fContado);
+	endif;
+	/* ************ FIN DE AL CONTADO *************** */
 }
 
 
