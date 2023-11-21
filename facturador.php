@@ -1295,7 +1295,7 @@ $('#txtFiltro').keyup(e=>{
 			$('#btnRefresh').click()
 		}else{
 			$('#tablaPrincipal tbody').html('')
-			$.ajax({url:'php/listarTodoPorFecha.php', type: 'POST', data: {texto: $('#txtFiltro').val().replace('-', '%') }}).done(resp=>{
+			$.ajax({url:'php/listarTodoPorFecha.php', type: 'POST', data: {texto: $.trim($('#txtFiltro').val()).replace('-', '%') }}).done(resp=>{
 				$('#tablaPrincipal tbody').html(resp)
 				sumarGenerados();
 			})

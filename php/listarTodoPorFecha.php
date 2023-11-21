@@ -43,10 +43,10 @@ while($row=$resultado->fetch_assoc()){
 		
 		<td><?= $row['queDoc']; ?></td>
 		<td class="tdCorrelativo tableexport-string" style="font-weight: 600;"><?= ($row['queDoc']=='Interno' || $row['queDoc']=='Proforma' )? $row['factCorrelativo'] : $row['factSerie']."-".$row['factCorrelativo']; ?></td>
-	<?php if( isset($_POST['fecha2'])): ?>
-		<td data-sort-value="<?php echo $hora->format('ymd'); ?>"><?php echo $fEmision1->format('d/m/Y')." ". $hora->format('h:i a'); ?></td>
-	<?php else: ?>
+	<?php if( $_POST['fecha1'] == date('Y-m-d')): ?>
 		<td data-sort-value="<?php echo $hora->format('Hi'); ?>"><?php echo $hora->format('h:i a'); ?></td>
+		<?php else: ?>
+			<td data-sort-value="<?php echo $hora->format('ymd'); ?>"><?php echo $fEmision1->format('d/m/Y')." ". $hora->format('h:i a'); ?></td>
 	<?php endif; ?>
 
 		<td class="text-capitalize"><?= $row['razonSocial']; ?></td>
