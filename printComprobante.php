@@ -66,7 +66,7 @@ foreach ($productos as $variable) {
 if($_POST['queEs']!='PROFORMA' && $_POST['queEs']!="NOTA DE PEDIDO"){ $queEs = $_POST['queEs'] . " ELECTRÓNICA"; }else{ $queEs = $_POST['queEs']; }
 if (isset($_POST['ticketera'])){ $nombrePrint= $_POST['ticketera'];}
 
-$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/TP300");
+$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/CAJA");
 
 //$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/".$nombrePrint);
 try {

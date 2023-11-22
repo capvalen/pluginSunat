@@ -2,9 +2,9 @@
 
 set dbUser=root
 set dbPassword=*123456*
-set baseDatos="consorcio"
-set backupDir="C:\backups"
-set mysqldump="C:\xampp\mysql\bin\mysqldump.exe"
+set baseDatos="pluginsunat"
+set backupDir="D:\backups"
+set mysqldump="C:\laragon\bin\mysql\mariadb-11.2.2-winx64\bin\mysqldump.exe"
 set mysqlDataDir="C:\xampp\mysql\data"
 set zip="C:\Program Files\7-Zip\7z.exe"
 
