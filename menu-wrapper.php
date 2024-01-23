@@ -38,7 +38,7 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 					<a class="dropdown-item d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
 					<a class="dropdown-item " href="#!" id="btnModificarUsuarios"><i class="icofont-group"></i> Usuarios</a>
 					<a class="dropdown-item " href="#!" id="btnVaciarBandeja"><i class="icofont-infinite"></i> Vaciar bandeja</a>
-					<?php if($_COOKIE['crearArchivo']=='0' ): ?>
+					<?php if(1==1): /* if($_COOKIE['crearArchivo']=='0' ): */ ?>
 					<a class="dropdown-item " href="envioFactura.php" id="btnEnviarFactura"><i class="icofont-paper"></i> Enviar facturas</a>
 					<?php endif; ?>
 				</div>
