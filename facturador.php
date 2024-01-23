@@ -94,18 +94,21 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 <div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog" data-backdrop="static" >
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
+			<div class="modal-header border-0">
 				<h5 class="modal-title">Guardado exitoso</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<p>Comprobante generado correctamente. ¿Qué deseas hacer a continuación?</p>
-				<button class="btn btn-outline-primary" id="btnPrintTicketera"><i class="bi bi-clipboard2"></i> Imprimir en ticketera</button>
-				<button class="btn btn-outline-success d-none d-sm-block" id="btnPrintA4"><i class="bi bi-printer"></i> Generar A4</button>
-				<button class="btn btn-outline-success d-block d-sm-none" id="btnPrintPDF"><i class="bi bi-printer"></i> Generar PDF</button>
-
+				<img src="images/successful.jpg" class="img-fluid px-5 mb-2">
+				<h5>Comprobante generado correctamente. </h5>
+				<p>¿Qué deseas hacer a continuación?</p>
+				<div class="d-flex justify-content-between">
+					<button class="btn btn-outline-primary" id="btnPrintTicketera"><i class="bi bi-clipboard2"></i> Imprimir ticket</button>
+					<button class="btn btn-outline-success d-none d-sm-block" id="btnPrintA4"><i class="bi bi-printer"></i> Ver en A4</button>
+					<button class="btn btn-outline-success d-block d-sm-none" id="btnPrintPDF"><i class="bi bi-printer"></i> Ver en PDF</button>
+				</div>
 			</div>
 			<div class="modal-footer d-none">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
@@ -523,6 +526,15 @@ function limiteVentas(){
 			$('#spanLimiteSobrepasado').parent().addClass('d-flex');
 		}
 	}
+}
+function encolar(id){
+	$.ajax({
+		url: 'php/encolarComprobante.php', type:'POST', data:{ id }
+	}).done(resp =>{
+		console.log(resp)
+		alertify.message('<i class="bi bi-lightning-fill"></i> Adjuntado a la cola.', 3);
+	})
+
 }
 
 $('#btnEmitirComprobante').click(function() {
@@ -976,6 +988,8 @@ $('#btnEmitirBoletav2').click(function() {
 			});
 		}
 
+	}).finally(()=>{
+		pantallaOver(false)
 	})
 
 	

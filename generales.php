@@ -33,7 +33,7 @@ $tipoTributo='1000';
 $nombreTributo = 'IGV';
 $tributoExtranjero = 'VAT';
 $afectacion = '10';
-$porcentajeIGV = $_COOKIE['igvGlobal']; //10 en restaurantes, otros 18
+$porcentajeIGV = $_COOKIE['igvGlobal'] ?? 10; //10 en restaurantes, otros 18
 $porcentajeIGV1 = 1+($porcentajeIGV)/100;
 $tributoISC = '-';
 $codigoISC = '0.00';
@@ -56,6 +56,6 @@ $gratuito ='0.00';
 
 //Actualización de créditos
 $monedaC = "PEN";
-$token = '';
+$token = 'apis-token-6396.nevvtud4KzHZaULpHze3L-0DJ581fXeY';
 
 ?>

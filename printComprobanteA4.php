@@ -96,9 +96,11 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 
 <div class="row">
 <div class="col-sm-6 ">
-	<img src="images/empresa.jpg" alt="" class="w-75" >
-	<img src="images/empresa.png" alt="" class="w-75" >
-	
+	<?php
+	if( is_file('../images/empresa.jpg') ): ?> <img src="images/empresa.jpg" alt="" class="w-75" > <?php
+	else: ?> <img src="images/empresa.png" alt="" class="w-75" > <?php
+	endif;
+	?>
 </div>
 <div class="col-sm-6 mt-5 mb-2 text-center " class="">
 	<div class="border border-dark bordeGrueso">
@@ -125,9 +127,9 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 			
 		</div>
 		<div class="col">
-		<br>
 		<p class="mb-0"><strong>Fecha de emisión:</strong> <?php echo $fecha->format('d/m/Y'); ?></p>
 		<p class="mb-0"><strong>Tipo Moneda:</strong> Soles</p>
+		<p class="mb-0"><strong>Tipo Pago:</strong> <?= $rowC['esContado'] == 1 ? 'Contado' : 'Crédito' ?></p>
 		</div>
 	</div>
 	</div>

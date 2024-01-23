@@ -66,7 +66,10 @@ function buscarDNI($token, $ruc){
 	$fila = array(
 		"razon_social" => $empresa->apellidoPaterno . " ". $empresa->apellidoMaterno . " ".$empresa->nombres,
 		"domicilio_fiscal" => '',
-		"activo" => 'ACTIVO'
+		"activo" => 'ACTIVO',
+		"paterno" => $empresa->apellidoPaterno,
+		"materno" => $empresa->apellidoMaterno,
+		"nombres" => $empresa->nombres
 	);
 	echo json_encode($fila);
 

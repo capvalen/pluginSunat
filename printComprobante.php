@@ -110,6 +110,7 @@ try {
     $printer -> text("SON: {$_POST['monedas']} \n");
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("--------------------------------\n");
+    $printer -> text("Tipo de pago: Contado\n");
 	if($_POST['serie']==''){
     $printer -> text("Contacto: ".$celularEmisor."\n");
 	

@@ -77,9 +77,11 @@ while($row=$resultado->fetch_assoc()){
 				else if( in_array($row['comprobanteEmitido'], [2,4]) ){ echo "<span class='badge badge-danger'> <i class='bi bi-x'></i> ".$row['comprobanteEmitidoDescr']."</span> <br><small class='text-danger'>{$row['motivoBaja']}</small>";} 
 				else if($row['comprobanteEmitido']==3) { echo "<span class='badge badge-success'><i class='bi bi-check-all'></i> ".$row['comprobanteEmitidoDescr']. "</span>";}
 				else {
-					if($row['factSerie']!=''){
-						echo "<span class='badge badge-secondary'><i class='bi bi-hourglass'></i> ".$row['comprobanteEmitidoDescr']. "</span>";
-					}
+					if($row['factSerie']!=''): ?>
+					<span class='badge badge-secondary'><i class='bi bi-hourglass'></i> <?= $row['comprobanteEmitidoDescr']; ?></span>
+					<button class="btn btn-outline btn-sm" onclick="encolar(<?= $row['idComprobante'] ?>)" title="Poner en cola archivos nuevamente"> <i class="bi bi-arrow-counterclockwise"></i></button>
+					<?php
+					endif;
 				}
 			?>
 		</td>
