@@ -7,15 +7,15 @@
  */
 
 // Adjust these to your environment
-require __DIR__ . '/../../vendor/autoload.php';
-use Mike42\Escpos\CapabilityProfile;
+require __DIR__ . '/../../autoload.php';
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Mike42\Escpos\CapabilityProfiles\SimpleCapabilityProfile;
 
 $connector = new FilePrintConnector("php://stdout");
 
 // Start printer
-$profile = CapabilityProfile::load("simple");
+$profile = SimpleCapabilityProfile::getInstance();
 $printer = new Printer($connector, $profile);
 
 // A) Raw pound symbol

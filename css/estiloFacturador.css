@@ -76,3 +76,6 @@ thead{
 	color: white!important;
 	border-radius: 5px;
 }
+#modalEmisionBoleta{
+	overflow: auto;
+}

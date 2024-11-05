@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
 include('phpqrcode/qrlib.php'); 
 
 include 'php/conexion.php';
@@ -17,10 +18,10 @@ require "NumeroALetras.php";
 <body>
 <style>
 .bordeGrueso{
-	border: 4px solid #343a40!important;
+	border: 2px solid #c3c3c3!important;
 }
 .bordeDelgado{
-	border: 2px solid #343a40!important;
+	border: 2px solid #c3c3c3!important;
 }
 .bordeAlgo{
 	border-top: 2px solid #343a40!important;
@@ -30,9 +31,13 @@ require "NumeroALetras.php";
 
 <?php
 
+function fechaLatam($fecha) {
+	$fechaObjeto = new DateTime($fecha);
+	return $fechaObjeto->format('d/m/Y');
+}
 
-
-$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'FACTURA ELECTRÓNICA' when 3 then 'BOLETA ELECTRÓNICA' when -1 then 'PROFORMA' when 0 then 'TICKET INTERNO' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado` FROM `fact_cabecera` WHERE factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
+$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'FACTURA ELECTRÓNICA' when 3 then 'BOLETA ELECTRÓNICA' when -1 then 'PROFORMA' when 0 then 'TICKET INTERNO' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, esContado, observaciones
+FROM `fact_cabecera` WHERE factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
 $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc();
 
@@ -46,8 +51,10 @@ $correlativo = $rowSeries['factCorrelativo'];
 if( in_array( $rowSeries['queDoc'] , ['PROFORMA', 'TICKET INTERNO']) ){ $factura =  $correlativo; }else{$factura =  $serie.'-'.$correlativo;}
 $nombreArchivo = $rucEmisor.$caso.$factura ; 
 
+$sqlCreditos = "SELECT * from fechasCreditos where idCabecera = {$rowSeries['idComprobante']};";
+$respCreditos = $esclavo->query($sqlCreditos);	
 
-$sqlBase="select totalFinal from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
+$sqlBase="SELECT totalFinal from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
 $resultadoBase=$cadena->query($sqlBase);
 $rowBase=$resultadoBase->fetch_assoc();
 	
@@ -121,9 +128,9 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 	<div class="border bordeDelgado p-2 container-fluid">
 	<div class="row p-2">
 		<div class="col-8">
-			<p class="text-capitalize mb-0"><strong>Señor(es):</strong> <?=  $rowC['razonSocial']; ?> </p>
-			<p class="text-capitalize mb-0"><strong>Domicilio:</strong> <?= ($rowC['cliDireccion'] =='') ? '-' : $rowC['cliDireccion']; ?></p>
 			<p class="mb-0"><strong>N° Documento:</strong> <?= $rowC['dniRUC']; ?></p>
+			<p class="mb-0"><strong>Señor (es):</strong><span class="text-capitalize"> <?=  $rowC['razonSocial']; ?></span> </p>
+			<p class="text-capitalize mb-0"><strong>Domicilio:</strong> <?= ($rowC['cliDireccion'] =='') ? '-' : $rowC['cliDireccion']; ?></p>
 			
 		</div>
 		<div class="col">
@@ -138,10 +145,9 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 <table class="table table-bordered">
 <thead>
 	<tr>
-		<th class="p-1">Item</th>
-		<th class="p-1">Descripción</th>
-		<th class="p-1">Und.</th>
 		<th class="p-1">Cant.</th>
+		<th class="p-1">Und.</th>
+		<th class="p-1">Descripción</th>
 		<th class="p-1">Prec. Unt.</th>
 		<th class="p-1">Sub-Total</th>
 	</tr>
@@ -164,15 +170,13 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 	$valorFin = str_replace (',', '',number_format($rowD['valorUnitario'],2));
 	$igvSubFin = str_replace (',', '',number_format($rowD['igvUnitario'],2));
 	$valorSubFin = str_replace (',', '',number_format($rowD['valorItem'],2));
-	$precProducto = number_format($rowD['valorUnitario']+$rowD['igvUnitario'],2);
-	$cantidadProd = $rowD['cantidadItem']
-
+	$precProducto = number_format($rowD['valorUnitario']+$rowD['igvUnitario'], $decimalesSuper);
+	$cantidadProd = number_format($rowD['cantidadItem'], $decimalesSuper);
 	?>
 	<tr>
-		<td class="p-1"><?= $i;?></td>
-		<td class="p-1" class="text-capitalize"><?= $rowD['descripcionItem']; ?></td>
+		<td class="p-1"><?= $cantidadProd; ?></td>
 		<td class="p-1"><?= $rowD['undCorto']?></td>
-		<td class="p-1"><?= $rowD['cantidadItem']; ?></td>
+		<td class="p-1" class="text-capitalize"> <?= ucwords(strtolower($rowD['descripcionItem'])); ?></td>
 		<td class="p-1"><?= $precProducto; ?></td>
 		<td class="p-1"><?= number_format( floatval($precProducto) * floatval($cantidadProd) ,2)?></td>
 	</tr>
@@ -188,18 +192,36 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 </section>
 
 <section>
-<div class="row">
-<div class="col-6">
-	<div class="d-flex flex-column ">
-		<p>Representacion Impresa de <br><?= $soy; ?> ELECTRÓNICA: <?= $factura; ?></p>
+	<div class="row">
+		<div class="col-12">
+		<?php if($rowC['observaciones']):?>
+		<p><b>Observaciones:</b> <?= $rowC['observaciones']; ?></p>
+		<?php endif;
 		
-		<div class="text-center">
-			<img src="qrtemp.png" alt="">
-		</div>
-		<h5 class="text-center">Son: <?= $letras; ?></h5>
-	</div>
+		$c=0;
+		if($respCreditos->num_rows>0):
+		?>
+		<p><strong>Fechas de pago a crédito:</strong></p>
+		<?php endif;
+		
+		while( $rowCreditos = $respCreditos->fetch_assoc()): ?>
+		<p class="mb-0"><?= $c+1?>° cuota: <?= fechaLatam($rowCreditos['fecha'])?> por S/ <?= number_format($rowCreditos['monto'], 2)?></p>
 
-</div>
+		<?php $c++; endwhile; ?>
+		</div>
+	</div>
+<div class="row">
+	<div class="col-6">
+		<div class="d-flex flex-column ">
+			<p>Representacion Impresa de <br><?= $soy; ?> ELECTRÓNICA: <?= $factura; ?></p>
+			
+			<div class="text-center">
+				<img src="qrtemp.png" alt="">
+			</div>
+			<h5 class="text-center">Son: <?= $letras; ?></h5>
+		</div>
+
+	</div>
 <div class="col-6">
 <div class="row">
 	<div class="col text-right">
@@ -223,9 +245,10 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 </div>
 </div>
 </div>
-<div class="row d-none">
+<div class="row">
 	<div class="col">
-		<p class="small">Puede ser consultada en: https://grupoeuroandino.com/facturas/ <br/>Visble en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
+		<p class="small">Visible en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT.</p>
+		<p class="small d-none">Puede ser consultada en: https://grupoeuroandino.com/facturas/ <br/>Visble en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
 	</div>
 </div>
 </section>

@@ -10,7 +10,6 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 <head>
 	<title>Facturador electrónico - Desarrollado por: Infocat Soluciones</title>
 	<?php include 'headers.php'; ?>
-
 </head>
 <body>
 
@@ -127,7 +126,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 				<i class="bi bi-x"></i>
 				</button>
 				<h4 class="py-3 hTitulo"><i class="bi bi-clipboard2"></i> Generar: <span id="queGenero"></span> Electrónica</h4>
-				<div class="row">
+				<div class="row d-none">
 					<div class="col">
 						<div class="checkbox checkbox-success mb-3">
 							<input id="checkbox2" class="styled" type="checkbox" id="chkFecha" onchange="mostrarFecha()">
@@ -151,8 +150,8 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 						</div>
 					</div>
 				</div>
-				<div class="card d-none mb-2" id="cardAtributos">
-					<div class="card-body form-inline">
+				<div class="card mb-2" id="cardAtributos">
+					<div class="card-body row">
 						<div class="form-check mb-3 d-none">
 							<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
 							<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
@@ -166,14 +165,14 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 							<?php include "php/listarTodosClientes.php";?>
 						</select>
 						</div>
-						<div class="form-inline d-none" id="divFecha">
+						<div class="col " id="divFecha">
 							<label class="pr-3  text-muted mt-2" for=""><strong>Fecha:</strong></label>
 							<input type="date" class="form-control  mr-2" id="txtFechaComprobante">
 						</div>
 					
-						<div class="form-inline d-none" id="divSeries">
+						<div class="col " id="divSeries">
 							<label class="pr-3 text-muted mt-2" for=""><strong>Serie:</strong></label>
-							<div class="dropdown my-3">
+							<div class="dropdown">
 							<?php
 								$sqlSerieBoleta="SELECT * FROM `fact_series`";
 								$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
@@ -186,12 +185,13 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 								<option id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
 							</select>
 							</div>
+							
 						</div>
-						<div class="form-inline d-none" id="divCreditos">
-							<label for="">Fecha de vencimiento:</label>
-							<input type="date" class="form-control mx-2" id="txtDateVencimiento">
-							<label for="">Crédito S/</label>
-							<input type="number" class="form-control mx-2" id="txtMontoCredito">
+						<div class="col" id="divCreditos">
+							<label class="pr-3 text-muted mt-2 w-100" for=""><strong>Crédito y fechas:</strong></label>
+							<button class="btn btn-sm btn-outline-secondary" id="btnAddCredito" data-toggle="modal" data-target="#modalCreditos"><i class="bi bi-stars"></i> Agregar crédito</button>
+						</div>
+						<div class="col" id="divCuantosCreditos">
 						</div>
 					</div>
 				</div>
@@ -257,9 +257,17 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 					<span id="spanErrorFinal" for="" class=" d-none"> <span class="lblError"></span></span>
 				</div>
 				
-				
 			
-			<div class="container-fluid row d-flex justify-content-end mb-3">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col">
+						<p class="mb-0"><small>Observaciones adicionales:</small></p>
+						<input type="text" class="form-control" id="txtObservaciones">
+					</div>
+				</div>
+			</div>
+			
+			<div class="container-fluid row d-flex justify-content-end my-3">
 				<div class="row">
 					<label for="" class="col-sm-4 col-form-label text-right"><small>Paga con:</small></label>
 					<input type="number" class="form-control col-sm-3" id="txtPagaCuanto">
@@ -398,6 +406,82 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 		</div>
 	</div>
 </div>
+<!-- Modal para pedir fechas y monto -->
+<div class="modal fade" id="modalCreditos" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Agregar crédito</h5>
+			</div>
+			<div class="modal-body">
+				<label for="">Fecha del próximo pago:</label>
+				<input type="date" class="form-control text-center" id="txtCreditoFecha">
+				<label for="">Monto de pago:</label>
+				<input type="number" class="form-control text-center" id="txtCreditoMonto">
+				<center class="mt-2"><button class="btn btn-lg btn-primary " id="btnCerrarCredito" data-toggle="modal" data-target="#modalEmisionBoleta">Agregar crédito</button></center>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal para empezar Compartir en PC -->
+<div class="modal fade" id="modalCompartirPc" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Compartir comprobante</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<label for="">Elija la modalidad para compartir</label>
+				<div class="accordion " id="accordionExample">
+					<div class="card d-none">
+						<div class="card-header" id="headingOne">
+							<h2 class="mb-0 d-flex justify-content-between" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="cursor:pointer; color: #6a6a6a;">
+								<button class="btn btn-link btn-block text-left" type="button" >
+									<i class="icofont-mail"></i> Por Correo electrónico
+								</button>
+								<i class="icofont-rounded-down"></i>
+							</h2>
+						</div>
+
+						<div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#accordionExample">
+							<div class="card-body">
+								<div class="input-group">
+									<input type="mail" class="form-control" id="txtCorreo" autocomplete="off" value="">
+									<div class="input-group-append">
+										<button class="btn btn-outline-secondary" type="button" onclick="btnEnviarCorreo()" data-dismiss="modal"><i class="bi bi-send"></i> Enviar</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-header" id="headingTwo">
+							<h2 class="mb-0" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="cursor:pointer; color: #6a6a6a;">
+								<button class="btn btn-link btn-block text-left collapsed" type="button" >
+									<i class="icofont-brand-whatsapp"></i> Por Whatsapp
+								</button>
+							</h2>
+						</div>
+						<div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#headingTwo">
+							<div class="card-body">
+								<p>Ingrese el número de celular a compartir:</p>
+								<div class="input-group">
+									<input type="text" class="form-control" id="txtWhatsapp" autocomplete="off">
+									<div class="input-group-append">
+										<button class="btn btn-outline-secondary" type="button" onclick="btnEnviarWhatsapp()"><i class="bi bi-send"></i> Enviar</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <?php if($_COOKIE['ckPower']==1){ ?>
 <!-- Modal para confirmar la Baja -->
 <div class="modal fade" id="modalDarBajas" tabindex="-1" role="dialog">
@@ -462,6 +546,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 
 <script>
 $(document).ready(function(){
+	$.creditos=[];
 	$('.selectpicker').selectpicker('render');
 	$('.selectpicker').selectpicker('val', -1);
 
@@ -633,7 +718,8 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	var caso = padre.attr('data-caso');
 	var serie = padre.attr('data-serie');
 	var correlativo = padre.attr('data-correlativo');
-	
+
+	<?php if($_COOKIE['ticket']=='automatico'){ ?>
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
@@ -662,7 +748,9 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 			//location.reload();
 		});
 	});
-
+	<?php }else{ ?>
+		window.open('./ticket.php?serie='+serie+'&correlativo='+correlativo, '_blank');
+	<?php } ?>
 });
 $('#btnPrintTicketera').click(function() { console.log( 'ticketera' );
 	imprimitEnTicketera()
@@ -932,20 +1020,22 @@ $('#btnEmitirBoletav2').click(function() {
 				jsonCliente.push({dni: $('#txtDniBoleta').val(),
 					razon: $('#txtRazonBoleta').val(),
 					direccion: $('#txtDireccionBoleta').val(),
-					contado: !document.getElementById('chkCreditos').checked ? 1 : 2, //1:contado, 2:credito
+					contado: $.creditos.length==0 ? 1 : 2, //1:contado, 2:credito
 					fechaCredito : $('#txtDateVencimiento').val(),
-					adelanto: parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
-					montoCredito:$('#txtMontoCredito').val()
+					adelanto: 0,// parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
+					montoCredito:0, //$('#txtMontoCredito').val(),
+					observaciones: $('#txtObservaciones').val()
 				});
 			}else{
 				jsonCliente.push({
 					dni:'00000000',
 					razon: 'Cliente sin documento',
 					direccion: '',
-					contado: !document.getElementById('chkCreditos').checked ? 1 : 2, //1:contado, 2:credito
+					contado: $.creditos.length==0 ? 1 : 2, //1:contado, 2:credito
 					fechaCredito : $('#txtDateVencimiento').val(),
-					adelanto: parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
-					montoCredito:$('#txtMontoCredito').val()
+					adelanto: 0,// parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
+					montoCredito:0, //$('#txtMontoCredito').val(),
+					observaciones: $('#txtObservaciones').val()
 				})
 			}
 			var jsonProductos = [];
@@ -1008,34 +1098,36 @@ $('#btnEmitirFacturav2').click(function() {
 		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> La placa del automóvil tiene que ser rellenado').parent().removeClass('d-none');
 	} */else if( $('#txtDniBoleta').val().length!=11 ){
 		$('#txtDniBoleta').focus();
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> El RUC del cliente, no es correcto').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> El RUC del cliente, no es correcto').parent().removeClass('d-none'); pantallaOver(false)
 	}else if( $('#txtRazonBoleta').val()=='' ){
-		$('#txtRazonBoleta').focus();
+		$('#txtRazonBoleta').focus(); pantallaOver(false)
 		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> La razón social no puede estar en blanco').parent().removeClass('d-none');
 	}else if( $('#spTotalBoleta').text()=='0.00' ){
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none'); pantallaOver(false)
 	}else if( $('.cardHijoProducto').first().find('.sltFiltroProductos').selectpicker('val')== null ){
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none');
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none'); pantallaOver(false)
 	}else{
 		var jsonCliente= [];
 		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
 			jsonCliente.push({dni: $('#txtDniBoleta').val(),
 				razon: $('#txtRazonBoleta').val(),
 				direccion: $('#txtDireccionBoleta').val(),
-				contado: !document.getElementById('chkCreditos').checked ? 1 : 2, //1:contado, 2:credito
+				contado: $.creditos.length==0 ? 1 : 2, //1:contado, 2:credito
 				fechaCredito : $('#txtDateVencimiento').val(),
-				adelanto: parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
-				montoCredito:$('#txtMontoCredito').val()
+				adelanto: 0,// parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
+				montoCredito:0, //$('#txtMontoCredito').val(),
+				observaciones: $('#txtObservaciones').val()
 			});
 		}else{
 			jsonCliente.push({
 				dni:'00000000',
 				razon: 'Cliente sin documento',
 				direccion: '',
-				contado: !document.getElementById('chkCreditos').checked ? 1 : 2, //1:contado, 2:credito
+				contado: $.creditos.length==0 ? 1 : 2, //1:contado, 2:credito
 				fechaCredito : $('#txtDateVencimiento').val(),
-				adelanto: parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
-				montoCredito:$('#txtMontoCredito').val()
+				adelanto: 0,// parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
+				montoCredito:0, //$('#txtMontoCredito').val(),
+				observaciones: $('#txtObservaciones').val()
 			})
 		}
 		var jsonProductos= [];
@@ -1066,7 +1158,7 @@ $('#btnEmitirFacturav2').click(function() {
 			dniRc='00000000';
 			razon='Cliente sin documento';
 		}
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val() }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val(), creditos: $.creditos }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
 			console.log(resp)
 			$.jTicket = JSON.parse(resp); console.log( $.jTicket );
 			if($.jTicket.length >=1){
@@ -1305,6 +1397,52 @@ function transformar(){
 		location.reload();
 	});
 }
+function compartir(serie, correlativo){
+	// Verificamos si el navegador tiene soporte para el API compartir
+	if ('share' in navigator) {
+		navigator.share({
+			title: "Contenido",
+			text: `Su Comprobante ${serie}-${correlativo} puede ser revisado online`,
+			url: `./printComprobanteA4.php?serie=${serie}&correlativo=${correlativo}`
+		})
+		// Mensaje en Consola cuando se presiona el botón de compartir 
+		.then(() => {
+			console.log("Contenido Compartido!");
+		})
+		.catch(console.error);
+	} else {
+		// Si el navegador no tiene soporte para la API compartir, le enviamos un mensaje al usuario
+		alert('Lo siento, este navegador no tiene soporte para recursos compartidos.')
+	}
+}
+function compartirPc(serie, correlativo){
+	$.serie= serie;
+	$.correlativo = correlativo;
+}
+
+async function  btnEnviarCorreo(){
+	const correo = document.getElementById('txtCorreo').value;
+	if(correo){
+		let datos = new FormData()
+		datos.append('correo', correo)
+		datos.append('serie', $.serie)
+		datos.append('correlativo', $.correlativo)
+		const servidor = await fetch('php/correo.php',{
+			method:'POST', body: datos
+		});
+		const respuesta = await servidor.text()
+		if(respuesta =='Mensaje entregado')
+			alertify.notify('<i class="icofont-check"></i> Mensaje enviado', 'success', 5);
+			else
+			alertify.notify('<i class="icofont-check"></i> Hubo un problema con el servidor SMTP', 'danger', 5);
+	}
+}
+function btnEnviarWhatsapp(){
+	const celular = document.getElementById('txtWhatsapp').value;
+	if(celular)
+		window.open('https://wa.me/51'+ document.getElementById('txtWhatsapp').value + '?text='+ `Su Comprobante ${$.serie}-${$.correlativo} puede ser revisado online desde: ` + encodeURIComponent(`https://infocatsoluciones.com/app/bodegaMary/printComprobantePDF.php?serie=${$.serie}&correlativo=${$.correlativo}`), '_blank')
+	
+}
 $('#txtFiltro').keyup(e=>{
 	if (e.keyCode === 13) {
 		if($('#txtFiltro').val()==''){
@@ -1319,6 +1457,25 @@ $('#txtFiltro').keyup(e=>{
 	}
 })
 
+$('#btnAddCredito').click(()=>{
+	$('#modalEmisionBoleta').modal('hide')
+});
+$('#btnCerrarCredito').click(()=>{
+	if($('#txtCreditoFecha').val() !='' && $('#txtCreditoMonto').val()!='' )
+		$.creditos.push({fecha:$('#txtCreditoFecha').val(), monto: $('#txtCreditoMonto').val() })
+	$('#modalCreditos').modal('hide')
+	dibujarCreditos()
+});
+function dibujarCreditos(){
+	var html = ''
+	$.creditos.forEach(credito=>{
+		html +='<li>'+ fechaLatam(credito.fecha) +' - S/ '+ parseFloat(credito.monto).toFixed(2) + '</li>'
+	})
+	$('#divCuantosCreditos').html(html)
+}
+function fechaLatam(fechita){
+	if(fechita) return moment(fechita).format('DD/MM/YYYY')
+}
 
 <?php if($_COOKIE['ckPower']==1){ ?>
 $('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {

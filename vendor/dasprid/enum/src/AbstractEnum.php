@@ -85,7 +85,7 @@ abstract class AbstractEnum
     /**
      * @return static
      */
-    private static function createValue(string $name, int $ordinal, array $arguments) : self
+    final private static function createValue(string $name, int $ordinal, array $arguments) : self
     {
         $instance = new static(...$arguments);
         $instance->name = $name;
@@ -125,7 +125,7 @@ abstract class AbstractEnum
         return self::$values[static::class];
     }
 
-    private static function constants() : array
+    final private static function constants() : array
     {
         if (isset(self::$constants[static::class])) {
             return self::$constants[static::class];
@@ -214,7 +214,7 @@ abstract class AbstractEnum
      *
      * @throws SerializeNotSupportedException
      */
-    final public function __sleep() : array
+    final public function __sleep() : void
     {
         throw new SerializeNotSupportedException();
     }

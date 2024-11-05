@@ -1,13 +1,13 @@
 <?php
 /* Example of Greek text on the P-822D */
-require __DIR__ . '/../../vendor/autoload.php';
-use Mike42\Escpos\CapabilityProfile;
+require __DIR__ . '/../../autoload.php';
 use Mike42\Escpos\Printer;
+use Mike42\Escpos\CapabilityProfiles\P822DCapabilityProfile;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 
 // Setup the printer
 $connector = new FilePrintConnector("php://stdout");
-$profile = CapabilityProfile::load("P822D");
+$profile = P822DCapabilityProfile::getInstance();
 $printer = new Printer($connector, $profile);
 
 // Print a Greek pangram

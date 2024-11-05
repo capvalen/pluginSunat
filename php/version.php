@@ -1,3 +1,3 @@
 <?=
-"Versión 1.66 Compilación 23.1121"
+"Versión 1.70 Compilación 24.1105"
 ?>

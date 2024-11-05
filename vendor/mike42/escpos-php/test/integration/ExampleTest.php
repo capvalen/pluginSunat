@@ -1,12 +1,12 @@
 <?php
 use Mike42\Escpos\EscposImage;
 
-class ExampleTest extends PHPUnit\Framework\TestCase
+class ExampleTest extends PHPUnit_Framework_TestCase
 {
     /* Verify that the examples don't fizzle out with fatal errors */
     private $exampleDir;
     
-    public function setUp(): void
+    public function setup()
     {
         $this -> exampleDir = dirname(__FILE__) . "/../../example/";
     }
@@ -16,7 +16,6 @@ class ExampleTest extends PHPUnit\Framework\TestCase
      */
     public function testBitImage()
     {
-        $this->markTestSkipped('Not repeatable on Travis CI.');
         $this -> requireGraphicsLibrary();
         $outp = $this -> runExample("bit-image.php");
         $this -> outpTest($outp, "bit-image.bin");
@@ -54,7 +53,6 @@ class ExampleTest extends PHPUnit\Framework\TestCase
      */
     public function testDemo()
     {
-        $this->markTestSkipped('Not repeatable on Travis CI.');
         $this -> requireGraphicsLibrary();
         $outp = $this -> runExample("demo.php");
         $this -> outpTest($outp, "demo.bin");
@@ -65,7 +63,6 @@ class ExampleTest extends PHPUnit\Framework\TestCase
      */
     public function testGraphics()
     {
-        $this->markTestSkipped('Not repeatable on Travis CI.');
         $this -> requireGraphicsLibrary();
         $outp = $this -> runExample("graphics.php");
         $this -> outpTest($outp, "graphics.bin");
@@ -76,7 +73,6 @@ class ExampleTest extends PHPUnit\Framework\TestCase
      */
     public function testReceiptWithLogo()
     {
-        $this->markTestSkipped('Not repeatable on Travis CI.');
         $this -> requireGraphicsLibrary();
         $outp = $this -> runExample("receipt-with-logo.php");
         $this -> outpTest($outp, "receipt-with-logo.bin");
@@ -125,19 +121,6 @@ class ExampleTest extends PHPUnit\Framework\TestCase
     {
         $outp = $this -> runExample("pdf417-code.php");
         $this -> outpTest($outp, "pdf417-code.bin");
-    }
-
-    /**
-     * @medium
-     */
-    public function testUnifontPrintBuffer()
-    {
-        $this->markTestSkipped('Not repeatable on Travis CI.');
-        if(!file_exists("/usr/share/unifont/unifont.hex")) {
-            $this -> markTestSkipped("Test only repeatable w/ unifont installed");
-        }
-        $outp = $this -> runExample("unifont-print-buffer.php");
-        $this -> outpTest($outp, "unifont-print-buffer.bin");
     }
 
     public function testInterfaceCups()
@@ -194,7 +177,7 @@ class ExampleTest extends PHPUnit\Framework\TestCase
     protected function requireGraphicsLibrary()
     {
         if (!EscposImage::isGdLoaded() && !EscposImage::isImagickLoaded()) {
-            $this -> markTestSkipped("gd or imagick plugin is required for this test");
+            $this -> markTestSkipped("This test requires a graphics library.");
         }
     }
 }

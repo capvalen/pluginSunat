@@ -1,4 +1,6 @@
 <?php 
+ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+
 date_default_timezone_set('America/Lima');
 include __DIR__ . '/conexion.php';
 include __DIR__ . './../generales.php';
@@ -81,20 +83,20 @@ if(strlen($_POST['dniRUC'])==11){
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
-  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`) 
+  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`, `observaciones`)
 VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, NOW(),{$tipoDoc},
 	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1, now(), '{$_POST['cliDireccion']}', '', {$_POST['jsonCliente'][0]['contado']}, {$_POST['jsonCliente'][0]['adelanto']} );";
+	1, now(), '{$_POST['cliDireccion']}', '', {$_POST['jsonCliente'][0]['contado']}, {$_POST['jsonCliente'][0]['adelanto']}, '{$_POST['jsonCliente'][0]['observaciones']}' );";
 	//HORA CUANDO ESTA EN EL SERVIDOR: CONVERT_TZ(NOW(), '+00:00', '-05:00') 
 	//HORA CUANDO ESTA EN LOCAL: NOW()
 	//echo $sql;
 $resultado=$cadena->query($sql);
 $idFactura = $cadena->insert_id;
 
-if($_POST['jsonCliente'][0]['contado']=='2'){
-	$sqlCredito = "INSERT INTO `fact_credito`(`idFactura`, `fecha`, `credito`) VALUES ( {$idFactura}, '{$_POST['jsonCliente'][0]['fechaCredito']}', {$_POST['jsonCliente'][0]['adelanto']} );";
-	$resultadoCredito = $cadena->query($sqlCredito);
+foreach ($_POST['creditos'] as $credito) {
+	$sqlCredito = $datab->prepare("INSERT INTO `fechasCreditos`(`idCabecera`, `fecha`, `monto`) VALUES ( ?, ?, ?);");
+	$sqlCredito->execute([$idFactura, $credito['fecha'], $credito['monto']]);
 }
 
 $sqlProd  =''; 
@@ -136,6 +138,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 		//echo $sqlProd;
 	}
 }
+
 
 
 
@@ -226,7 +229,7 @@ if($_POST['emitir']==1 ): //solo Facturas
 		$contado = "CONTADO" . $separador . 0 . $separador . $monedaC . $separador;
 	}else{
 		$contado = "CREDITO" . $separador . floatval($totFin) - floatval($rowC['adelanto'])  . $separador . $monedaC . $separador;
-		$fecha = floatval($totFin) - floatval($rowC['adelanto']). $separador . $_POST['jsonCliente'][0]['fechaCredito'] .$separador. $monedaC. $separador;
+		$fecha = floatval($totFin) - floatval($rowC['adelanto']). $separador . $separador. $monedaC. $separador;
 		$fFecha = fopen("{$directorio}{$nombreArchivo}.dpa", "w");
 		fwrite($fFecha, "{$fecha}");
 		fclose($fFecha);

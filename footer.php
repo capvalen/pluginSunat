@@ -7,3 +7,4 @@
 <script src="js/bootstrap-select.js"></script>
 <script src="js/stupidtable.js"></script>
 <script src="js/alertify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>

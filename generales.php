@@ -1,17 +1,16 @@
 <?php
 //Rellenar por cada Cliente:
-$dirBaseSunat = 'C:\SFS_v2.0\sunat_archivos\sfs';
+$dirBaseSunat = 'C:\SFS_v1.3.4.2\sunat_archivos\sfs';
 $directorio = $dirBaseSunat. '\DATA/';
 $dirRespuestas = $dirBaseSunat. '\RPTA/';
-$rucEmisor ='10198436670';
-$nombreEmisor = "Polleria Doradito\nDe: Samaniego Palomino Marta Ida";
-$direccionEmisor = "Psje. Mercaderes 108 Huancayo - Huancayo - Junín";
-$celularEmisor = "(064) 204832";
-$nombrePrint = 'TP300'; //TM-T20II
+$rucEmisor ='10210130557';
+$nombreEmisor = "De: Alvarez Meneses Pablo Cesar";
+$direccionEmisor = "Av. Industrial S/N  (Esquina Av. Industrial y Av. España) San Martin de Pangoa - Satipo - Junín";
+$celularEmisor = "985 946 052";
+$nombrePrint = 'HP1102W'; //TM-T20II
+$casaHost = "pluginsunat";
 
-$casaHost = "pluginSunat";
-
-
+$generarArchivo = false;
 
 
 $separador ='|';
@@ -19,7 +18,7 @@ $separador ='|';
 //De la cabecera:
 $tipoOperacion = '0101';
 $fechaVencimiento = '-';
-$domicilioFiscal = '0000';
+$domicilioFiscal = '0000'; ; //cambiar a 1 si es sucursal
 $descuento = '0.00';
 $sumaCargos ='0.00';
 $anticipos ='0.00';
@@ -53,6 +52,8 @@ $invoce = '11.80';
 $ventaInvoce = '11.80';
 $valorVentaInvoce='10.00';
 $gratuito ='0.00';
+
+$decimalesSuper = $_COOKIE['decimalesSuper'] ?? 6; //cambiar a 2 a facturador simple
 
 //Actualización de créditos
 $monedaC = "PEN";

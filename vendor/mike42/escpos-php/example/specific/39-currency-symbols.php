@@ -1,11 +1,12 @@
 <?php
-require __DIR__ . '/../../vendor/autoload.php';
-use Mike42\Escpos\CapabilityProfile;
+require __DIR__ . '/../../autoload.php';
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 use Mike42\Escpos\PrintBuffers\ImagePrintBuffer;
+use Mike42\Escpos\CapabilityProfiles\DefaultCapabilityProfile;
+use Mike42\Escpos\CapabilityProfiles\SimpleCapabilityProfile;
 
-$profile = CapabilityProfile::load("default");
+$profile = DefaultCapabilityProfile::getInstance();
 // This is a quick demo of currency symbol issues in #39.
 
 /* Option 1: Native ESC/POS characters, depends on printer and is buggy. */
@@ -39,7 +40,7 @@ $printer -> close();
  are not available in CP437. CP858 has good printer support, but is not
  included in all iconv builds.
 */
-class CustomCapabilityProfile extends CapabilityProfile
+class CustomCapabilityProfile extends SimpleCapabilityProfile
 {
     function getCustomCodePages()
     {
