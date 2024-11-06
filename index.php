@@ -87,7 +87,7 @@ small{font-size: 68%;}
 				<button class="btn btn-outline-light mt-3 btn-block " id="btnAcceder"><i class="icofont-key-hole"></i> Acceder</button>
 				<div class="mt-3" id="divError"><span id="spanError2"></span></div>
 			
-				<p class='mt-3 mb-0 text-right'><small>Versión <?= "./version.php"; ?></small></p>
+				<p class='mt-3 mb-0 text-right'><small>Versión <?= include "php/version.php"; ?></small></p>
 			</div>
 		</div> 
 		

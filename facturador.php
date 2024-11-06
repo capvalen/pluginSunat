@@ -1070,7 +1070,7 @@ $('#btnEmitirBoletav2').click(function() {
 				razon='Cliente sin documento';
 			}
 			
-			$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(),jsonProductos: jsonProductos, jsonCliente:jsonCliente, fecha: $('#txtFechaComprobante').val() }}).done(function(resp) { //  placa: $('#txtPlacaBoleta').val(),
+			$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(),jsonProductos: jsonProductos, jsonCliente:jsonCliente, fecha: $('#txtFechaComprobante').val(), creditos: $.creditos }}).done(function(resp) { //  placa: $('#txtPlacaBoleta').val(),
 				console.log(resp)
 				$.jTicket = JSON.parse(resp); console.log( $.jTicket );
 				if($.jTicket.length >=1){

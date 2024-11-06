@@ -1,5 +1,5 @@
 <?php 
-ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+//ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
 
 date_default_timezone_set('America/Lima');
 include __DIR__ . '/conexion.php';
@@ -94,6 +94,7 @@ VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, NOW(),{$ti
 $resultado=$cadena->query($sql);
 $idFactura = $cadena->insert_id;
 
+if($_POST['creditos'])
 foreach ($_POST['creditos'] as $credito) {
 	$sqlCredito = $datab->prepare("INSERT INTO `fechasCreditos`(`idCabecera`, `fecha`, `monto`) VALUES ( ?, ?, ?);");
 	$sqlCredito->execute([$idFactura, $credito['fecha'], $credito['monto']]);
