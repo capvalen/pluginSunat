@@ -4,7 +4,7 @@ $('body').on( 'focusout','.esMoneda',function(){
 	if(valor<0){
 		$(this).val('0.00')
 	}else{
-		$(this).val(parseFloat(valor).toFixed(2));
+		$(this).val(parseFloat(valor).toFixed($.decimalSuper));
 	}
 });
 $('.esDecimal').focusout(function(){
@@ -13,7 +13,7 @@ $('.esDecimal').focusout(function(){
 	if(valor<0){
 		$(this).val('0.00')
 	}else{
-		$(this).val(parseFloat(valor).toFixed(2));
+		$(this).val(parseFloat(valor).toFixed($.decimalSuper));
 	}
 });
 $("body").on('focus', 'input',function(){

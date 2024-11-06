@@ -227,7 +227,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 							<div class="col-6 col-md-4"><strong>Concepto</strong></div>
 							<div class="col-6 col-md-2"><strong>Cant.</strong></div>
 							<?php if($_COOKIE['facCambiarUnidad']==1): ?>
-							<div class="col-6 col-md-1"><strong>Und</strong></div>
+							<div class="col-6 col-md-2"><strong>Und</strong></div>
 							<?php endif;
 							if($_COOKIE['facCambiarGravado']==1): ?>
 							<div class="col-6 col-md-2"><strong>Gravado.</strong></div>
@@ -546,6 +546,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 
 <script>
 $(document).ready(function(){
+	$.decimalSuper = '<?= $decimalesSuper?>';
 	$.creditos=[];
 	$('.selectpicker').selectpicker('render');
 	$('.selectpicker').selectpicker('val', -1);
@@ -915,7 +916,7 @@ $('#divProductos').on('keyup','.campoSubTotal', function() {
 	if( cantidad==Infinity ){
 		cantidad=0;
 	}
-	padre.find('.campoCantidad').val( cantidad.toFixed(2) );
+	padre.find('.campoCantidad').val( cantidad.toFixed(<?= $decimalesSuper?>) );
 	sumaTodo();
 });
 $('#divProductos').on('keyup','.campoPrecioUnit', function() {
@@ -940,7 +941,7 @@ $('#divProductos').on('keyup','.campoCantidad', function() {
 	var precio = parseFloat(padre.find('.campoPrecioUnit').val());
 	var subTotal = 0;//parseFloat(padre.find('.campoPrecioUnit').val());
 	subTotal = parseFloat(cantidad*precio);
-	padre.find('.campoSubTotal').val( subTotal.toFixed(2) );
+	padre.find('.campoSubTotal').val( subTotal.toFixed(<?= $decimalesSuper?>) );
 	sumaTodo();
 });
 function sumaTodo() {
@@ -1368,7 +1369,6 @@ function buscarReniec(){
 $('#txtPagaCuanto').keyup(function() {
 	calcularVuelto()
 });
-
 function calcularVuelto(){
 	if( $('#txtPagaCuanto').val()!=''){
 		if( $('#txtPagaCuanto').val() > parseFloat($('#spTotalBoleta').text()) ){
@@ -1419,7 +1419,6 @@ function compartirPc(serie, correlativo){
 	$.serie= serie;
 	$.correlativo = correlativo;
 }
-
 async function  btnEnviarCorreo(){
 	const correo = document.getElementById('txtCorreo').value;
 	if(correo){

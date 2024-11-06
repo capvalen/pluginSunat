@@ -25,11 +25,11 @@ $resultadoUnd=$esclavo->query($sqlUnd);
 		<input type="text" class="d-none form-control campoTextoLibre text-capitalize" value="" placeholder='Concepto de venta' >
 	</div>
 	<?php if($_COOKIE['verCantidad']==0):?>
-		<div class="col-6 col-md-1 d-none"><input type="number" class="form-control text-center esMoneda campoCantidad" value="1" step="1" min="0"></div>
+		<div class="col-6 col-md-2 d-none"><input type="number" class="form-control text-center esMoneda campoCantidad" value="1" step="1" min="0"></div>
 	<?php else: ?>
-		<div class="col-6 col-md-1 "><input type="number" class="form-control text-center esMoneda campoCantidad" value="0" step="1" min="0"></div>
+		<div class="col-6 col-md-2 "><input type="number" class="form-control text-center esMoneda campoCantidad" value="0" step="1" min="0"></div>
 		<?php endif;?>
-	<div class="col-6 col-md-1  divUnidadProducto <?= ($_COOKIE['facCambiarUnidad']=='1' ? 'pasa' : 'd-none') ?>">
+	<div class="col-6 col-md-2  divUnidadProducto <?= ($_COOKIE['facCambiarUnidad']=='1' ? 'pasa' : 'd-none') ?>">
 		<select class="selectpicker sltFiltroUnidad" id="sltfiltroTemporal" data-live-search="true" title="Unds." data-width="100%">
 			<?php 
 			while($rowUnd=$resultadoUnd->fetch_assoc()){  ?>
