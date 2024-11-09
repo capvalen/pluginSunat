@@ -94,7 +94,7 @@ VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, NOW(),{$ti
 $resultado=$cadena->query($sql);
 $idFactura = $cadena->insert_id;
 
-if($_POST['creditos'])
+if( count($_POST['creditos']) >0 )
 foreach ($_POST['creditos'] as $credito) {
 	$sqlCredito = $datab->prepare("INSERT INTO `fechasCreditos`(`idCabecera`, `fecha`, `monto`) VALUES ( ?, ?, ?);");
 	$sqlCredito->execute([$idFactura, $credito['fecha'], $credito['monto']]);

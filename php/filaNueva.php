@@ -40,8 +40,8 @@ $resultadoUnd=$esclavo->query($sqlUnd);
 			</select>
 	</div>
 	
-	<div class="col-6 col-md-2 divGrabados <?= ($_COOKIE['facCambiarGravado']=='1' ? 'pasa' : 'd-none') ?>">
-		<select class="selectpicker" data-live-search="false" id="sltFiltroGravado" title="Imposición" data-width="100%" disabled>
+	<div class="col-6 col-md-2 divGrabados <?=  ($_COOKIE['facCambiarGravado']=='1' ? 'pasa' : 'd-none') ?>">
+		<select class="selectpicker sltFiltroGravado" data-live-search="false" id="sltFiltroGravado" title="Imposición" data-width="100%" >
 			<option value="1">Afecto</option>
 			<option value="2">Exonerado</option>
 		</select>

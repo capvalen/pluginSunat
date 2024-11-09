@@ -1159,7 +1159,7 @@ $('#btnEmitirFacturav2').click(function() {
 			dniRc='00000000';
 			razon='Cliente sin documento';
 		}
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val(), creditos: $.creditos }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val(), creditos: ($.creditos) }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
 			console.log(resp)
 			$.jTicket = JSON.parse(resp); console.log( $.jTicket );
 			if($.jTicket.length >=1){
@@ -1236,19 +1236,19 @@ $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, c
 				//padre.find('.sltFiltroUnidad').selectpicker('val', '3')
 				padre.attr('data-producto', prodObj.idProductos );
 				padre.find('.sltFiltroUnidad #sltfiltroTemporal').selectpicker('val', prodObj.undSunat ).selectpicker('refresh');;
-				padre.find('#sltFiltroGravado').selectpicker('val', prodObj.idGravado ).selectpicker('refresh');;
+				padre.find('.sltFiltroGravado').selectpicker('val', prodObj.idGravado ).selectpicker('refresh');
 				padre.find('.campoPrecioUnit').val(parseFloat(prodObj.prodPrecio).toFixed(2));
 				padre.find('.campoSubTotal').val(parseFloat(prodObj.prodPrecio).toFixed(2)).attr('data-exonerado', padre.find('#sltFiltroGravado').selectpicker('val'));
 				padre.find('.campoCantidad').val(1).focus();
 
+				padre.find('.selectpicker').selectpicker('refresh');
 			}
 		});
 
 		//console.log('ver:' + JSON.stringify($(this).selectpicker('val')))
 
 		if( clickedIndex ==1){ //codigo de la posición libre -> Antes #52
-			padre.find('#sltFiltroGravado').prop('disabled', false).selectpicker('refresh');
-			
+			//padre.find('#sltFiltroGravado').prop('disabled', false).selectpicker('refresh');
 			padre.find('.sltFiltroProductos').addClass('d-none');
 			padre.find('.campoTextoLibre').removeClass('d-none').focus();
 
@@ -1261,7 +1261,6 @@ $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, c
 			padre.find('.campoPrecioUnit').prop('readonly', true);
 			console.log('estoy en otro')
 		}
-		padre.find('#sltFiltroGravado').selectpicker('val', 1)
 		padre.find('.sltFiltroUnidad').selectpicker('val', 'NIU')
 		sumaTodo();
 	}
