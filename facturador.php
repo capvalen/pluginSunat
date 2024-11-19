@@ -160,8 +160,9 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 							<label for="">Placa de vehículo:</label>
 							<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
 						</div>
-						<div class="form-inline  d-none pl-3">
-						<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
+						<div class="col">
+							<label class="pr-3 text-muted mt-2" for=""><strong>Clientes guardados:</strong></label>
+							<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
 							<?php include "php/listarTodosClientes.php";?>
 						</select>
 						</div>
@@ -1438,8 +1439,7 @@ async function  btnEnviarCorreo(){
 function btnEnviarWhatsapp(){
 	const celular = document.getElementById('txtWhatsapp').value;
 	if(celular)
-		window.open('https://wa.me/51'+ document.getElementById('txtWhatsapp').value + '?text='+ `Su Comprobante ${$.serie}-${$.correlativo} puede ser revisado online desde: ` + encodeURIComponent(`https://infocatsoluciones.com/app/bodegaMary/printComprobantePDF.php?serie=${$.serie}&correlativo=${$.correlativo}`), '_blank')
-	
+		window.open('https://wa.me/51'+ document.getElementById('txtWhatsapp').value.replaceAll(' ', '') + '?text='+ `Su Comprobante ${$.serie}-${$.correlativo} puede ser revisado online desde: ` + encodeURIComponent(`https://infocatsoluciones.com/app/bodegaMary/printComprobantePDF.php?serie=${$.serie}&correlativo=${$.correlativo}`), '_blank')
 }
 $('#txtFiltro').keyup(e=>{
 	if (e.keyCode === 13) {
