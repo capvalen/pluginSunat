@@ -110,8 +110,12 @@ if( !isset($_COOKIE['ckUsuario']) ){
 				})
 			})
 			.catch( (error) =>{console.log( error );})
-			
-			
+		},
+		soloLimpiar(){
+			axios('php/limpiarServidorSunat.php')
+			.then((response)=> {console.log( console.log(response.data));
+			})
+			.catch( (error) =>{console.log( error );})
 		},
 		actualizarDB(){
 			axios.post('php/actualizarRegistrosDB.php', {comprobantes: app.seleccionados})

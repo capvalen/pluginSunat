@@ -51,12 +51,13 @@ function actualizarDB($archivoConFirma, $dirBase){
 		$tempDetalle = $dirBase . '\DATA/'.$archivoConFirma.'.det';
 		$tempLeyenda = $dirBase . '\DATA/'.$archivoConFirma.'.ley';
 		$tempTri = $dirBase . '\DATA/'.$archivoConFirma.'.tri';
-		$tempTri = $dirBase . '\DATA/'.$archivoConFirma.'.pag';
+		$tempPag = $dirBase . '\DATA/'.$archivoConFirma.'.pag';
 
 		if(file_exists($tempCabecera)){ unlink($tempCabecera); }
 		if(file_exists($tempDetalle)){ unlink($tempDetalle); }
 		if(file_exists($tempLeyenda)){ unlink($tempLeyenda); }
 		if(file_exists($tempTri)){ unlink($tempTri); }
+		if(file_exists($tempPag)){ unlink($tempPag); }
 		
 	}
 }
