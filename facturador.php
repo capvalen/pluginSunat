@@ -183,7 +183,8 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 								<option value="series" selected>Series</option>
 								<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
 								<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
-								<option id="optOpcional" disabled><?= $rowSerieBoleta['serieOpcional']; ?></option>
+								<option id="optOpcional"><?= $rowSerieBoleta['serieOpcional']; ?></option>
+								<option id="optOpcional"><?= $rowSerieBoleta['serieOpcional2']; ?></option>
 							</select>
 							</div>
 							
@@ -1160,7 +1161,7 @@ $('#btnEmitirFacturav2').click(function() {
 			dniRc='00000000';
 			razon='Cliente sin documento';
 		}
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val(), creditos: $.creditos }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
+		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val(), creditos: ($.creditos) }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
 			console.log(resp)
 			$.jTicket = JSON.parse(resp); console.log( $.jTicket );
 			if($.jTicket.length >=1){
@@ -1440,6 +1441,7 @@ function btnEnviarWhatsapp(){
 	const celular = document.getElementById('txtWhatsapp').value;
 	if(celular)
 		window.open('https://wa.me/51'+ document.getElementById('txtWhatsapp').value.replaceAll(' ', '') + '?text='+ `Su Comprobante ${$.serie}-${$.correlativo} puede ser revisado online desde: ` + encodeURIComponent(`https://infocatsoluciones.com/app/bodegaMary/printComprobantePDF.php?serie=${$.serie}&correlativo=${$.correlativo}`), '_blank')
+	
 }
 $('#txtFiltro').keyup(e=>{
 	if (e.keyCode === 13) {
