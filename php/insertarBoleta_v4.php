@@ -91,11 +91,14 @@ $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSer
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
   `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`) 
 VALUES (null,{$_POST['cabecera']['tipo']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
-	'{$_POST['cliente']['dni']}', '{$_POST['cliente']['razon']}',
+	'{$_POST['cliente']['dni']}', ?,
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1,now(), '{$_POST['cliente']['direccion']}', '', {$_POST['cliente']['contado']}, {$_POST['cliente']['adelanto']} );";
+	1,now(), ?, '', {$_POST['cliente']['contado']}, {$_POST['cliente']['adelanto']} );";
 
-$resultado=$cadena->query($sql);
+$resultado=$cadena->prepare($sql);
+$resultado->execute([
+	$_POST['cliente']['razon'], $_POST['cliente']['direccion']
+]);
 
 $idCabecera = $cadena->insert_id;
 $idFactura = $idCabecera;
@@ -130,7 +133,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 		
 		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `idCabecera`,`facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
-		 (null, {$idFactura}, concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['nombre']}',
+		 (null, {$idFactura}, concat('{$serie}',{$idFactura},'{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['nombre']}',
 		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']}, {$productos[$i]['id']}, {$porcentajeIGV});";
 		 //echo $sqlProd; die();
 		 $cadena->query($sqlProd);

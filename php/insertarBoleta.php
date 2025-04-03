@@ -3,17 +3,23 @@
 
 date_default_timezone_set('America/Lima');
 include __DIR__ . '/conexion.php';
-include __DIR__ . './../generales.php';
-require __DIR__ . "./../NumeroALetras.php";
+include __DIR__ . '/../generales.php';
+require __DIR__ . "/../NumeroALetras.php";
 
 if(isset($_POST['jsonCliente'])){
+	$sqlCli="INSERT INTO clientes (cliRuc, cliRazonSocial, cliDomicilio)
+		SELECT ?, ?, ?
+		FROM dual
+		WHERE NOT EXISTS (
+				SELECT cliRuc FROM clientes WHERE cliRuc = ?
+		) LIMIT 1;"; 
 
-	$sqlCli="INSERT INTO clientes (cliRuc, cliRazonSocial, cliDomicilio, cliActivo)
-	SELECT * FROM (SELECT '{$_POST['jsonCliente'][0]['dni']}', '{$_POST['jsonCliente'][0]['razon']}', '{$_POST['jsonCliente'][0]['direccion']}',1) AS tmp
-	WHERE NOT EXISTS (
-			SELECT cliRuc FROM clientes WHERE cliRuc = '{$_POST['jsonCliente'][0]['dni']}'
-	) LIMIT 1;"; 
-	$cadena->query($sqlCli);
+	$stmt = $esclavo -> prepare($sqlCli);
+	$stmt -> bind_param('ssss', $_POST['jsonCliente'][0]['dni'], $_POST['jsonCliente'][0]['razon'], $_POST['jsonCliente'][0]['direccion'], $_POST['jsonCliente'][0]['dni'] ); 
+	$stmt -> execute();
+
+	//anterior con error de caracteres ' &
+	//$cadena->query($sqlCli);
 }
 
 $caso = "-0{$_POST['emitir']}-"; // 01 para factura, 03 para boleta
@@ -85,14 +91,17 @@ $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSer
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
   `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`, `observaciones`)
 VALUES (null,{$_POST['emitir']},'{$serie}','{$correlativo}',{$fecha}, NOW(),{$tipoDoc},
-	'{$_POST['dniRUC']}', '{$_POST['razonSocial']}',
+	'{$_POST['dniRUC']}', ?,
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1, now(), '{$_POST['cliDireccion']}', '', {$_POST['jsonCliente'][0]['contado']}, {$_POST['jsonCliente'][0]['adelanto']}, '{$_POST['jsonCliente'][0]['observaciones']}' );";
+	1, now(), ?, '', {$_POST['jsonCliente'][0]['contado']}, {$_POST['jsonCliente'][0]['adelanto']}, '{$_POST['jsonCliente'][0]['observaciones']}' );";
 	//HORA CUANDO ESTA EN EL SERVIDOR: CONVERT_TZ(NOW(), '+00:00', '-05:00') 
 	//HORA CUANDO ESTA EN LOCAL: NOW()
 	//echo $sql;
-$resultado=$cadena->query($sql);
-$idFactura = $cadena->insert_id;
+	//$resultado=$cadena->query($sql);
+	$stmtCabcera = $cadena->prepare($sql);
+	$stmtCabcera->bind_param('ss', $_POST['razonSocial'], $_POST['cliDireccion']);
+	$stmtCabcera->execute();
+	$idFactura = $cadena->insert_id;
 
 if(isset($_POST['creditos']) )
 if( count($_POST['creditos']) >0 )
