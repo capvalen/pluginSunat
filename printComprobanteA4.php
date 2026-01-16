@@ -1,5 +1,5 @@
 <?php
-ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+//ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
 include('phpqrcode/qrlib.php'); 
 
 include 'php/conexion.php';
@@ -92,11 +92,11 @@ if($filasCabeza==1){
 
 $fecha= new DateTime($rowC['fechaEmision']);
 
-$tempDir = './';
+/* $tempDir = './';
 $filename = "qrtemp";
 $body =  $rucEmisor .$separador. $rowSeries['factTipoDocumento'] .$separador. $serie .$separador. $correlativo .$separador. $rowC['IGVFinal'] .$separador. $rowC['totalFinal'] . $separador. $fecha->format('d/m/Y') . $separador. $tipoDoc . $separador. $rowC['dniRUC'] . $separador . $rowC['factPlaca']. $separador;
 $codeContents = $body; 
-QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
+QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5); */
 
 ?>
 
@@ -163,8 +163,7 @@ $rowProductos = array();
 $lineaDetalle ='';
 $sqlDetalle="SELECT fd.*, u.undCorto FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida WHERE facSerieCorre = '{$_GET['serie']}-{$_GET['correlativo']}'";
 $resultadoDetalle=$cadena->query($sqlDetalle);
-while($rowD=$resultadoDetalle->fetch_assoc()){ 
-
+while($rowD=$resultadoDetalle->fetch_assoc()){
 	$unidad = 'NIU';
 	
 	$valorFin = str_replace (',', '',number_format($rowD['valorUnitario'],2));
@@ -225,21 +224,25 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 <div class="col-6">
 <div class="row">
 	<div class="col text-right">
-		
-		<p class="mb-0">Op. Gravada</p>
+		<?php if($rowC['sumDescTotal']>0): ?>
+		<p class="mb-0">Valor de venta</p>
+		<p class="mb-0">Descuento Global</p>
+		<?php endif; ?>
+		<p class="mb-0">Base imponible</p>
 		<p class="mb-0">I.G.V.</p>
 		<p class="mb-0">Op. Gratuita</p>
-		<p class="">Op. Exonerada</p>
-		<p class="d-none">Op. Inafecta</p>
+		<p class="d-none mb-0">Op. Exonerada</p>
 		<h5 class="border-top pt-2 bordeAlgo">Importe Total</h5>
 	</div>
 	<div class="col">
-		<p class="d-none">S/ <?= number_format($rowC['sumDescTotal'],2);?></p>
+		<?php if($rowC['sumDescTotal']>0): ?>
+		<p class="mb-0">S/ <?= number_format($rowC['sumImpVenta'],2);?></p>
+		<p class="mb-0">S/ <?= number_format($rowC['sumDescTotal'],2);?></p>
+		<?php endif; ?>
 		<p class="mb-0">S/ <?= number_format($rowC['costoFinal'],2);?></p>
 		<p class="mb-0">S/ <?= number_format($rowC['IGVFinal'],2);?></p>
 		<p class="mb-0">S/ 0.00</p>
-		<p class="">S/ <?= number_format($rowC['factExonerados'],2);?></p>
-		<p class="d-none">S/ 0.00</p>
+		<p class="d-none mb-0">S/ <?= number_format($rowC['totalFinal'],2);?></p>
 		<h5 class="border-top pt-2 bordeAlgo">S/ <?= number_format($rowC['totalFinal'],2);?></h5>
 	</div>
 </div>
@@ -247,8 +250,8 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 </div>
 <div class="row">
 	<div class="col">
-		<p class="small">Visible en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT.</p>
-		<p class="small d-none">Puede ser consultada en: https://grupoeuroandino.com/facturas/ <br/>Visble en Sunat a partir de las 24 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
+		<p class="small">Visible en Sunat a partir de 24-48 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT.</p>
+		<p class="small d-none">Puede ser consultada en: https://e-consulta.sunat.gob.pe/ <br/>Visble en Sunat a partir de 24-48 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
 	</div>
 </div>
 </section>

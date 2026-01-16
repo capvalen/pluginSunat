@@ -19,6 +19,9 @@ if(count($respCliente)==0){
 	$respCliente2 = $prepCliente2->execute([ $_POST['cliente']['razon'], $_POST['cliente']['direccion'], $_POST['cliente']['dni'] ]);
 }
 
+//Identificar descuentos:
+$descuentos = floatval($_POST['cliente']['descuentos'] ?? 0);
+
 $caso = "-0{$_POST['cabecera']['tipo']}-"; // 01 para factura, 03 para boleta
 
 switch ($_POST['cabecera']['tipo']) {
@@ -48,9 +51,10 @@ for ($i=0; $i < count($productos) ; $i++) {
 		$exonerados= $exonerados + ( $productos[$i]['cantidad']*$productos[$i]['precio'] );
 	}
 }
-$sumaTotal = round($afectos+$exonerados,2);
-$baseTotal = round($afectos/ $porcentajeIGV1 ,2);
-$igvTotal = round($afectos-$baseTotal,2);
+$totalNormal = round($afectos+$exonerados,2);
+$sumaTotal = round($totalNormal-$descuentos,2);
+$baseTotal = round(($afectos-$descuentos)/ $porcentajeIGV1 ,2);
+$igvTotal = round(($afectos-$descuentos)-$baseTotal,2);
 
 
 $parteEntera = intval($sumaTotal);
@@ -88,11 +92,11 @@ $nombreArchivo = $_POST['empresa']['ruc'].$caso.$factura ;
 
 $sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
- `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
+ `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumDescTotal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
   `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`) 
 VALUES (null,{$_POST['cabecera']['tipo']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
 	'{$_POST['cliente']['dni']}', ?,
-	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$sumaTotal}, {$baseTotal}, {$igvTotal}, '{$letras}',
+	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$descuentos}, {$totalNormal}, {$baseTotal}, {$igvTotal}, '{$letras}',
 	1,now(), ?, '', {$_POST['cliente']['contado']}, {$_POST['cliente']['adelanto']} );";
 
 $resultado=$cadena->prepare($sql);
@@ -110,7 +114,7 @@ if($_POST['cliente']['contado']=='2'){
 
 $sqlProd  =''; 
 for ($i=0; $i < count($productos) ; $i++) { 
-	if( $productos[$i]['subTotal']<>0){
+	if( $productos[$i]['subTotal']<>0 && floatval($productos[$i]['subTotal'])>0){
 		$canti = $productos[$i]['cantidad'];
 		$prec = $productos[$i]['precio'];
 		if( $productos[$i]['afecto']=='1'  ){
@@ -133,7 +137,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 		
 		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `idCabecera`,`facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
-		 (null, {$idFactura}, concat('{$serie}',{$idFactura},'{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['nombre']}',
+		 (null, {$idFactura}, concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['nombre']}',
 		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']}, {$productos[$i]['id']}, {$porcentajeIGV});";
 		 //echo $sqlProd; die();
 		 $cadena->query($sqlProd);
@@ -143,7 +147,6 @@ for ($i=0; $i < count($productos) ; $i++) {
 		 $_POST['cantidad']=$canti;
 		 $_POST['obs']='';
 		 require 'updateStock.php';
-		 
 
 		// echo $sqlProd;
 	}

@@ -8,7 +8,7 @@ $nombreEmisor = "De: Alvarez Meneses Pablo Cesar";
 $direccionEmisor = "Av. Industrial S/N  (Esquina Av. Industrial y Av. España) San Martin de Pangoa - Satipo - Junín";
 $celularEmisor = "985 946 052";
 $nombrePrint = 'HP1102W'; //TM-T20II
-$casaHost = "pluginsunat";
+$casaHost = "pluginSunat";
 
 $generarArchivo = false;
 
@@ -53,7 +53,7 @@ $ventaInvoce = '11.80';
 $valorVentaInvoce='10.00';
 $gratuito ='0.00';
 
-$decimalesSuper = $_COOKIE['decimalesSuper'] ?? 6; //cambiar a 2 a facturador simple
+$decimalesSuper = $_COOKIE['decimalesSuper'] ?? 2; //cambiar a 2 a facturador simple
 
 //Actualización de créditos
 $monedaC = "PEN";
