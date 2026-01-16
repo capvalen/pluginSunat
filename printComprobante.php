@@ -85,7 +85,7 @@ try {
     $printer -> text("".$direccionEmisor."\n");
     $printer -> setEmphasis(true);
     $printer -> text("{$queEs}\n");
-    $printer -> text("{$_POST['serie']}-{$_POST['correlativo']}\n"); //Cambniar Codigooooooooo
+    $printer -> text("{$_POST['serie']}-{$_POST['correlativo']}\n");
     $printer -> setEmphasis(false);
     $printer -> text("--------------------------------\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
@@ -102,6 +102,9 @@ try {
 	$printer -> text("DESCRIPCION  | CANT |  P.UNIT.  |  SUBTOTAL  |\n");
     $printer -> text("{$todoProd}\n");
     $printer -> text("--------------------------------\n");
+		if($rowC['descuentos']>0):
+			$printer -> text("Valor de venta: S/ {$_POST['exonerado']} \n");
+		endif;
     $printer -> text("Exonerado: S/ {$_POST['exonerado']} \n");
     $printer -> text("Sub Total: S/ {$_POST['costoFinal']} \n");
     $printer -> text("IGV (18%): S/ {$_POST['igvFinal']} \n");
