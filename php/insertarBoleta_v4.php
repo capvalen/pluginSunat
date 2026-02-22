@@ -242,9 +242,9 @@ if($_POST['empresa']['crearArchivo']==1 && $soy!='NOTA DE PEDIDO' ){
 	/* ************ INICIO AL CONTADO *************** */		
 	if($_POST['cabecera']['tipo']==1 ): //solo Facturas
 		if( $_POST['cliente']['contado']==1 ){ // 1 = contado
-			$contado = "CONTADO" . $separador . 0 . $separador . $monedaC . $separador;
+			$contado = "Contado" . $separador . 0 . $separador . $monedaC . $separador;
 		}else{
-			$contado = "CREDITO" . $separador . floatval($totFin) - floatval($rowC['adelanto'])  . $separador . $monedaC . $separador;
+			$contado = "Crédito" . $separador . floatval($totFin) - floatval($rowC['adelanto'])  . $separador . $monedaC . $separador;
 			$fecha = floatval($totFin) - floatval($rowC['adelanto']). $separador . $_POST['cliente']['fechaCredito'] .$separador. $monedaC. $separador;
 			$fFecha = fopen("{$directorio}{$nombreArchivo}.dpa", "w");
 			fwrite($fFecha, "{$fecha}");

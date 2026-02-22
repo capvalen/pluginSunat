@@ -132,7 +132,6 @@ for ($i=0; $i < count($productos) ; $i++) {
 			$igvCant= 0;
 			$codigoIGV='9997'; $nomTributo ='EXO'; $tipAfecto=20;
 		}
-		
 		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
 		 (null,  concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['descripcionProducto']}',
@@ -237,9 +236,9 @@ fclose($fTributo);
 /* ************ INICIO AL CONTADO *************** */		
 if($_POST['emitir']==1 ): //solo Facturas
 	if( $_POST['jsonCliente'][0]['contado']==1 ){ // 1 = contado
-		$contado = "CONTADO" . $separador . 0 . $separador . $monedaC . $separador;
+		$contado = "Contado" . $separador . 0 . $separador . $monedaC . $separador;
 	}else{
-		$contado = "CREDITO" . $separador . floatval($totFin) - floatval($rowC['adelanto'])  . $separador . $monedaC . $separador;
+		$contado = "Crédito" . $separador . floatval($totFin) - floatval($rowC['adelanto'])  . $separador . $monedaC . $separador;
 		$fecha = floatval($totFin) - floatval($rowC['adelanto']). $separador . $separador. $monedaC. $separador;
 		$fFecha = fopen("{$directorio}{$nombreArchivo}.dpa", "w");
 		fwrite($fFecha, "{$fecha}");

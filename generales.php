@@ -1,10 +1,10 @@
 <?php
 //Rellenar por cada Cliente:
-$dirBaseSunat = 'C:\SFS_v1.3.4.2\sunat_archivos\sfs';
+$dirBaseSunat = 'E:\SFS_v2.1\sunat_archivos\sfs';
 $directorio = $dirBaseSunat. '\DATA/';
 $dirRespuestas = $dirBaseSunat. '\RPTA/';
-$rucEmisor ='10210130557';
-$nombreEmisor = "De: Alvarez Meneses Pablo Cesar";
+$rucEmisor ='10425580481';
+$nombreEmisor = "De: BARJA SAMANIEGO PAOLA DENISSE";
 $direccionEmisor = "Av. Industrial S/N  (Esquina Av. Industrial y Av. España) San Martin de Pangoa - Satipo - Junín";
 $celularEmisor = "985 946 052";
 $nombrePrint = 'HP1102W'; //TM-T20II
@@ -32,7 +32,7 @@ $tipoTributo='1000';
 $nombreTributo = 'IGV';
 $tributoExtranjero = 'VAT';
 $afectacion = '10';
-$porcentajeIGV = $_COOKIE['igvGlobal'] ?? 10; //10 en restaurantes, otros 18
+$porcentajeIGV = $_COOKIE['igvGlobal'] ?? 10.5; //IGV: 10.5 en restaurantes, otros 18
 $porcentajeIGV1 = 1+($porcentajeIGV)/100;
 $tributoISC = '-';
 $codigoISC = '0.00';
