@@ -79,3 +79,7 @@ thead{
 #modalEmisionBoleta{
 	overflow: auto;
 }
+
+/* Sticky footer: reserve space and ensure it's on top */
+#seccionPrincipal{min-height: 80vh;}
+footer.fixed-bottom{ z-index:1030; }

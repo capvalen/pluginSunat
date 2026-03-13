@@ -31,7 +31,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 		</div>
 	</section>
 </div>
-<section>
+<section id="seccionPrincipal">
 	<div class="container-fluid mt-5 mb-5 ">
 		<div class="row">
 			<div class="col-md-3 text-center">
@@ -85,9 +85,9 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	</div>
 </section>
 
-<footer class="bg-dark p-3 text-white text-center mt-1 ">
+<footer class="bg-dark p-3 text-white text-center mt-1 fixed-bottom">
 	<p class="mb-0"><i class="bi bi-bookmark"></i>  <small><?php include 'php/version.php';?></small></p>
-	<p class="mb-1"><i class="bi bi-bookmark"></i> Facturador SFS 2.0</p>
+	<p class="mb-1"><i class="bi bi-bookmark"></i> Facturador Sunat 2.1</p>
 </footer>
 
 <div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog" data-backdrop="static" >
@@ -555,7 +555,7 @@ $(document).ready(function(){
 
 	$.ajax({url: 'php/getPreciosProductos.php', type: 'POST' }).done(function(resp) {
 		//console.log(resp)
-		console.info( '\033[35mLista de precios:' );
+		console.info( 'Lista de precios:' );
 		$.precios = JSON.parse(resp);
 		console.log( $.precios );
 	});
