@@ -18,11 +18,13 @@
 		}
 
 		#imagen {
-			background: url(images/fondo.jpg) center center / cover no-repeat;
+			background: url('images/fondo.webp') center center / cover no-repeat;
 			position: fixed;
+			top:0;
+			left:0;
 			width: 100%;
 			height: 100%;
-			z-index: -2;
+			z-index: -1;
 		}
 
 		#overlay {
@@ -75,8 +77,16 @@
 			right: 20px;
 			z-index: 5;
 		}
+		#whatsapp {
+			width: 60px;
+			height: 60px;
+			position: fixed;
+			bottom: 90px;
+			right: 20px;
+			z-index: 5;
+		}
 
-		#messenger img:hover {
+		#messenger img:hover, #whatsapp img:hover {
 			margin-top: -5px;
 			cursor: pointer;
 			filter: drop-shadow(4px 5px 7px rgb(221, 221, 221));
@@ -150,6 +160,11 @@
 	<div id="messenger">
 		<a href="https://m.me/infocatsoluciones" target="_blank">
 			<img src="images/messenger.png" class="w-100">
+		</a>
+	</div>
+	<div id="whatsapp">
+		<a href="https://wa.me/51977692108?text=Hola%20requiero%ayuda%20con%20el%20facturador" target="_blank">
+			<img src="images/whatsapp.png" class="w-100">
 		</a>
 	</div>
 
