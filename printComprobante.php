@@ -23,6 +23,7 @@ use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\RoundBlockSizeMode;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Writer\ValidationException;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 
 
 $separador ='|';
@@ -30,27 +31,17 @@ $tempDir = './';
 $filename = "qrtemp";
 $body =  $_POST['rucEmisor'] .$separador. $_POST['tipoComprobante'] .$separador. $_POST['serie'] .$separador. $_POST['correlativo'] .$separador. $_POST['igvFinal'] .$separador. $_POST['totalFinal'] . $separador. $_POST['fecha'] . $separador. $_POST['tipoCliente'] . $separador. $_POST['docClient']. $separador ;
 
-/* $qrCode = new QrCode($body);
-$qrCode->setSize(260);
-$qrCode->setWriterByName('png');
-$qrCode->setMargin(10);
-$qrCode->setEncoding('UTF-8');
-$qrCode->setErrorCorrectionLevel(new ErrorCorrectionLevel(ErrorCorrectionLevel::LOW));
-$qrCode->writeFile(__DIR__.'/qrcode.png'); */
-
 $writer = new PngWriter();
 
 // Create QR code
 $qrCode = QrCode::create($body)
     ->setEncoding(new Encoding('UTF-8'))
     ->setErrorCorrectionLevel(ErrorCorrectionLevel::Low)
-    ->setSize(300)
-    ->setMargin(10)
+    ->setSize(250)
+    ->setMargin(15)
     ->setRoundBlockSizeMode(RoundBlockSizeMode::Margin)
     ->setForegroundColor(new Color(0, 0, 0))
     ->setBackgroundColor(new Color(255, 255, 255));
-
-
 $result = $writer->write($qrCode);
 
 // Save it to a file
@@ -68,6 +59,8 @@ if (isset($_POST['ticketera'])){ $nombrePrint= $_POST['ticketera'];}
 
 //$connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/CAJA");
 $connectorV31 = new WindowsPrintConnector("smb://127.0.0.1/".$nombrePrint);
+//$connectorV31 = new FilePrintConnector("output.bin");
+
 try {
     $printer = new Printer($connectorV31);
 
@@ -83,11 +76,13 @@ try {
     $printer -> text("RUC: ".$rucEmisor."\n");
     $printer -> setEmphasis(false);
     $printer -> text("".$direccionEmisor."\n");
+    $printer -> text("-----------------------"."\n");
     $printer -> setEmphasis(true);
-    $printer -> text("{$queEs}\n");
+    $printer -> text("~* {$queEs} *~\n");
     $printer -> text("{$_POST['serie']}-{$_POST['correlativo']}\n");
     $printer -> setEmphasis(false);
-    $printer -> text("--------------------------------\n");
+    $printer -> text("-----------------------"."\n");
+    
     $printer->setJustification(Printer::JUSTIFY_LEFT);
     $printer -> text("Fecha de emisión: ". $_POST['fechaLat'] ."\n");
     $printer -> text("Doc. Identidad: {$_POST['docClient']}\n");
@@ -97,13 +92,14 @@ try {
     }else{
         $printer -> text("Dirección: ".strtoupper($_POST['direccion'])."\n");}
     $printer->setJustification(Printer::JUSTIFY_CENTER);
-    $printer -> text("--------------------------------\n");
+    $printer -> text("-----------------------"."\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
 	$printer -> text("DESCRIPCION  | CANT |  P.UNIT.  |  SUBTOTAL  |\n");
     $printer -> text("{$todoProd}\n");
-    $printer -> text("--------------------------------\n");
-		if($rowC['descuentos']>0):
-			$printer -> text("Valor de venta: S/ {$_POST['exonerado']} \n");
+    $printer -> text("-----------------------"."\n");
+		if($_POST['descuento']>0):
+			$printer -> text("Valor de venta: S/ " . $_POST['totalFinal'] + $_POST['descuento'] . " \n");
+			$printer -> text("Descuento global: S/ " . $_POST['descuento'] . " \n");
 		endif;
     $printer -> text("Exonerado: S/ {$_POST['exonerado']} \n");
     $printer -> text("Sub Total: S/ {$_POST['costoFinal']} \n");
@@ -111,18 +107,17 @@ try {
     $printer -> text("Total: S/ {$_POST['totalFinal']} \n");
     $printer -> text("SON: {$_POST['monedas']} \n");
     $printer->setJustification(Printer::JUSTIFY_CENTER);
-    $printer -> text("--------------------------------\n");
+    $printer -> text("-----------------------"."\n");
     $printer -> text("Tipo de pago: Contado\n");
 	if($_POST['serie']==''){
     $printer -> text("Contacto: ".$celularEmisor."\n");
-	
 		$printer -> text("No olvide reclamar su comprobante\n");
 	}else{
 		$printer -> bitImage($tuxQR);
-		$printer -> text("--------------------------------\n");
+		$printer -> text("-----------------------"."\n");
     $printer -> text("Contacto: ".$celularEmisor."\n");
     $printer -> setTextSize(1, 1);
-    $printer -> text("Esta es una representación impresa de la factura electrónica, generada en el Sistema de SUNAT. Puede verificarla utilizando su Clave SOL.\n");
+    $printer -> text("Esta es una representación impresa de la Facturación Electrónica, generada en SUNAT. Regulación Legal en N.º 003-2023/SUNAT.\n");
 	}	
     $printer -> text("Gracias por tu preferencia\n");
     
