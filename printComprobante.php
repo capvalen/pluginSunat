@@ -2,6 +2,14 @@
 //include('phpqrcode/qrlib.php'); 
 include "generales.php";
 
+$jsonData = file_get_contents('php://input');
+$_POST = json_decode($jsonData, true);
+
+// Rechazar OPTIONS
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+	http_response_code(200);
+	exit;
+}
 
 //require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
 require __DIR__ . '/vendor/autoload.php';
@@ -51,6 +59,9 @@ $result->saveToFile(__DIR__.'/qrcode.png');
 $productos=$_POST['productos'];
 $todoProd= '';
 foreach ($productos as $variable) {
+	if($_POST['esServicio'] == 1)
+    $todoProd = $todoProd .  ucwords($variable['descripcion'])."\n               ".'   S/ '. number_format($variable['precio'],2)."\n";
+	else
     $todoProd = $todoProd .  ucwords($variable['descripcion'])."\n              ".$variable['cantidad']." ".$variable['undCorto']."   ". "S/ ". number_format($variable['preProducto'],2).'   S/ '. number_format($variable['precio'],2)."\n";
 }
 //echo $todoProd;
