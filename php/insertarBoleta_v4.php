@@ -4,8 +4,14 @@ include 'conexion.php';
 include '../generales.php';
 require "../NumeroALetras.php";
 
+// Rechazar OPTIONS
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+	http_response_code(200);
+	exit;
+}
+
 $_POST = json_decode(file_get_contents('php://input'),true); 
-//var_dump( $_POST);
+//var_dump( $_POST); die();
 
 
 /* Verifico si existe, el cliente, sino lo guardo */
@@ -146,7 +152,8 @@ for ($i=0; $i < count($productos) ; $i++) {
 		 $_POST['proceso']='3';
 		 $_POST['cantidad']=$canti;
 		 $_POST['obs']='';
-		 require 'updateStock.php';
+		 if($productos[$i]['unidadSunat']<>'ZZ') //si es diferente de servicio, actualiza stock
+			require 'updateStock.php';
 
 		// echo $sqlProd;
 	}
@@ -262,10 +269,13 @@ if($_POST['empresa']['crearArchivo']==1 && $soy!='NOTA DE PEDIDO' ){
 
 //echo $serie."-".$correlativo."-OK";
 $filas=array();
-$filas = array(array ( 'rucEmisor'=> $_POST['empresa']['ruc'], 'tipoComprobante' => $_POST['cabecera']['tipo'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$_POST['cliente']['dni'], 'razonSocial'=>$_POST['cliente']['razon'], 'fechaEmision'=> $rowC['fechaEmision'], 'exonerado'=> $exonerados,  'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion'], "placa"=> '' ));
+$filas = array(
+	'cliente' =>
+	array ( 'rucEmisor'=> $_POST['empresa']['ruc'], 'tipoComprobante' => $_POST['cabecera']['tipo'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$_POST['cliente']['dni'], 'razonSocial'=>$_POST['cliente']['razon'], 'fechaEmision'=> $rowC['fechaEmision'], 'exonerado'=> $exonerados,  'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion'], "placa"=> ''),
+	'productos' => $rowProductos
+);
 
-array_push ( $filas, $rowProductos);
-
+#array_push ( $filas, listaProductos);
 echo json_encode($filas);
 
 

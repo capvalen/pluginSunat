@@ -102,12 +102,14 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5); */
 
 
 <div class="row">
-<div class="col-sm-6 ">
-	<?php
-	if( is_file('../images/empresa.jpg') ): ?> <img src="images/empresa.jpg" alt="" class="w-75" > <?php
-	else: ?> <img src="images/empresa.png" alt="" class="w-75" > <?php
-	endif;
-	?>
+<div class="col-sm-6 d-flex justify-content-center align-items-center">
+	
+		<?php
+		if( is_file('../images/empresa.jpg') ): ?> <img src="images/empresa.jpg" alt="" class="w-75" > <?php
+		else: ?> <img src="images/empresa.png" alt="" class="w-75" > <?php
+		endif;
+		?>
+	
 </div>
 <div class="col-sm-6 mt-5 mb-2 text-center " class="">
 	<div class="border border-dark bordeGrueso">

@@ -94,12 +94,15 @@ try {
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("-----------------------"."\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
-	$printer -> text("DESCRIPCION  | CANT |  P.UNIT.  |  SUBTOTAL  |\n");
+		if($_POST['esServicio'] == 1)
+			$printer -> text("DESCRIPCIÓN DEL SERVICIO  |  SUBTOTAL  |\n");
+		else
+			$printer -> text("DESCRIPCION  | CANT |  P.UNIT.  |  SUBTOTAL  |\n");
     $printer -> text("{$todoProd}\n");
     $printer -> text("-----------------------"."\n");
 		if($_POST['descuento']>0):
-			$printer -> text("Valor de venta: S/ " . $_POST['totalFinal'] + $_POST['descuento'] . " \n");
-			$printer -> text("Descuento global: S/ " . $_POST['descuento'] . " \n");
+			$printer -> text("Valor de Venta: S/ " . $_POST['totalFinal'] + $_POST['descuento'] . " \n");
+			/* $printer -> text("Descuento Flobal: S/ " . $_POST['descuento'] . " \n"); */
 		endif;
     $printer -> text("Exonerado: S/ {$_POST['exonerado']} \n");
     $printer -> text("Sub Total: S/ {$_POST['costoFinal']} \n");

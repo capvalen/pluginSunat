@@ -26,8 +26,8 @@ require "NumeroALetras.php";
 	border-top: 2px solid #343a40!important;
 }
 </style>
-<div class="container">
-	<button class="btn btn-primary d-print-none" id="btnPrimt">Imprimir Documento</button>
+<div class="container my-3">
+	<button class="btn btn-primary btn-block d-print-none " id="btnPrimt"><img src="./images/print.png" style="width:20px"> Imprimir Comprobante de Pago</button>
 <?php
 
 function fechaLatam($fecha) {
@@ -101,7 +101,7 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
 
 
 <div class="row">
-<div class="col-sm-6 ">
+<div class="col-sm-6 d-flex justify-content-center align-items-center">
 	<?php
 	if( is_file('../images/empresa.jpg') ): ?> <img src="images/empresa.jpg" alt="" class="w-75" > <?php
 	else: ?> <img src="images/empresa.png" alt="" class="w-75" > <?php

@@ -145,7 +145,7 @@
 							</div>
 
 							<p class="mt-3 mb-0 text-right">
-								<small>Versión <?= include "php/version.php"; ?></small>
+								<small><?= include "php/version.php"; ?></small>
 							</p>
 
 						</div>

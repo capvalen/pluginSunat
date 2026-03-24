@@ -32,7 +32,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	</section>
 </div>
 <section id="seccionPrincipal">
-	<div class="container-fluid mt-5 mb-5 ">
+	<div class="container-fluid mt-5 mb-5 ">i
 		<div class="row">
 			<div class="col-md-3 text-center">
 				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto'>
@@ -42,7 +42,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 				<small class="text-muted"><i class="bi bi-person"></i> Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 				<div class="row d-flex justify-content-between">
 					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-calendar2-event"></i> Filtro por fecha</small><input type="date" class="form-control text-center" id="fechaFiltro"></div>
-					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-funnel"></i> Filtro texto</small><input type="text" autocomplete="off" class="form-control" id="txtFiltro"></div>
+					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-funnel"></i> Filtro por comprobante, Cliente</small><input type="text" autocomplete="off" class="form-control" id="txtFiltro"></div>
 					<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="bi bi-arrow-clockwise"></i> Actualizar</button></div>
 				</div>
 			</div>
@@ -555,7 +555,7 @@ $(document).ready(function(){
 
 	$.ajax({url: 'php/getPreciosProductos.php', type: 'POST' }).done(function(resp) {
 		//console.log(resp)
-		console.info( 'Lista de precios:' );
+		console.info('Lista de precios:' );
 		$.precios = JSON.parse(resp);
 		console.log( $.precios );
 	});
