@@ -5,7 +5,7 @@
 <!-- <link rel="stylesheet" href="icofont.css?ver=1.0.1"> -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="css/bootstrap-select.min.css">
-<link rel="stylesheet" href="css/estiloFacturador.css?v=1.0.2">
+<link rel="stylesheet" href="css/estiloFacturador.css?v=1.0.3">
 <link rel="stylesheet" href="css/anksunamun.css?ver=1.0">
 <link rel="shortcut icon" href="images/VirtualCorto.png" type="image/png">
 <link rel="stylesheet" href="css/checkbox.css">

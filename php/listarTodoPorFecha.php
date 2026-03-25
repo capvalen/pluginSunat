@@ -26,6 +26,7 @@ else:
 
 endif;
 
+$esReporte = isset($_POST['esReporte']) ? intval($_POST['esReporte']): 0;
 
 $resultado=$cadena->query($sql);
 $numero = $resultado ->num_rows;
@@ -71,7 +72,9 @@ while($row=$resultado->fetch_assoc()){
 				}
 			?>
 		</td>
-		<?php if(in_array( $row['factTipoDocumento'], $comprobantes)){ ?>
+		<?php
+		if($esReporte == 0)
+		if(in_array( $row['factTipoDocumento'], $comprobantes) ){ ?>
 			<td data-caso="<?= $row['factTipoDocumento']; ?>" data-serie="<?= $row['factSerie']; ?>" data-correlativo="<?= $row['factCorrelativo']; ?>" style="display: flex;">
 				<?php 
 				if($row['comprobanteEmitido']==0 && $fecha == date('Y-m-d')){ ?>

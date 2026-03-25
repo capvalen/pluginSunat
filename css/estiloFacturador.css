@@ -15,7 +15,7 @@ input[type=number] {
 	font-family:'Icofont', 'Segoe UI';
 	text-align: right;
 }
-.bootstrap-select .dropdown-toggle .filter-option{font-family:'Icofont', 'Segoe UI';}
+/* .bootstrap-select .dropdown-toggle .filter-option{font-family:'Segoe UI';} */
 .close{color: #ff0202}
 .close:hover, .close:not(:disabled):not(.disabled):hover{color: #fd0000;opacity:1;}
 #imgLogo{max-width:250px;}

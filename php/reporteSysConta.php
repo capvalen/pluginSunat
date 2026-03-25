@@ -1,6 +1,6 @@
 <table class="table table-hover mt-3" id="tablaSysConta" >
 	<thead>
-		<tr>
+		<tr class="bg-success">
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Fecha Emisión</th>
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Fecha de Vencimiento</th>
 			<th data-sort="string"><i class="icofont-expand-alt"></i> Tipo Comp.</th>
