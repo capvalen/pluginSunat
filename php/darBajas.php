@@ -26,9 +26,11 @@ if( $_POST['boleta']=="1" ){ //Bajas para facturas
 	$lineaBaja = $lineaBaja . $rowC['fechaEmision']. "|".date('Y-m-d')."|01|".$rowC['facCorre']."|".strtoupper($_POST['concepto'])."|";
 	//echo $nombreArchivo;
 	
-	$baja = fopen("{$directorio}{$nombreArchivo}.cba", "w");
-	fwrite($baja, "{$lineaBaja}");
-	fclose($baja);
+	if( $generarArchivo ){
+		$baja = fopen("{$directorio}{$nombreArchivo}.cba", "w");
+		fwrite($baja, "{$lineaBaja}");
+		fclose($baja);
+	}
 	
 
 	$sql="UPDATE `fact_cabecera` SET 
@@ -51,10 +53,13 @@ if( $_POST['boleta']=="3" ){ //Bajas para boletas
 	/* $lineaBaja = $lineaBaja . $rowC['fechaEmision']. "|". date('Y-m-d') ."|03|".$rowC['facCorre']."|".$rowC['tipDocUsuario']."|".$rowC['dniRUC']."|PEN|".$rowC['costoFinal']."|0|0|0|0|0|". $rowC['totalFinal']."|||||||||3|"; */
 	$lineaBaja = $lineaBaja . $rowC['fechaEmision']. "|".date('Y-m-d')."|03|".$rowC['facCorre']."|BAJA DE BOLETA|";
 	//echo $nombreArchivo;
+
+	if( $generarArchivo ){
+		$baja = fopen("{$directorio}{$nombreArchivo}.cba", "w");
+		fwrite($baja, "{$lineaBaja}");
+		fclose($baja);
+	}
 	
-	$baja = fopen("{$directorio}{$nombreArchivo}.cba", "w");
-	fwrite($baja, "{$lineaBaja}");
-	fclose($baja);
 
 /* 	$lineaTributo = '1|1000|IGV|VAT|'.$rowC['costoFinal'].'|'.$rowC['IGVFinal'].'|';
 	$tributo = fopen("{$directorio}{$nombreArchivo}.TRD", "w");

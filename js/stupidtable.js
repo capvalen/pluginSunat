@@ -1,5 +1,4 @@
-// Stupid jQuery table plugin. Extract from: https://github.com/joequery/Stupid-Table-Plugin
-
+// Stupid jQuery table plugin v1.1.3. Extract from: https://github.com/joequery/Stupid-Table-Plugin
 (function($) {
   $.fn.stupidtable = function(sortFns) {
     return this.each(function() {
@@ -69,7 +68,6 @@
       return;
     }
 
-    var dir = $.fn.stupidtable.dir;
     var $table = $this_th.closest("table");
 
     var sort_info = {
@@ -244,7 +242,6 @@
     var $table = sort_info.$table;
     var $this_th = sort_info.$th;
     var sort_dir = $this_th.data('sort-dir');
-    var th_index = sort_info.th_index;
 
 
     // Reset siblings
@@ -257,7 +254,7 @@
     var $this_th = sort_info.$th;
     var dir = $.fn.stupidtable.dir;
 
-    if(!!force_direction){
+    if(force_direction){
         sort_dir = force_direction;
     }
     else{
@@ -278,4 +275,4 @@
     return th_index;
   };
 
-})(jQuery);
+})(window.jQuery);

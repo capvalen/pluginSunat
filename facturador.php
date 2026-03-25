@@ -32,7 +32,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 	</section>
 </div>
 <section id="seccionPrincipal">
-	<div class="container-fluid mt-5 mb-5 ">i
+	<div class="container-fluid mt-5 mb-5 ">
 		<div class="row">
 			<div class="col-md-3 text-center">
 				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto'>
@@ -1491,6 +1491,7 @@ $('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {
 		$('#txtConceptoBaja').removeClass('d-none').prev().removeClass('d-none');
 		$.bajaComprobante = 'factura';
 	}
+	$('#txtConceptoBaja').val('')
 	$('#modalDarBajas').modal('show');
 });
 $('#btnDarbaja').click(function() {

@@ -6,8 +6,12 @@
 include 'conexion.php';
 $clavePrivada= 'Es sencillo hacer que las cosas sean complicadas, pero difícil hacer que sean sencillas. Friedrich Nietzsche';
 $local='/';
-$log = mysqli_query($cadena,"SELECT * from  usuario u  where usuNick = '".$_POST['user']."' and usuPass='".md5($_POST['pws'])."';");
-//echo "select * from  usuario u  where usuNick = '".$_POST['user']."' and usuPass='".md5($_POST['pws'])."';";
+
+if(isset($_POST['entrada']))
+	$log = mysqli_query($cadena,"SELECT * from  usuario u  where usuNick = '".$_POST['user']."' and token='".$_POST['token']."';");
+else
+	$log = mysqli_query($cadena,"SELECT * from  usuario u  where usuNick = '".$_POST['user']."' and usuPass='".md5($_POST['pws'])."';");
+
 $row = mysqli_fetch_array($log, MYSQLI_ASSOC);
 $expira=time()+60*60*3; //cookie para 3 horas
 if ($row['idUsuario']>=1){
