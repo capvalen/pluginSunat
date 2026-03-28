@@ -26,8 +26,9 @@ if($resultado->num_rows>=1){
 	);*/
 	if(strlen($_POST['ruc'])<8){
 		$fila = array(
-			"razon_social" => '00000000',
-			"domicilio_fiscal" => 'Cliente sin documento',
+			"ruc" => '00000000',
+			"razon_social" => 'Cliente sin documento',
+			"domicilio_fiscal" => '-',
 			"activo" => 'HABIDO'
 		);
 		echo json_encode($fila);

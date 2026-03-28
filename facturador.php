@@ -484,7 +484,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 		</div>
 	</div>
 </div>
-<?php if($_COOKIE['ckPower']==1){ ?>
+<?php if($_COOKIE['ckPower']==1 || $_COOKIE['ckPower']==2){ ?>
 <!-- Modal para confirmar la Baja -->
 <div class="modal fade" id="modalDarBajas" tabindex="-1" role="dialog">
 	<div class="modal-dialog modal-dialog-centered" role="document">
@@ -1477,7 +1477,7 @@ function fechaLatam(fechita){
 	if(fechita) return moment(fechita).format('DD/MM/YYYY')
 }
 
-<?php if($_COOKIE['ckPower']==1){ ?>
+<?php if($_COOKIE['ckPower']==1 || $_COOKIE['ckPower']==2){ ?>
 $('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {
 	$('#strComprobante').text( $(this).parent().parent().find('.tdCorrelativo').text());
 	$('#h5ComprobanteBaja').text( $('#strComprobante').text());
