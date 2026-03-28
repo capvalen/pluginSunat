@@ -12,7 +12,7 @@ var_dump($comprobantes); */
 
 $current_dir = dirname(__FILE__);
 //echo $current_dir;
-$directorio="../comprobantes/";
+$directorio= "../comprobantes/";
 //$path = realpath( $current_dir . '/../comprobantes/' );
 $path = realpath( $current_dir . '/'.$directorio );
 //echo "Estamos en ". $path;
@@ -48,7 +48,7 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 		
 
 		
-		$archivo = fopen("{$path}/{$nombreArchivo}.cab", "w");
+		$archivo = fopen("{$path}/{$nombreArchivo}.CAB", "w");
 		fwrite($archivo, "{$lineaCabeza}");
 		fclose($archivo);
 
@@ -58,7 +58,7 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 				$tributo = $tributo . "\n9997|EXO|VAT|".round($rowCabecera['sumImpVenta'],2)."|0.00|";
 			}
 
-			$fTributo = fopen("{$path}/{$nombreArchivo}.tri", "w");
+			$fTributo = fopen("{$path}/{$nombreArchivo}.TRI", "w");
 			fwrite($fTributo, "{$tributo}");
 			fclose($fTributo);
 
@@ -71,7 +71,7 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 			}else{
 				$contado = "Credito" . $separador . floatval($rowCabecera['adelanto']) - floatval($totFin) . $separador . $monedaC . $separador;
 			}
-			$fContado = fopen("{$path}/{$nombreArchivo}.pag", "w");
+			$fContado = fopen("{$path}/{$nombreArchivo}.PAG", "w");
 			fwrite($fContado, "{$contado}");
 			fclose($fContado);
 		endif;
@@ -106,13 +106,13 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 			}
 			//echo $lineaDetalle;
 
-			$detalle = fopen("{$path}/{$nombreArchivo}.det", "w");
+			$detalle = fopen("{$path}/{$nombreArchivo}.DET", "w");
 			fwrite($detalle, "{$lineaDetalle}");
 			fclose($detalle);
 
 			$leyenda = $rowDetallles['codLeyenda'].$separador. $letras .$separador;
 
-			$fLeyenda = fopen("{$path}/{$nombreArchivo}.ley", "w");
+			$fLeyenda = fopen("{$path}/{$nombreArchivo}.LEY", "w");
 			fwrite($fLeyenda, "{$leyenda}");
 			fclose($fLeyenda);
 
@@ -128,7 +128,7 @@ require_once('darBajas_todas.php');
 
 $zip = new ZipArchive();
 $idUnico = uniqid();
-$baseZip = "datosSunat". $idUnico .".zip";
+$baseZip = "datosSunat_". $idUnico .".zip";
 $nombreArchivoZip = $path . "/". $baseZip;
 //echo $nombreArchivoZip;
 if (!$zip->open($nombreArchivoZip, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
@@ -155,6 +155,10 @@ if ($handler = opendir($thefolder)) {
 	closedir($handler);
 }
 
+$rutaSugerida = "D:/SFS_v2.1/sunat_archivos/sfs/DATA/";
+$comentario = "RUTA_SUGERIDA: " . $rutaSugerida . "\n";
+$comentario .= "Este archivo debe extraerse en la carpeta de comprobantes de SUNAT.";
+$zip->setArchiveComment($comentario);
 
 $resultado = $zip->close();
 	if ($resultado) {
