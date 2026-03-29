@@ -252,8 +252,8 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 </div>
 <div class="row">
 	<div class="col">
-		<p class="small">Visible en Sunat a partir de 24-48 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT.</p>
-		<p class="small d-none">Puede ser consultada en: https://e-consulta.sunat.gob.pe/ <br/>Visble en Sunat a partir de 24-48 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
+		<p class="small d-none">Visible en Sunat a partir de 24-48 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT.</p>
+		<p class="small">Puede ser consultada en: https://e-consulta.sunat.gob.pe/ <br/>Visble en Sunat a partir de 24-48 horas de la emisión mediante Resolución de Superintendencia N° 0150-2021/SUNAT. </p>
 	</div>
 </div>
 </section>
