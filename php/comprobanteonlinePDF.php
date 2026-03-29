@@ -5,6 +5,9 @@
 require_once('../vendor/autoload.php');
 $logo_path = '../bitmap.jpg';
 
+$_GET['comprobante'] = 'B001-00000152';
+$base = base64_encode($_GET['comprobante']).'1206cp';
+echo $base; die();
 
 // Crear nuevo documento PDF
 $pdf = new TCPDF('P', 'mm', array(80, 170), true, 'UTF-8', false);
