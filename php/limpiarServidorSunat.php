@@ -22,12 +22,12 @@ if(is_dir($directorio)){
 				}else{
 					//echo "es archivo ". $archivoSinFirma." tiene ".strpos($archivoSinFirma, '.zip')."<br>";
 					if( strpos($archivoSinFirma, '.zip') ){ unlink($directorio . $archivoSinFirma); }
-					if( strpos($archivoSinFirma, '.cba') ){ unlink($directorio . $archivoSinFirma); }
+					if( strpos($archivoSinFirma, '.CBA') ){ unlink($directorio . $archivoSinFirma); }
 				}
-				if( strpos($archivoSinFirma, '.cab') ){
+				if( strpos($archivoSinFirma, '.CAB') ){
 					echo '<li>';
 					echo 'Archivo: '.$archivoSinFirma; //simplemente imprimimos el nombre del archivo actual
-					$archivoConFirma = str_replace('.cab','',$archivoSinFirma);
+					$archivoConFirma = str_replace('.CAB','',$archivoSinFirma);
 					echo "BASE: ". $archivoConFirma;
 					
 					//Actualizar estado en la DB
@@ -50,20 +50,20 @@ if(is_dir($directorio)){
 	for($i=0; $i<=count($arZip); $i++){
 		if(file_exists($arZip[$i])){ unlink($arZip[$i]); }
 	} */
-	/* $arCba =glob(opendir($directorio."*.cba"));
-	for($i=0; $i<=count($arCba); $i++){
-		if(file_exists($arCba[$i])){ unlink($arCba[$i]); }
+	/* $arCBA =glob(opendir($directorio."*.CBA"));
+	for($i=0; $i<=count($arCBA); $i++){
+		if(file_exists($arCBA[$i])){ unlink($arCBA[$i]); }
 	} */
 }else{
 	echo "La ruta del Facturador es erronea";
 }
 
 function actualizarDB($archivoConFirma, $dirBase){
-	$tempCabecera = $dirBase . $archivoConFirma.'.cab';
-	$tempDetalle = $dirBase . $archivoConFirma.'.det';
-	$tempLeyenda = $dirBase . $archivoConFirma.'.ley';
-	$tempTri = $dirBase . $archivoConFirma.'.tri';
-	$tempPag = $dirBase . $archivoConFirma.'.pag';
+	$tempCabecera = $dirBase . $archivoConFirma.'.CAB';
+	$tempDetalle = $dirBase . $archivoConFirma.'.DET';
+	$tempLeyenda = $dirBase . $archivoConFirma.'.LEY';
+	$tempTri = $dirBase . $archivoConFirma.'.TRI';
+	$tempPag = $dirBase . $archivoConFirma.'.PAG';
 
 	if(file_exists($tempCabecera)){ unlink($tempCabecera); }
 	if(file_exists($tempDetalle)){ unlink($tempDetalle); }
