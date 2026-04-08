@@ -63,8 +63,9 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
 						<th data-sort="int"><i class="bi bi-arrow-down-short"></i> Hora</th>
 						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Cliente</th>
 						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> I.G.V.</th>
-						<!-- <th data-sort="float"><i class="bi bi-arrow-down-short"></i> Monto</th> -->
-						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> Total</th>
+						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> Monto</th>
+						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> Tipo Pago</th>
+						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> Adelanto</th>
 						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Estado</th>
 						<th>@</th>
 					</tr>

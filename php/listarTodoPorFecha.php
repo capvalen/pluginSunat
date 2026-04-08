@@ -4,7 +4,7 @@ include "conexion.php";
 
 $comprobantes=[1,3,12];
 
-$select = "SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'Factura' when 3 then 'Boleta' when 0 then 'Interno' when -1 then 'Proforma' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Generar XML' when 0 then 'Sin emitir' when '2' then 'De baja' when '3' then 'Enviado a SUNAT' when 4 then 'Borrado' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja`, esContado, adelanto FROM `fact_cabecera` ";
+$select = "SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'Factura' when 3 then 'Boleta' when 0 then 'Interno' when -1 then 'Proforma' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Generar XML' when 0 then 'Sin emitir' when '2' then 'De baja' when '3' then 'Enviado a SUNAT' when 4 then 'Borrado' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja`, esContado, adelanto, observaciones FROM `fact_cabecera` ";
 if( isset($_POST['texto'])):
 	$sql= $select. " WHERE concat( `factSerie`,'-',factCorrelativo) like '%{$_POST['texto']}' or dniRUC = '%{$_POST['texto']}' or razonSocial like '%{$_POST['texto']}%';";
 
@@ -59,13 +59,16 @@ while($row=$resultado->fetch_assoc()){
 		<td><?= ( $row['esContado']=='1' )? 'Contado' : 'Crédito'; ?></td>
 		<td><?= number_format(( $row['esContado']=='1' )? '0' : $row['totalFinal'] - $row['adelanto'], 2); ?> </td>
 		<td class="text-capitalize" >
-			<?php if($row['comprobanteEmitido']==0){ 
-				?><span class='badge badge-secondary'> <i class='icofont-safety'></i> <?= $row['comprobanteEmitidoDescr']?> </span> <?php
+			<?php if($row['comprobanteEmitido']==1){ 
+				?><span class='badge badge-secondary'> <i class="bi bi-hourglass"></i> <?= $row['comprobanteEmitidoDescr']?> </span> <?php
 			 }
 				else if( in_array($row['comprobanteEmitido'], [2,4]) ){ ?>
-				<span class='badge badge-danger'> <i class='icofont-delete'></i> <?= $row['comprobanteEmitidoDescr']?></span> <br><small class='text-danger'><?= $row['motivoBaja']?></small> <?php }
-				else if($row['comprobanteEmitido']==3) { echo "<span class='badge badge-success'><i class='icofont-safety'></i> ".$row['comprobanteEmitidoDescr']. "</span>";}
-				else {
+				<span class='badge badge-danger'> <i class="bi bi-x"></i> <?= $row['comprobanteEmitidoDescr'] ?></span> <br><small class='text-danger'><?= $row['motivoBaja']?></small> <?php }
+				else if($row['comprobanteEmitido']==3){ ?>
+				<span class='badge badge-success'><i class="bi bi-check"></i> <?= $row['comprobanteEmitidoDescr'] ?></span>
+				<p class='text-muted mb-0'><?= $row['observaciones']?></p>
+				<?php
+				}else {
 					if($row['factSerie']!=''){
 						echo "<span class='badge badge-secondary'><i class='icofont-spinner-alt-2'></i> ".$row['comprobanteEmitidoDescr']. "</span>";
 					}
