@@ -96,18 +96,21 @@ $factura =  $serie.'-'.$correlativo;
 $nombreArchivo = $_POST['empresa']['ruc'].$caso.$factura ;
 
 
-$sql="INSERT INTO `fact_cabecera`(`idComprobante`, `factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
+$sql="INSERT INTO `fact_cabecera`(`factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumDescTotal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
-  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`, `adelanto`) 
-VALUES (null,{$_POST['cabecera']['tipo']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
+  `comprobanteEmitido`, `comprobanteFechado`, `cliDireccion`, `factPlaca`, `esContado`,
+	`adelanto`, `observaciones`) 
+VALUES ({$_POST['cabecera']['tipo']},'{$serie}','{$correlativo}',{$fecha}, curtime(),{$tipoDoc},
 	'{$_POST['cliente']['dni']}', ?,
 	{$exonerados}, {$baseTotal}, {$igvTotal}, {$sumaTotal}, {$descuentos}, {$totalNormal}, {$baseTotal}, {$igvTotal}, '{$letras}',
-	1,now(), ?, '', {$_POST['cliente']['contado']}, {$_POST['cliente']['adelanto']} );";
+	1,now(), ?, '', {$_POST['cliente']['contado']},
+	{$_POST['cliente']['adelanto']}, ? );";
 
 $resultado=$cadena->prepare($sql);
 $resultado->execute([
-	$_POST['cliente']['razon'], $_POST['cliente']['direccion']
+	$_POST['cliente']['razon'], $_POST['cliente']['direccion'],
+	($_POST['cliente']['observaciones'] ?? '')
 ]);
 
 $idCabecera = $cadena->insert_id;
@@ -148,12 +151,15 @@ for ($i=0; $i < count($productos) ; $i++) {
 		 //echo $sqlProd; die();
 		 $cadena->query($sqlProd);
 
-		 $_POST['idProd']=$productos[$i]['id'];
-		 $_POST['proceso']='3';
-		 $_POST['cantidad']=$canti;
-		 $_POST['obs']='';
-		 if($productos[$i]['unidadSunat']<>'ZZ') //si es diferente de servicio, actualiza stock
-			require 'updateStock.php';
+		if ($productos[$i]['unidadSunat'] == 'ZZ') //si es igual a servicio
+			continue; // Salta a la siguiente iteración
+
+		//sino: actualiza stock
+		$_POST['idProd']=$productos[$i]['id'];
+		$_POST['proceso']='3';
+		$_POST['cantidad']=$canti;
+		$_POST['obs']='';
+		require 'updateStock.php';
 
 		// echo $sqlProd;
 	}

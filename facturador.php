@@ -1,8 +1,8 @@
 <?php
 include 'php/conexion.php';
 include "generales.php";
-
-if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.html");
+//var_dump($_COOKIE); die();
+if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.php");
 	die(); }
 ?>
 <!DOCTYPE html>
@@ -727,7 +727,9 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/<?= $_COOKIE['demoFacturador']=="true" ? 'php/printDemoTicket.php' : 'printComprobante.php' ?>', type: 'POST', data: {
+		$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/<?= $_COOKIE['demoFacturador']=="true" ? 'php/printDemoTicket.php' : 'printComprobante.php' ?>', type: 'POST',
+		contentType: 'application/json',
+		 data: {
 			tipoComprobante: $.jTicket[0].tipoComprobante,
 			rucEmisor: $.jTicket[0].rucEmisor,
 			queEs: $.jTicket[0].queSoy,

@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 	http_response_code(200);
 	exit;
 }
-
+var_dump($_POST); die();
 //require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
 require __DIR__ . '/vendor/autoload.php';
 use Mike42\Escpos\Printer;
@@ -99,9 +99,14 @@ try {
     $printer -> text("Doc. Identidad: {$_POST['docClient']}\n");
     $printer -> text("Señor(es): ".strtoupper($_POST['cliente'])."\n");
     if($_POST['direccion']==''){
-        $printer -> text("Dirección: ---\n");
+        $printer -> text("Dirección: --\n");
     }else{
         $printer -> text("Dirección: ".strtoupper($_POST['direccion'])."\n");}
+    if( isset($_POST['observaciones']) ){
+			$printer -> text("Apoderado: ".strtoupper($_POST['observaciones'])."\n");
+		}else{
+			$printer -> text("Apoderado: --\n");
+		}
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer -> text("-----------------------"."\n");
     $printer->setJustification(Printer::JUSTIFY_LEFT);
