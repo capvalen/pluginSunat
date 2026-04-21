@@ -729,7 +729,8 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
 		$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/<?= $_COOKIE['demoFacturador']=="true" ? 'php/printDemoTicket.php' : 'printComprobante.php' ?>', type: 'POST',
 		contentType: 'application/json',
-		 data: {
+		
+		 data: JSON.stringify ({
 			tipoComprobante: $.jTicket[0].tipoComprobante,
 			rucEmisor: $.jTicket[0].rucEmisor,
 			queEs: $.jTicket[0].queSoy,
@@ -748,8 +749,10 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 			productos: $.jTicket[1],
 			direccion:$.jTicket[0].direccion,
 			exonerado: parseFloat($.jTicket[0].exonerado).toFixed(2),
+			observaciones: $.jTicket[0].observaciones
 			/* placa: $.jTicket[0].placa, */
-		}}).done(function(resp) {
+		})
+		}).done(function(resp) {
 			console.log(resp)
 			//location.reload();
 		});

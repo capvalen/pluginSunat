@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 	http_response_code(200);
 	exit;
 }
+
 var_dump($_POST); die();
 //require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
 require __DIR__ . '/vendor/autoload.php';

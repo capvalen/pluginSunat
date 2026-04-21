@@ -6,7 +6,7 @@ include 'generales.php';
 require "NumeroALetras.php";
 
 
-$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'FACTURA' when 3 then 'BOLETA' when -1 then 'PROFORMA' when 0 then 'TICKET INTERNO' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, factPlaca FROM `fact_cabecera` WHERE factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';";
+$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'FACTURA' when 3 then 'BOLETA' when -1 then 'PROFORMA' when 0 then 'TICKET INTERNO' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, factPlaca, observaciones FROM `fact_cabecera` WHERE factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';";
 
 $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc(); 
@@ -120,7 +120,8 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 
 
 $filas=array();
-$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $rowSeries['factTipoDocumento'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'exonerado'=> $rowC['factExonerados'], 'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion'], "placa"=> $rowSeries['factPlaca'] ));
+$filas = array(array ( 'rucEmisor'=> $rucEmisor, 'tipoComprobante' => $rowSeries['factTipoDocumento'], 'serie'=> $serie , 'correlativo'=> $correlativo, 'queSoy'=> $soy, 'letras'=> $letras, 'tipoCliente'=>$tipoDoc, 'ruc'=>$rowC['dniRUC'], 'razonSocial'=>$rowC['razonSocial'], 'fechaEmision'=> $rowC['fechaEmision'], 'exonerado'=> $rowC['factExonerados'], 'descuento'=> $descuento, 'costoFinal'=> $costo, 'igvFinal'=> $igvFin, "totalFinal" => $totFin, 'direccion'=> $rowC['cliDireccion'], "placa"=> $rowSeries['factPlaca'], "observaciones"=>$rowSeries['observaciones']
+));
 
 array_push ( $filas, $rowProductos);
 
