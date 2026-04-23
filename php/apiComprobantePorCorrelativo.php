@@ -23,7 +23,7 @@ while($rowEmpresa = $sqlEmpresa->fetch(PDO::FETCH_ASSOC)){
 
 
 $filas =null;
-$sql = $datab->prepare("SELECT *, case `factTipoDocumento` when 1 then 'FACTURA' when 3 then 'BOLETA' end as 'queDoc' FROM `fact_cabecera` WHERE concat(factSerie, '-', factCorrelativo) = ? limit 1;");
+$sql = $datab->prepare("SELECT *, case `factTipoDocumento` when 1 then 'FACTURA' when 3 then 'BOLETA' end as 'queDoc' FROM `fact_cabecera` WHERE concat(factSerie, '-', factCorrelativo) = ? and factTipoDocumento in (1,3) limit 1;");
 $sql->execute([ $_POST['correlativo'] ]);
 $rowCabecera = $sql->fetch(PDO::FETCH_ASSOC);
 
