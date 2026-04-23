@@ -6,7 +6,7 @@ include 'generales.php';
 require "NumeroALetras.php";
 
 
-$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'FACTURA' when 3 then 'BOLETA' when -1 then 'PROFORMA' when 0 then 'TICKET INTERNO' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, factPlaca, observaciones FROM `fact_cabecera` WHERE factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';";
+$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'FACTURA' when 3 then 'BOLETA' when 4 then 'Nota de Crédito' when 5 then 'Nota de Débito' when -1 then 'PROFORMA' when 0 then 'TICKET INTERNO' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, factPlaca, observaciones FROM `fact_cabecera` WHERE factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}' and factTipoDocumento = '{$_POST['tipo']}';";
 
 $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc(); 
@@ -21,7 +21,7 @@ $correlativo = $rowSeries['factCorrelativo'];
 $factura =  $serie.'-'.$correlativo;
 $nombreArchivo = $rucEmisor.$caso.$factura ; 
 
-$sqlBase="SELECT totalFinal from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';; ";
+$sqlBase="SELECT totalFinal from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}' and factTipoDocumento = '{$_POST['tipo']}';";
 $resultadoBase=$cadena->query($sqlBase);
 $rowBase=$resultadoBase->fetch_assoc();
 	
@@ -39,7 +39,7 @@ $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES con '.$parteDecim
 
 
 
-$sqlCabeza="SELECT * from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';";
+$sqlCabeza="SELECT * from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}' and factTipoDocumento = '{$_POST['tipo']}';";
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){
@@ -62,7 +62,7 @@ if($filasCabeza==1){
 }
 
 
-$sqlCabeza="SELECT * from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}';";
+$sqlCabeza="SELECT * from `fact_cabecera` where factSerie='{$_POST['serie']}' and `factCorrelativo` = '{$_POST['correlativo']}' and factTipoDocumento = '{$_POST['tipo']}';";
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
 if($filasCabeza==1){
@@ -92,7 +92,8 @@ $rowProductos = array();
 $i=1;
 $lineaDetalle ='';
 $sqlDetalle="SELECT fd.*, u.undCorto FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida
-WHERE `facSerieCorre` ='{$_POST['serie']}-{$_POST['correlativo']}';";
+left join fact_cabecera fc on fc.idComprobante = fd.idCabecera
+WHERE `facSerieCorre` ='{$_POST['serie']}-{$_POST['correlativo']}' and fc.factTipoDocumento = '{$_POST['tipo']}';";
 $resultadoDetalle=$cadena->query($sqlDetalle);
 while($rowD=$resultadoDetalle->fetch_assoc()){ 
 

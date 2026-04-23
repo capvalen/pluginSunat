@@ -38,7 +38,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.php");
 				<img src="<?= $_COOKIE['logo'];?>" class='img-fluid mx-auto'>
 			</div>
 			<div class="col ml-4">
-				<h3 class="display-4">Facturación Electrónica</h3>
+				<h3 class="display-4" style="font-size: 2.5rem;">Facturación Electrónica</h3>
 				<small class="text-muted"><i class="bi bi-person"></i> Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 				<div class="row d-flex justify-content-between">
 					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-calendar2-event"></i> Filtro por fecha</small><input type="date" class="form-control text-center" id="fechaFiltro"></div>
@@ -722,9 +722,10 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 	var caso = padre.attr('data-caso');
 	var serie = padre.attr('data-serie');
 	var correlativo = padre.attr('data-correlativo');
+	const tipo = padre.attr('data-tipo');
 
 	<?php if($_COOKIE['ticket']=='automatico'){ ?>
-	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
+	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso, serie, correlativo, tipo }}).done(function(resp) {
 		console.log( resp );
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
 		$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/<?= $_COOKIE['demoFacturador']=="true" ? 'php/printDemoTicket.php' : 'printComprobante.php' ?>', type: 'POST',
@@ -822,11 +823,12 @@ $('tbody').on('click', '.imprA4Fuera', function (e) {
 	var caso = padre.attr('data-caso');
 	var serie = padre.attr('data-serie');
 	var correlativo = padre.attr('data-correlativo');
+	const tipo = padre.attr('data-tipo');
 
-	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso:caso, serie: serie, correlativo: correlativo }}).done(function(resp) {
+	$.ajax({url: 'solicitarDataComprobante.php', type: 'POST', data: { caso, serie, correlativo, tipo }}).done(function(resp) {
 		console.log(resp)
 		$.jTicket = JSON.parse(resp); //console.log( $.jTicket );
-		window.open( 'printComprobanteA4.php?serie='+encodeURIComponent(serie)+'&correlativo='+encodeURIComponent(correlativo) ,'_blank');
+		window.open( 'printComprobanteA4.php?serie='+encodeURIComponent(serie)+'&correlativo='+encodeURIComponent(correlativo)+'&tipo='+tipo ,'_blank');
 	});
 });
 $('tbody').on('click', '.imprPDFFuera', function (e) {

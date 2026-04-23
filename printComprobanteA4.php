@@ -36,8 +36,8 @@ function fechaLatam($fecha) {
 	return $fechaObjeto->format('d/m/Y');
 }
 
-$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'FACTURA ELECTRÓNICA' when 3 then 'BOLETA ELECTRÓNICA' when -1 then 'PROFORMA' when 0 then 'TICKET INTERNO' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, esContado, observaciones
-FROM `fact_cabecera` WHERE factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
+$sqlSeries="SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'FACTURA' when 3 then 'BOLETA' when 4 then 'NOTA DE CRÉDITO' WHEN 5 THEN 'NOTA DE DÉBITO' when -1 then 'PROFORMA' when 0 then 'TICKET INTERNO' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, `razonSocial`, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, `comprobanteEmitido`, `comprobanteFechado`, esContado, observaciones
+FROM `fact_cabecera` WHERE factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}' and factTipoDocumento = '{$_GET['tipo']}';";
 $resultadoSeries=$esclavo->query($sqlSeries);
 $rowSeries=$resultadoSeries->fetch_assoc();
 
@@ -54,7 +54,7 @@ $nombreArchivo = $rucEmisor.$caso.$factura ;
 $sqlCreditos = "SELECT * from fechasCreditos where idCabecera = {$rowSeries['idComprobante']};";
 $respCreditos = $esclavo->query($sqlCreditos);	
 
-$sqlBase="SELECT totalFinal from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}'; ";
+$sqlBase="SELECT totalFinal from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}' and factTipoDocumento = '{$_GET['tipo']}';";
 $resultadoBase=$cadena->query($sqlBase);
 $rowBase=$resultadoBase->fetch_assoc();
 	
@@ -69,7 +69,7 @@ $letras = trim(NumeroALetras::convertir($parteEntera)).' SOLES '.$parteDecimal.'
 
 
 
-$sqlCabeza="SELECT * from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}';";
+$sqlCabeza="SELECT * from `fact_cabecera` where factSerie = '{$_GET['serie']}' and factCorrelativo='{$_GET['correlativo']}' and factTipoDocumento = '{$_GET['tipo']}';";
 
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
@@ -114,8 +114,8 @@ QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5); */
 <div class="col-sm-6 mt-5 mb-2 text-center " class="">
 	<div class="border border-dark bordeGrueso">
 		<h3 class="text-uppercase">RUC: <?= $rucEmisor; ?></h3>
-		<h2 class="text-uppercase"><?= $soy; ?></h2>
-		<h2 class="text-uppercase"><?= $factura; ?></h2>
+		<h3 class="text-uppercase"><?= $soy; ?> ELECTRÓNICA</h3>
+		<h3 class="text-uppercase"><strong><?= $factura; ?></strong></h3>
 	</div>
 </div>
 </div>
@@ -163,7 +163,9 @@ $i=1;
 $rowProductos = array();
 
 $lineaDetalle ='';
-$sqlDetalle="SELECT fd.*, u.undCorto FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida WHERE facSerieCorre = '{$_GET['serie']}-{$_GET['correlativo']}'";
+$sqlDetalle="SELECT fd.*, u.undCorto FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida
+left join fact_cabecera fc on fc.idComprobante = fd.idCabecera
+WHERE facSerieCorre = '{$_GET['serie']}-{$_GET['correlativo']}' and factTipoDocumento = '{$_GET['tipo']}'";
 $resultadoDetalle=$cadena->query($sqlDetalle);
 while($rowD=$resultadoDetalle->fetch_assoc()){
 	$unidad = 'NIU';
