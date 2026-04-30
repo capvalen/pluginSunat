@@ -1,6 +1,6 @@
 <?php 
 
-include "conexion.php";
+include __DIR__. "/conexion.php";
 $_POST = json_decode(file_get_contents('php://input'),true);
 
 foreach ($_POST['comprobantes'] as $comprobante) {
@@ -8,7 +8,7 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 	$sqlEstado="SELECT comprobanteEmitido FROM `fact_cabecera` where idComprobante={$comprobante}	";
 	$resultadoEstado=$esclavo->query($sqlEstado);
 	$rowEstado=$resultadoEstado->fetch_assoc();
-	if($rowEstado['comprobanteEmitido']=='2'){
+	if($rowEstado['comprobanteEmitido']=='2'){ //de baja
 		$estado=2;
 	}else{
 		$estado=3;

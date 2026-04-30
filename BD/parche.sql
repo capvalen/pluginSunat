@@ -1,3 +1,7 @@
+--1.15
+INSERT INTO `configuracion` (`idConf`, `confVariable`, `confValor`) VALUES (NULL, 'version', '1.15');
+ALTER TABLE `facturador` CHANGE `estado` `estado` INT(11) NOT NULL DEFAULT '1' COMMENT '1 falta enviar, 3 enviado';
+
 --1.14
 INSERT INTO `configuracion` (`idConf`, `confVariable`, `confValor`) VALUES (NULL, 'version', '1.14');
 ALTER TABLE `fact_cabecera` CHANGE `factTipoDocumento` `factTipoDocumento` INT(11) NULL DEFAULT '0' COMMENT 'B(3),F(1),NC(4),ND(5)';

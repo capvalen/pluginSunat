@@ -616,17 +616,6 @@ function limiteVentas(){
 		}
 	}
 }
-function encolar(id){
-	var boton = event.target
-	$.ajax({
-		url: 'php/encolarComprobante.php', type:'POST', data:{ id }
-	}).done(resp =>{
-		console.log(resp)
-		alertify.message('<i class="bi bi-lightning-fill"></i> Adjuntado a la cola.', 3);
-	})
-	$(boton).remove()
-
-}
 
 $('#btnEmitirComprobante').click(function() {
 	/* $('#txtNCodNegocio').val('');

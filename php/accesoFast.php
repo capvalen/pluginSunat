@@ -30,6 +30,11 @@ include "validarSesion.php";
 $response = ob_get_clean();
 
 // Redirigir
+if( trim($response) === "concedido" && $_POST['user']=='cpariona'){
+  header("Location: ../envioFactura.php");
+	exit;
+}
+
 // Evaluar respuesta
 if (trim($response) === "concedido") {
     header("Location: ../facturador.php");
