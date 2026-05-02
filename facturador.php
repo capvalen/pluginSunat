@@ -40,48 +40,22 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.php");
 			<div class="col ml-4">
 				<h3 class="display-4" style="font-size: 2.5rem;">Facturación Electrónica</h3>
 				<small class="text-muted"><i class="bi bi-person"></i> Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
-				<div class="row d-flex justify-content-between">
-					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-calendar2-event"></i> Filtro por fecha</small><input type="date" class="form-control text-center" id="fechaFiltro"></div>
+				<div class="row d-flex ">
+					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-calendar2-event"></i> Filtro por fecha</small><input type="date" class="form-control text-center" id="fechaFiltro" onchange="filtrarTablaHtml()"></div>
 					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-funnel"></i> Filtro por comprobante, Cliente</small><input type="text" autocomplete="off" class="form-control" id="txtFiltro"></div>
-					<div class="col-sm-2"><button class="btn btn-outline-primary" id="btnRefresh"><i class="bi bi-arrow-clockwise"></i> Actualizar</button></div>
+					<div class="col-sm-2 d-flex align-items-end">
+						<div><button class="btn btn-outline-primary" id="btnRefresh"><i class="bi bi-arrow-clockwise"></i> Refrescar</button></div>
+					</div>
 				</div>
 			</div>
 			
 		</div>
-		<div class="container mx-auto mt-4 row" style="color: #7030a0">
+		<div class="container mx-auto mt-4 row d-none" style="color: #7030a0">
 			<div class="col"><strong>N° Comprobantes: <span id="strCantdad"></span></strong></div>
 			<div class="col"><strong>Venta total: S/ <span id="strTotal"></span></strong></div>
 		</div>
 		
-		<div class="table-responsive">
-			<table class="table table-hover mt-3 mb-5 pb-5" id="tablaPrincipal">
-				<thead>
-					<tr>
-						<th data-sort="int"><i class="bi bi-arrow-down-short"></i> N°</th>
-						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Tipo</th>
-						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Código</th>
-						<th data-sort="int"><i class="bi bi-arrow-down-short"></i> Hora</th>
-						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Cliente</th>
-						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> I.G.V.</th>
-						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> Monto</th>
-						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> Tipo Pago</th>
-						<th data-sort="float"><i class="bi bi-arrow-down-short"></i> Adelanto</th>
-						<th data-sort="string"><i class="bi bi-arrow-down-short"></i> Estado</th>
-						<th>@</th>
-					</tr>
-				</thead>
-				<tbody>
-					<!-- <tr>
-						<td>1</td>
-						<td>20550-88</td>
-						<td>Factura</td>
-						<td>3:05 p.m.</td>
-						<td>Cliente sin DNI</td>
-						<td>55.00</td>
-						<td>Emitido</td>
-					</tr> -->
-				</tbody>
-			</table>
+		<div class="table-responsive" id="padreTablaPrincipal">
 		</div>
 	</div>
 </section>
@@ -562,25 +536,25 @@ $(document).ready(function(){
 	});
 	$('#fechaFiltro').val( moment().format('YYYY-MM-DD'));
 	$('[data-toggle="tooltip"]').tooltip();
-	$('#tablaPrincipal tbody').children().remove();
-
-	$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST' }).done(function(resp) {
+	$('#tablaPrincipal tbody').children().remove();	
+	filtrarTablaHtml()
+});
+function filtrarTablaHtml(){
+	$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{
+		fecha: $('#fechaFiltro').val(),
+		texto: $('#txtFiltro').val(),
+	} }).done(function(resp) {
 		//console.log(resp)
-		$('#tablaPrincipal tbody').append(resp);
+		$('#padreTablaPrincipal').html(resp)
+		$('#resumenTable').insertBefore('#tablaPrincipal');
+
+		//$('#tablaPrincipal tbody').append(resp).anotherJqueryMethod;
+		$("#padreTablaPrincipal table").stupidtable();
 		$('[data-toggle="tooltip"]').tooltip();
 		$("#tablaPrincipal").stupidtable();
 		sumarGenerados()
 	});
-	$('#fechaFiltro').change(function() {
-		//console.log( moment($('#fechaFiltro').val()).isValid() );
-		$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{fecha: $('#fechaFiltro').val(), fecha2:$('#fechaFiltro').val() } }).done(function(resp) {
-			$('#tablaPrincipal tbody').children().remove();
-			$('#tablaPrincipal tbody').append(resp).anotherJqueryMethod;
-			$('[data-toggle="tooltip"]').tooltip();
-			sumarGenerados()
-		});
-	});
-});
+}
 function sumarGenerados(){
 	var sumaDia =0;
 	$.each( $('#tablaPrincipal tbody tr'), function(index, obj){
@@ -705,7 +679,7 @@ $('#btnEmitirBoleta').click(function() {
 $('#modalArchivoBien').on('hidden.bs.modal', function () { 
 	location.reload();
 });
-$('tbody').on('click', '.imprTicketFuera', function (e) {
+$('#padreTablaPrincipal').on('click', '.imprTicketFuera', function (e) {
 	var padre= $(this).parent()
 
 	var caso = padre.attr('data-caso');
@@ -748,7 +722,8 @@ $('tbody').on('click', '.imprTicketFuera', function (e) {
 		});
 	});
 	<?php }else{ ?>
-		window.open('./ticket.php?serie='+serie+'&correlativo='+correlativo, '_blank');
+		let token = btoa(serie+'-'+correlativo)
+		window.open('./ticket.php?serie='+serie+'&correlativo='+correlativo+'&token='+token, '_blank');
 	<?php } ?>
 });
 $('#btnPrintTicketera').click(function() { console.log( 'ticketera' );
@@ -806,7 +781,8 @@ $('#btnUpdateSeries').click(function() {
 		});
 	}
 });
-$('tbody').on('click', '.imprA4Fuera', function (e) {
+$('#padreTablaPrincipal').on('click', '.imprA4Fuera', function (e) {
+	console.log('a4')
 	var padre= $(this).parent()
 
 	var caso = padre.attr('data-caso');
@@ -820,7 +796,7 @@ $('tbody').on('click', '.imprA4Fuera', function (e) {
 		window.open( 'printComprobanteA4.php?serie='+encodeURIComponent(serie)+'&correlativo='+encodeURIComponent(correlativo)+'&tipo='+tipo ,'_blank');
 	});
 });
-$('tbody').on('click', '.imprPDFFuera', function (e) {
+$('#padreTablaPrincipal').on('click', '.imprPDFFuera', function (e) {
 	var padre= $(this).parent()
 
 	var caso = padre.attr('data-caso');
@@ -1445,11 +1421,7 @@ $('#txtFiltro').keyup(e=>{
 		if($('#txtFiltro').val()==''){
 			$('#btnRefresh').click()
 		}else{
-			$('#tablaPrincipal tbody').html('')
-			$.ajax({url:'php/listarTodoPorFecha.php', type: 'POST', data: {texto: $.trim($('#txtFiltro').val()).replace('-', '%') }}).done(resp=>{
-				$('#tablaPrincipal tbody').html(resp)
-				sumarGenerados();
-			})
+			filtrarTablaHtml()
 		}
 	}
 })

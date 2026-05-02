@@ -11,7 +11,7 @@ $nombrePrint = 'HP1102W'; //TM-T20II
 $casaHost = "pluginSunat";
 
 $generarArchivo = false;
-
+$esServicio = true;
 
 $separador ='|';
 

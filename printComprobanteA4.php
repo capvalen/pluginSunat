@@ -164,8 +164,9 @@ $rowProductos = array();
 
 $lineaDetalle ='';
 $sqlDetalle="SELECT fd.*, u.undCorto FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida
-left join fact_cabecera fc on fc.idComprobante = fd.idCabecera
-WHERE facSerieCorre = '{$_GET['serie']}-{$_GET['correlativo']}' and factTipoDocumento = '{$_GET['tipo']}'";
+left join fact_cabecera fc on fc.idComprobante = fd.idCabecera AND fc.factTipoDocumento = '{$_GET['tipo']}'
+WHERE facSerieCorre = '{$_GET['serie']}-{$_GET['correlativo']}'; ";
+//echo $sqlDetalle; die();
 $resultadoDetalle=$cadena->query($sqlDetalle);
 while($rowD=$resultadoDetalle->fetch_assoc()){
 	$unidad = 'NIU';
@@ -178,7 +179,11 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 	?>
 	<tr>
 		<td class="p-1"><?= $cantidadProd; ?></td>
-		<td class="p-1"><?= $rowD['undCorto']?></td>
+		<?php if($esServicio):?>
+			<td class="p-1">-</td>
+			<?php else:?>
+			<td class="p-1"><?= $rowD['undCorto']?></td>
+		<?php endif;?>
 		<td class="p-1" class="text-capitalize"> <?= ucwords(strtolower($rowD['descripcionItem'])); ?></td>
 		<td class="p-1"><?= $precProducto; ?></td>
 		<td class="p-1"><?= number_format( floatval($precProducto) * floatval($cantidadProd) ,2)?></td>

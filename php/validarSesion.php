@@ -5,7 +5,7 @@
 //header('Content-Type: text/html; charset=utf8');
 include 'conexion.php';
 $clavePrivada= 'Es sencillo hacer que las cosas sean complicadas, pero difícil hacer que sean sencillas. Friedrich Nietzsche';
-$local= '.infocatsoluciones.com'; //antes: "/"
+$local= 'localhost'; //antes: ".infocatsoluciones.com"
 
 if(isset($_POST['entrada']))
 	$log = mysqli_query($cadena,"SELECT * from  usuario u  where usuNick = '".$_POST['user']."' and token='".$_POST['token']."';");
@@ -24,16 +24,16 @@ if ($row['idUsuario']>=1){
 	// $_SESSION['oficina']=$_POST['offi'];
 	if( $row['usuActivo']=='1' ){
 
-		setcookie('ckAtiende', $row['usuNombres'], $expira, '/', $local, true, false);
-		setcookie('cknomCompleto', $row['usuNombres'] . ', ' . $row['usuApellido'], $expira, '/', $local, true, false);
-		setcookie('ckPower', $row['usuPoder'], $expira, '/', $local, true, false);
-		setcookie('ckidUsuario', $row['idUsuario'], $expira, '/', $local, true, false);
-		setcookie('ckUsuario', $row['usuNick'], $expira, '/', $local, true, false);
+		setcookie('ckAtiende', $row['usuNombres'], $expira, '/');
+		setcookie('cknomCompleto', $row['usuNombres'] . ', ' . $row['usuApellido'], $expira, '/');
+		setcookie('ckPower', $row['usuPoder'], $expira, '/');
+		setcookie('ckidUsuario', $row['idUsuario'], $expira, '/');
+		setcookie('ckUsuario', $row['usuNick'], $expira, '/');
 
 		$sqlConf = "SELECT `idConf`, `confVariable`, `confValor` FROM `configuracion` where 1;";
 		$resultadoConf=$esclavo->query($sqlConf);
 		while($rowConf=$resultadoConf->fetch_assoc()){ 
-			setcookie($rowConf['confVariable'], $rowConf['confValor'], $expira, '/', $local, true, false);
+			setcookie($rowConf['confVariable'], $rowConf['confValor'], $expira, '/');
 		}
 
 		include "datosEmpresa_priv.php";

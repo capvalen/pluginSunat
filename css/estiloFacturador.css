@@ -86,3 +86,9 @@ thead{
 /* Sticky footer: reserve space and ensure it's on top */
 #seccionPrincipal{min-height: 80vh;}
 footer.fixed-bottom{ z-index:1030; }
+#resumenTable p{
+	color: rgb(112, 48, 160);
+}
+.spanResultado{
+	color: #383d3f;
+}

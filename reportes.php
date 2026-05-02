@@ -39,10 +39,11 @@ include "generales.php"; ?>
 									<option value="1">Contable</option>
 									<!-- <option value="2">Kardex</option> -->
 									<option value="3">Detallado</option>
+									<option value="4">Archivos Verificacion SUNAT</option>
 								</select>
 							</div>
 							<div class="col">
-								<label for="">Productos:</label>
+								<label for="">Productos/Servicios:</label>
 								<select class="selectpicker" data-live-search="false" id="sltFiltroProducto" title="Productos">
 									<?php 
 									$sqlProd="SELECT `idProductos`, `prodDescripcion`, p.`idUnidad`, `prodPrecio`, `prodActivo`, u.undDescipcion
@@ -56,17 +57,17 @@ include "generales.php"; ?>
 							</div>
 							<div class="col">
 								<label for="">Desde:</label>
-								<input type="date" class="form-control" v-model="inicio" @change="fin=inicio">
+								<input type="date" class="form-control" v-model="inicio" >
 							</div>
 							<div class="col">
 								<label for="">Hasta:</label>
 								<input type="date" class="form-control" v-model="fin" :min="inicio">
 							</div>
 							<div class="col d-flex justify-content-center align-items-center">
-								<button class="btn btn-outline-primary ml-3" id="btnBuscarReporte">Filtrar <i class="bi bi-search"></i></button>
-							</div>
-							<div class="col d-flex justify-content-center align-items-center">
-								<button class="btn btn-outline-success ml-3 d-none" id="btnGuardarReporte"><i class="bi bi-file-earmark-excel"></i> Guardar reporte</button>
+								<div>
+									<button class="btn btn-outline-primary ml-3" id="btnBuscarReporte"> <i class="bi bi-search"></i> Filtrar</button>
+									<button class="btn btn-outline-success ml-3 d-none" id="btnGuardarReporte"><i class="bi bi-file-earmark-excel"></i> Guardar reporte</button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -76,7 +77,7 @@ include "generales.php"; ?>
 	
 		
 
-		<table class="table table-hover mt-3" id="tablaCabeceras" >
+		<!-- <table class="table table-hover mt-3" id="tablaCabeceras" >
 			<thead>
 				<tr>
 					<th data-sort="int"><i class="icofont-expand-alt"></i> N°</th>
@@ -93,7 +94,8 @@ include "generales.php"; ?>
 			<tbody>
 			
 			</tbody>
-		</table>
+		</table> -->
+		<div class="" id="padreTablaPrincipal"></div>
 		<div class="d-none" id="divTablaSysCont"></div>
 
 	</div>
@@ -164,17 +166,14 @@ $('.input-daterange input').change(function(){
 	});
 }); */
 $('#btnBuscarReporte').click(function() {
-	$('#tablaCabeceras').removeClass('d-none');
+	$('#padreTablaPrincipal').removeClass('d-none');
 	$('#divTablaSysCont').addClass('d-none');
 	if( $('#txtFecha1').val()!='' &&  $('#txtFecha2').val()!=''){
 		
 
 		switch ($('#sltFiltroReporte').selectpicker('val')) {
 			case "0":
-				$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{fecha: app.inicio, fecha2: app.fin, esReporte:1 } }).done(function(resp) {
-					$('#tablaCabeceras tbody').children().remove();
-					$('#tablaCabeceras tbody').append(resp).anotherJqueryMethod;
-				});
+				filtrarReporteBase();
 				break;
 			case "1":
 				$('#divTablaSysCont').removeClass('d-none');
@@ -200,6 +199,9 @@ $('#btnBuscarReporte').click(function() {
 					$('#divTablaSysCont').append(resp).anotherJqueryMethod;
 				});
 			break;
+			case '4':
+				generarArchivosPlanos();
+				break;
 			default:
 				break;
 		}
@@ -238,10 +240,32 @@ $('#btnGuardarReporte').click(function() {
 		break;
 		default:
 		break;
-
 	}
-	
 });
+
+function filtrarReporteBase(){
+	return $.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{fecha: app.inicio, fecha2: app.fin, esReporte:1 } }).done(function(resp) {
+		$('#padreTablaPrincipal').html(resp)
+		$('#resumenTable').insertBefore('#tablaPrincipal');					
+	});
+}
+ async function generarArchivosPlanos(){
+	await filtrarReporteBase();
+	let bloqueLineas = 5;
+	let lineas = '';
+	let ruc = $('#tablaPrincipal').data('ruc')
+	$('#tablaPrincipal tbody tr').each(function() {
+		let tipo = $(this).find('.tdCorrelativo').data('tipo');
+		if( [1,3,4,5].includes(tipo) ){ //si es boleta o fact
+			let serie = $(this).find('.tdCorrelativo').data('serie');
+			let correlativo = $(this).find('.tdCorrelativo').data('correlativo');
+			let fecha = $(this).find('.fechaLatam').text()
+			let monto = $(this).find('.spTotalPac').text()
+			lineas += ruc +'|0'+ tipo +'|'+ serie +'|'+ correlativo +'|'+ fecha +'|'+ monto + '\n'
+		}
+		
+	});
+}
 
 </script>
 <style>

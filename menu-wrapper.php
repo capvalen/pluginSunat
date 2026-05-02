@@ -13,7 +13,7 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 		<?php if($nomArchivo=='facturador.php'){ ?>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="icofont-newspaper"></i> Emitir
+					<i class="bi bi-sticky"></i> Emitir
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
@@ -24,12 +24,12 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 				</div>
 			</li>
 		<?php }else{ ?>
-		<a class="nav-item nav-link " href="facturador.php" id=""><i class="icofont-group"></i> Facturador</a>
+		<a class="nav-item nav-link " href="facturador.php" id=""><i class="bi bi-sticky"></i> Facturador</a>
 		<?php } ?>
 		<?php if($_COOKIE['ckPower']=='1' ): ?>
 			<li class="nav-item dropdown <?php if($nomArchivo =='productos.php' || $nomArchivo =='compras.php') echo 'active'; ?>">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<i class="icofont-newspaper"></i> Configuraciones
+					<i class="bi bi-gear"></i> Configuraciones
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
     		  <!-- <a class="dropdown-item" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a> -->
@@ -44,10 +44,10 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 				</div>
 			</li>
 			
-			<a class="nav-item nav-link <?php if($nomArchivo =='reportes.php') echo 'active'; ?>" href="reportes.php" id=""><i class="icofont-group"></i> Reportes</a>
-    
-		<?php endif; ?>
-      <a class="nav-item nav-link " href="desconectar.php"><i class="icofont-addons"></i> Salir del sistema</a>
+			
+			<?php endif; ?>
+			<a class="nav-item nav-link <?php if($nomArchivo =='reportes.php') echo 'active'; ?>" href="reportes.php" id=""><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+      <a class="nav-item nav-link " href="desconectar.php"><i class="bi bi-box-arrow-right"></i> Salir del sistema</a>
     </div>
   </div>
 </nav>
