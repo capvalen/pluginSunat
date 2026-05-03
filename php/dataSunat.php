@@ -1,6 +1,6 @@
 <?php
-include "conexion.php";
-include "../generales.php";
+include __DIR__."/conexion.php";
+include __DIR__. "/../generales.php";
 
 $fila = array();
 $sql="SELECT * FROM `clientes`
@@ -34,76 +34,134 @@ if($resultado->num_rows>=1){
 		echo json_encode($fila);
 	}
 	if( strlen($_POST['ruc'])==8){
-		buscarDNI( $token, $_POST['ruc'] );
+		$info = consultarDNI( $_POST['ruc'], $token );
 	}
 	if( strlen($_POST['ruc'])==11){
-		buscarRUC( $token, $_POST['ruc'] );
-	}	
+		$info = consultarRUC( $_POST['ruc'], $token );
+	}
+	echo json_encode($info, true);
 }
 
-function buscarDNI($token, $ruc){
-	$curl = curl_init();
+function consultarDNI($dni, $token ){
+	$url = "https://dniruc.apisperu.com/api/v1/dni/{$dni}?token={$token}";
 
-	curl_setopt_array($curl, array(
-		CURLOPT_URL => 'https://api.apis.net.pe/v2/reniec/dni?numero=' . $ruc,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_SSL_VERIFYPEER => 0,
-		CURLOPT_ENCODING => '',
-		CURLOPT_MAXREDIRS => 10,
-		CURLOPT_TIMEOUT => 0,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_CUSTOMREQUEST => 'GET',
-		CURLOPT_HTTPHEADER => array(
-			'Referer: http://apis.net.pe/api-ruc',
-			'Authorization: Bearer ' . $token
-		),
-	));
+	$ch = curl_init();
 
-	$response = curl_exec($curl);
-
-	curl_close($curl);
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 	
-	$empresa = json_decode($response);
-	$fila = array(
-		"razon_social" => $empresa->apellidoPaterno . " ". $empresa->apellidoMaterno . " ".$empresa->nombres,
+	$response = curl_exec($ch);
+
+	// Si hay error de cURL, devolver fila vacía
+	if (curl_errno($ch)) {
+		curl_close($ch);
+		return filaVacia();
+	}
+	
+	// Obtener código HTTP
+	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	curl_close($ch);
+	
+	// Si no es 200, devolver fila vacía
+	if ($httpCode !== 200) { return filaVacia(); }
+	
+	// Decodificar JSON
+	$data = json_decode($response, true);
+	
+	// Si no se encontraron resultados, devolver fila vacía
+	if (isset($data['message']) && $data['message'] === 'No se encontraron resultados.') {
+		return filaVacia();
+	}
+	
+	// Si tiene los datos esperados, devolver fila con datos
+	if (isset($data['dni'], $data['nombres'], $data['apellidoPaterno'], $data['apellidoMaterno'])) {
+			return array(
+					"razon_social" => limpiarTexto($data['apellidoPaterno']) . ' ' . limpiarTexto($data['apellidoMaterno']) . ' ' . limpiarTexto($data['nombres']),
+					"domicilio_fiscal" => '',
+					"activo" => 'ACTIVO',
+					"paterno" => limpiarTexto($data['apellidoPaterno']),
+					"materno" => limpiarTexto($data['apellidoMaterno']),
+					"nombres" => limpiarTexto($data['nombres'])
+			);
+	}
+	
+	// Cualquier otro caso, devolver fila vacía
+	return filaVacia();
+
+}
+
+function filaVacia() {
+	return array(
+		"razon_social" => '',
 		"domicilio_fiscal" => '',
 		"activo" => 'ACTIVO',
-		"paterno" => $empresa->apellidoPaterno,
-		"materno" => $empresa->apellidoMaterno,
-		"nombres" => $empresa->nombres
+		"paterno" => '',
+		"materno" => '',
+		"nombres" => ''
 	);
-	echo json_encode($fila);
-
 }
-function buscarRUC($token, $ruc){
-	$curl = curl_init();
-
-	curl_setopt_array($curl, array(
-		CURLOPT_URL => 'https://api.apis.net.pe/v2/sunat/ruc?numero=' . $ruc,
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_SSL_VERIFYPEER => 0,
-		CURLOPT_ENCODING => '',
-		CURLOPT_MAXREDIRS => 10,
-		CURLOPT_TIMEOUT => 0,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_CUSTOMREQUEST => 'GET',
-		CURLOPT_HTTPHEADER => array(
-			'Referer: http://apis.net.pe/api-ruc',
-			'Authorization: Bearer ' . $token
-		),
+function consultarRUC($ruc, $token) {
+	$url = "https://dniruc.apisperu.com/api/v1/ruc/{$ruc}?token={$token}";
+	
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+	
+	// Agregar header Content-Type: application/json
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'Content-Type: application/json'
 	));
-
-	$response = curl_exec($curl);
-
-	curl_close($curl);
-	// Datos de empresas según padron reducido
-	$empresa = json_decode($response);
-	//var_dump( $empresa); die();
-	$fila = array(
-		"razon_social" => $empresa->razonSocial,
-		"domicilio_fiscal" => $empresa->direccion . " - ".$empresa->provincia ." - ". $empresa->departamento,
-		"activo" => $empresa->estado
-	);
-	echo json_encode($fila);
+	
+	$response = curl_exec($ch);
+	
+	if (curl_errno($ch)) {
+			curl_close($ch);
+			return filaVaciaRUC();
+	}
+	
+	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	curl_close($ch);
+	
+	if ($httpCode !== 200) {
+		return filaVaciaRUC();
+	}
+	
+	$data = json_decode($response, true);
+	//var_dump($data);
+	
+	if (isset($data['message']) && $data['message'] === 'No se encontraron resultados.') {
+		return filaVaciaRUC();
+	}  
+	
+	if (isset($data['razonSocial'])) {
+		return array(
+			"razon_social" => limpiarTexto($data['razonSocial']),
+			"domicilio_fiscal" => isset($data['direccion']) ? limpiarTexto($data['direccion']) : '',
+			"activo" => (isset($data['estado']) && $data['estado'] === 'ACTIVO') ? 'ACTIVO' : 'INACTIVO'
+		);
+	}
+	
+	return filaVaciaRUC();
 }
-?>
+
+
+function filaVaciaRUC() {
+	return array(
+		"razon_social" => '',
+		"domicilio_fiscal" => '',
+		"activo" => 'ACTIVO'
+	);
+}
+
+function limpiarTexto($texto) {
+    if ($texto === null) return '';
+    // Elimina comillas dobles al inicio y final, y espacios extra
+    $texto = trim($texto, ' "');
+    // Elimina espacios múltiples internos
+    $texto = preg_replace('/\s+/', ' ', $texto);
+    return trim($texto);
+}

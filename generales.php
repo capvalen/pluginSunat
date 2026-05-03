@@ -57,6 +57,6 @@ $decimalesSuper = $_COOKIE['decimalesSuper'] ?? 2; //cambiar a 2 a facturador si
 
 //Actualización de créditos
 $monedaC = "PEN";
-$token = 'apis-token-6396.nevvtud4KzHZaULpHze3L-0DJ581fXeY';
+$token = "[RELLENAR_TOKEN]";
 
 ?>

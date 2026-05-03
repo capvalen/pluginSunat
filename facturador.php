@@ -182,7 +182,10 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.php");
 								<div class="input-group mb-2">
 									<input type="text" class="form-control ml-2 soloNumeros" id="txtDniBoleta" placeholder="Dni o RUC" autocomplete="off">
 									<div class="input-group-append">
-										<button class="btn btn-outline-secondary" type="button" id="button-addon1" onclick="buscarReniec()"><img src="images/reniec.png" width="16"> Reniec</button>
+										<button class="btn btn-outline-secondary" type="button" id="btnReniec" onclick="buscarReniec()"><img src="images/reniec.png" width="16"> Reniec</button>
+									</div>
+									<div class="input-group-append d-none">
+										<button class="btn btn-outline-secondary" type="button" id="btnSunat" onclick="buscarReniec()"><img src="images/sunat.webp" width="16"> SUNAT</button>
 									</div>
 								</div>
 							</div>
@@ -1311,32 +1314,42 @@ function ocultarPadre(){
 }
 
 $("#txtDniBoleta").keyup(function(e){
-	var code = e.which; 
-	if( code==13 ){ e.preventDefault();
-		buscarReniec();
+	var code = e.which;
+	if($('#txtDniBoleta').val().length==11){//es ruc
+		$('#btnReniec').parent().addClass('d-none')
+		$('#btnSunat').parent().removeClass('d-none')
+	}else{
+		$('#btnReniec').parent().removeClass('d-none')
+		$('#btnSunat').parent().addClass('d-none')
+	}
+
+	if( code==13 ){
+		e.preventDefault();
+		if($('#txtDniBoleta').val().length==11) buscarSunat()
+		else buscarReniec()
 	}
 });
 function buscarReniec(){
 	pantallaOver(true);
-	$('#txtDniBoleta').val( $.trim($('#txtDniBoleta').val()) )
-	$('#txtRazonBoleta').focus();
-	if( [8,11].includes($("#txtDniBoleta").val().length) ){ //es mayor a 8 digitos
-		$.ajax({url: 'php/dataSunat.php', type: 'POST', data: { ruc: $('#txtDniBoleta').val() }}).done(function(resp) {
-			//console.log(resp)
-			try {
-				dato = JSON.parse(resp);
-				if(dato.length=!0){	
-					//console.log( dato.razon_social );
-					$('#txtRazonBoleta').val( dato.razon_social);
-					$('#txtDireccionBoleta').val( dato.domicilio_fiscal);
-				}
-			} catch (error) {}
-			pantallaOver(false);
-		});
-	}else{
-		alertify.error('<i class="bi bi-exclamation-diamond"></i> Datos del DNI no son correctos.', 10000);
+
+	if( ![0,8,11].includes($("#txtDniBoleta").val().length) ){ //si no es 8 ni 11 o vacío
+		alertify.error('<i class="bi bi-exclamation-diamond"></i> Datos del DNI no son correctos.', 8000);
 		pantallaOver(false);
+		return
 	}
+	$('#txtDniBoleta').val( $.trim($('#txtDniBoleta').val()) )	
+	$.ajax({url: 'php/dataSunat.php', type: 'POST', data: { ruc: $('#txtDniBoleta').val() }}).done(function(resp) {
+		try {
+			dato = JSON.parse(resp);
+			console.log(dato)
+			if(dato.length=!0){	
+				//console.log( dato.razon_social );
+				$('#txtRazonBoleta').val( dato.razon_social);
+				$('#txtDireccionBoleta').val( dato.domicilio_fiscal);
+			}
+		} catch (error) {}
+		pantallaOver(false);
+	});
 	
 }
 

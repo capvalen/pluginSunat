@@ -1,11 +1,11 @@
 <?php 
 date_default_timezone_set('America/Lima');
-include 'conexion.php';
+include __DIR__.'/conexion.php';
 
 $sql="SELECT `idFacturador`, f.`idComprobante`, case `estado` when 0 then 'Falta' else 'otro caso' end as estado, date_format(`fechaEmision`, '%d/%m/%y %h:%i %p') as factFecha, fc.factSerie, fc.factCorrelativo, fc.fechaEmision as fecha, fc.factTipoDocumento
 FROM `facturador` f 
 inner join fact_cabecera fc on fc.idComprobante = f.idComprobante
-WHERE estado =0 and factTipoDocumento<>0; ";
+WHERE estado =1 and factTipoDocumento<>0; ";
 $resultado=$cadena->query($sql);
 $respuesta = array();
 
