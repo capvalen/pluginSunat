@@ -57,11 +57,11 @@ include "generales.php"; ?>
 							</div>
 							<div class="col">
 								<label for="">Desde:</label>
-								<input type="date" class="form-control" v-model="inicio" >
+								<input type="date" class="form-control" v-model="inicio"  id="txtFechaInicio">
 							</div>
 							<div class="col">
 								<label for="">Hasta:</label>
-								<input type="date" class="form-control" v-model="fin" :min="inicio">
+								<input type="date" class="form-control" v-model="fin" :min="inicio" id="txtFechaFin">
 							</div>
 							<div class="col d-flex justify-content-center align-items-center">
 								<div>
@@ -118,6 +118,7 @@ include "generales.php"; ?>
 <script src="js/xlsx.core.min.js"></script>
 <script src="js/FileSaver.min.js"></script>
 <script src="js/tableexport.js?version=1.1"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script>
 	const { createApp, ref } = Vue
@@ -251,7 +252,6 @@ function filtrarReporteBase(){
 }
  async function generarArchivosPlanos(){
 	await filtrarReporteBase();
-	let bloqueLineas = 5;
 	let lineas = '';
 	let ruc = $('#tablaPrincipal').data('ruc')
 	$('#tablaPrincipal tbody tr').each(function() {
@@ -263,9 +263,78 @@ function filtrarReporteBase(){
 			let monto = $(this).find('.spTotalPac').text()
 			lineas += ruc +'|0'+ tipo +'|'+ serie +'|'+ correlativo +'|'+ fecha +'|'+ monto + '\n'
 		}
-		
 	});
+	if(lineas.length>0) descargarLineas(lineas)
 }
+function descargarLineas(variasLineas) {
+    var grupo = 100;
+    
+    // Obtener fechas de los inputs
+    let fecha1 = document.querySelector('#txtFechaInicio').value;
+    let fecha2 = document.querySelector('#txtFechaFin').value;
+    
+    // Formatear fechas: de "2026-05-01" a "01_may"
+    function formatearFecha(fechaISO) {
+        if (!fechaISO) return '';
+        var meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+        var partes = fechaISO.split('-');
+        var dia = partes[2];
+        var mes = meses[parseInt(partes[1]) - 1];
+        return dia + '-' + mes;
+    }
+    
+    var fechaInicioFormateada = formatearFecha(fecha1);
+    var fechaFinFormateada = formatearFecha(fecha2);
+    var rangoFechas = fechaInicioFormateada + '-' + fechaFinFormateada;
+    
+    // Dividir las líneas en un array
+    var lineas = variasLineas.split('\n');
+    
+    // Función auxiliar para descargar un archivo
+    function descargarArchivo(contenido, nombreArchivo, tipo) {
+        var blob = new Blob([contenido], { type: tipo });
+        var enlace = document.createElement('a');
+        enlace.href = URL.createObjectURL(blob);
+        enlace.download = nombreArchivo;
+        document.body.appendChild(enlace);
+        enlace.click();
+        document.body.removeChild(enlace);
+        URL.revokeObjectURL(enlace.href);
+    }
+    
+    // Si las líneas son menos que el grupo, descargar solo el TXT
+    if (lineas.length < grupo) {
+        var nombreTxt = 'comprobantes_' + rangoFechas + '.txt';
+        descargarArchivo(variasLineas, nombreTxt, 'text/plain');
+        return;
+    }
+    
+    // Si hay más o igual líneas que el grupo, crear ZIP con la división
+    var zip = new JSZip();
+    var totalArchivos = Math.ceil(lineas.length / grupo);
+    
+    for (var i = 0; i < totalArchivos; i++) {
+			var inicio = i * grupo;
+			var fin = Math.min(inicio + grupo, lineas.length);
+			var lineasGrupo = lineas.slice(inicio, fin);
+			var contenido = lineasGrupo.join('\n');
+			var nombreArchivo = 'comprobantes_bloque_' + (i + 1) + '.txt';
+			zip.file(nombreArchivo, contenido);
+    }
+    
+    // Generar y descargar el ZIP
+    zip.generateAsync({ type: "blob" })
+		.then(function(content) {
+				var enlace = document.createElement('a');
+				enlace.href = URL.createObjectURL(content);
+				enlace.download = 'boletas_divididas_' + rangoFechas + '.zip';
+				document.body.appendChild(enlace);
+				enlace.click();
+				document.body.removeChild(enlace);
+				URL.revokeObjectURL(enlace.href);
+		});
+	}
+
 
 </script>
 <style>
