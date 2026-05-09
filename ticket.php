@@ -159,6 +159,7 @@ $rowProductos = array();
 $lineaDetalle = '';
 $sqlDetalle = "SELECT fd.*, u.undCorto FROM `fact_detalle` fd inner join unidades u on u.undSunat = codUnidadMedida WHERE idCabecera = {$idCabecera};";
 $resultadoDetalle = $cadena->query($sqlDetalle);
+$pdf->Ln();
 while ($rowD = $resultadoDetalle->fetch_assoc()) {
 
 	$unidad = 'NIU';
@@ -170,27 +171,22 @@ while ($rowD = $resultadoDetalle->fetch_assoc()) {
 
 	$queSerie = $rowD['serie'] == '' ? '' : "(SN: {$rowD['serie']}) ";
 
-	$pdf->Ln();
+	
 	$pdf->setX(2);
 
-	if (!$esServicio) {
-
-		$cantidadProd = $rowD['cantidadItem'];
-		$pdf->Cell(0, 4, utf8_decode("{$cantidadProd} [UND] " . ucwords(strtolower($rowD['descripcionItem'] . $queSerie))), 0, 1, '', false);
-		$pdf->setX(2);
-		$pdf->Cell(50, 4, "S/ " . $precProducto, 0, 0, '', false);
-		$pdf->Cell(0, 4, 'S/ ' . number_format(floatval($precProducto) * floatval($cantidadProd), 2), 0, 1, '', false);
-		$pdf->Ln();
+	if ($rowD['codUnidadMedida'] == 'ZZ') {
+		$pdf->Cell(0, 4, utf8_decode(ucwords(strtolower($rowD['descripcionItem'] . $queSerie))), 0, 1, '');
+		$pdf->Cell(0, 4, 'S/ ' . number_format(floatval($precProducto), 2), 0, 1, 'R');
 	} else {
-
-		$pdf->Cell(0, 4, utf8_decode(ucwords(strtolower($rowD['descripcionItem'] . $queSerie))), 0, 1, '', false);
+		$cantidadProd = $rowD['cantidadItem'];
+		$pdf->Cell(0, 4, utf8_decode("{$cantidadProd} [UND] " . ucwords(strtolower($rowD['descripcionItem'] . $queSerie))), 0, 1, '');
 		$pdf->setX(2);
-		$pdf->Cell(0, 4, 'S/ ' . number_format(floatval($precProducto), 2), 0, 1, 'R', false);
-		$pdf->Ln();
+		$pdf->Cell(50, 4, "S/ " . $precProducto, 0, 0, '');
+		$pdf->Cell(0, 4, 'S/ ' . number_format(floatval($precProducto) * floatval($cantidadProd), 2), 0, 1, '');
 	}
-
 	$i++;
 }
+$pdf->Ln();
 
 $pdf->SetFont('Arial', 'B', 8);
 $x = $pdf->GetX() + 25;

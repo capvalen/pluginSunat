@@ -178,8 +178,12 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 	$cantidadProd = number_format($rowD['cantidadItem'], $decimalesSuper);
 	?>
 	<tr>
-		<td class="p-1"><?= $cantidadProd; ?></td>
-		<?php if($esServicio):?>
+		<?php if( $rowD['codUnidadMedida']=='ZZ' ):?>
+			<td class="p-1">-</td>
+			<?php else:?>
+			<td class="p-1"><?= $cantidadProd;?></td>
+		<?php endif;?>
+		<?php if( $rowD['codUnidadMedida']=='ZZ' ):?>
 			<td class="p-1">-</td>
 			<?php else:?>
 			<td class="p-1"><?= $rowD['undCorto']?></td>

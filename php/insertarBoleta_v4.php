@@ -1,8 +1,8 @@
 <?php 
 date_default_timezone_set('America/Lima');
-include 'conexion.php';
-include '../generales.php';
-require "../NumeroALetras.php";
+include __DIR__.'/conexion.php';
+include __DIR__.'/../generales.php';
+require __DIR__."/../NumeroALetras.php";
 
 // Rechazar OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -122,7 +122,8 @@ if($_POST['cliente']['contado']=='2'){
 }
 
 $sqlProd  =''; 
-for ($i=0; $i < count($productos) ; $i++) { 
+//var_dump(count($productos)); die();
+for ($i=0; $i < count($productos) ; $i++) {
 	if( $productos[$i]['subTotal']<>0 && floatval($productos[$i]['subTotal'])>0){
 		$canti = $productos[$i]['cantidad'];
 		$prec = $productos[$i]['precio'];
@@ -148,23 +149,21 @@ for ($i=0; $i < count($productos) ; $i++) {
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
 		 (null, {$idFactura}, concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['nombre']}',
 		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, now(), {$productos[$i]['afecto']}, {$productos[$i]['id']}, {$porcentajeIGV});";
-		 //echo $sqlProd; die();
+		 //echo $sqlProd;
 		 $cadena->query($sqlProd);
 
-		if ($productos[$i]['unidadSunat'] == 'ZZ') //si es igual a servicio
-			continue; // Salta a la siguiente iteración
-
-		//sino: actualiza stock
-		$_POST['idProd']=$productos[$i]['id'];
-		$_POST['proceso']='3';
-		$_POST['cantidad']=$canti;
-		$_POST['obs']='';
-		require 'updateStock.php';
-
-		// echo $sqlProd;
+		if ($productos[$i]['unidadSunat'] <> 'ZZ'){ //si es diferente a servicio
+			//actualiza stock
+			$_POST['idProd']=$productos[$i]['id'];
+			$_POST['proceso']='3';
+			$_POST['cantidad']=$canti;
+			$_POST['obs']='';
+			$_COOKIE['ckidUsuario']=2;
+			require 'updateStock.php';
+		}
+		//echo $sqlProd;
 	}
 }
-
 
 
 # Generando los archivos txt para sunat 
@@ -224,8 +223,6 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 
 	$rowProductos[$i] = array( 'cantidad'=>$rowD['cantidadItem'], 'descripcion'=> $rowD['descripcionItem'], 'precio'=> $rowD['mtoPrecioVenta'], 'costo'=> $rowD['valorUnitario'], 'preProducto'=> $precProducto , 'undCorto'=> $rowD['undCorto'] );
 	$i++;
-
-	
 }
 //echo $lineaDetalle ;
 
