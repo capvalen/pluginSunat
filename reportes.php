@@ -167,6 +167,7 @@ $('.input-daterange input').change(function(){
 	});
 }); */
 $('#btnBuscarReporte').click(function() {
+	$('#padreTablaPrincipal').html('');
 	$('#padreTablaPrincipal').removeClass('d-none');
 	$('#divTablaSysCont').addClass('d-none');
 	if( $('#txtFecha1').val()!='' &&  $('#txtFecha2').val()!=''){
@@ -217,16 +218,14 @@ $('#btnGuardarReporte').click(function() {
 	console.log( $('#sltFiltroReporte').selectpicker('val') );
 	switch ($('#sltFiltroReporte').selectpicker('val')) {
 		case "0":
-			var instance = new TableExport(document.getElementById('tablaCabeceras'), {
+		case "4":
+			var instance = new TableExport(document.getElementById('tablaPrincipal'), {
 				formats: ['xlsx'],
 				exportButtons: false,
 				sheetname: "Reporte resumido"
 			});
-			var exportData = instance.getExportData()['tablaCabeceras']['xlsx'];
+			var exportData = instance.getExportData()['tablaPrincipal']['xlsx'];
 			instance.export2file(exportData.data, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Reporte resumido', exportData.fileExtension);
-			
-			
-
 		break;
 		case "1":
 		case '3':

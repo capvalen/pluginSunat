@@ -137,3 +137,44 @@
 		</div>
 	</div>
 </div>
+
+
+<!-- Modal para editar campos del comprobante -->
+<div class="modal fade" id="modalEditarCampos" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar campos del comprobante</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editIdComprobante" value="">
+        <input type="hidden" id="editTipoDoc" value="">
+        <div class="row mb-3">
+          <div class="col-12">
+            <div class="input-group mb-2">
+              <input type="text" class="form-control ml-2 soloNumeros" id="editRuc" placeholder="RUC" autocomplete="off" maxlength="11">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="btnEditarSunat" onclick="buscarSunatEditar()"><img src="images/sunat.webp" width="16"> SUNAT</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <input type="text" class="form-control ml-2 text-capitalize" id="editRazonSocial" placeholder="Razón social" autocomplete="off">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <input type="text" class="form-control ml-2 text-capitalize" id="editDireccion" placeholder="Dirección" autocomplete="off">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p class="text-danger d-none" id="editError"></p>
+        <button type="button" class="btn btn-primary" id="btnGuardarEdicion"><i class="bi bi-check-lg"></i> Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1460,7 +1460,7 @@ function fechaLatam(fechita){
 }
 
 <?php if($_COOKIE['ckPower']==1 || $_COOKIE['ckPower']==2){ ?>
-$('#tablaPrincipal').on('click', '.btnDarBajas', function (e) {
+$('#seccionPrincipal').on('click', '.btnDarBajas', function (e) {
 	$('#strComprobante').text( $(this).parent().parent().find('.tdCorrelativo').text());
 	$('#h5ComprobanteBaja').text( $('#strComprobante').text());
 	$('#btnDarbaja').attr('data-baja', $(this).attr('data-baja'));
@@ -1524,6 +1524,81 @@ function borrarDefinitivamente(){
 		if(resp=='ok'){
 			location.reload();
 		}
+	});
+}
+
+// Modal editar campos - llenar datos al abrir
+$('#modalEditarCampos').on('show.bs.modal', function (event) {
+	var button = $(event.relatedTarget);
+	var id = button.data('id');
+	var ruc = button.data('ruc');
+	var razon = button.data('razon');
+	var direccion = button.data('direccion');
+	var tipo = button.data('tipo');
+
+	$(this).find('#editIdComprobante').val(id);
+	$(this).find('#editTipoDoc').val(tipo);
+	$(this).find('#editRuc').val(ruc);
+	$(this).find('#editRazonSocial').val(razon);
+	$(this).find('#editDireccion').val(direccion);
+});
+
+// Guardar edición de campos
+$('#btnGuardarEdicion').click(function() {
+	var id = $('#editIdComprobante').val();
+	var ruc = $('#editRuc').val().trim();
+	var razon = $('#editRazonSocial').val().trim();
+	var direccion = $('#editDireccion').val().trim();
+
+	if (ruc === '' || razon === '' ) {
+		$('#editError').text('Debe rellenar todos los campos').removeClass('d-none');
+		return;
+	}
+
+	$('#editError').addClass('d-none');
+	$.ajax({
+		url: 'php/editarCampos.php',
+		type: 'POST',
+		data: {
+			id: id,
+			ruc: ruc,
+			razonSocial: razon,
+			direccion: direccion
+		}
+	}).done(function(resp) {
+		console.log(resp)
+		if (resp.success) {
+			$('#modalEditarCampos').modal('hide');
+			filtrarTablaHtml();
+		} else {
+			$('#editError').text(data.message).removeClass('d-none');
+		}
+	});
+});
+
+// Buscar SUNAT para editar comprobante
+function buscarSunatEditar() {
+	var ruc = $('#editRuc').val().trim();
+	if (ruc === '' || ![0,8,11].includes(ruc.length)) {
+		alert('Ingrese un RUC válido (8 o 11 dígitos)');
+		return;
+	}
+	$.ajax({
+		url: 'php/dataSunat.php',
+		type: 'POST',
+		data: { ruc: ruc }
+	}).done(function(resp) {
+		try {
+			var datos = JSON.parse(resp);
+			if ( datos ) {
+				$('#editRazonSocial').val($.trim(datos.razon_social));
+				$('#editDireccion').val($.trim(datos.domicilio_fiscal));
+			}
+		} catch(e) {
+			alert('Error al buscar datos en SUNAT');
+		}
+	}).fail(function() {
+		alert('Error de conexión con SUNAT');
 	});
 }
 

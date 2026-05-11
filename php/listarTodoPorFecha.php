@@ -119,7 +119,17 @@ while ($row = $resultado->fetch_assoc()) {
 				<?php
 				if ($row['comprobanteEmitido'] == 0 && $fecha == date('Y-m-d')) { ?>
 					<button class="btn btn-outline-primary btn-sm border border-light btnGenComprobante" data-ticket="<?= $row['idTicket']; ?>" data-toggle="tooltip" data-placement="top" title="Generar comprobante"><i class="icofont-flag"></i></button>
-				<?php } else if (in_array($row['comprobanteEmitido'], [1, 3])) { ?>
+				<?php } 
+				if ($row['comprobanteEmitido'] == 1) { ?>
+					<button class="btn btn-outline-edit btn-sm border border-light" data-toggle="modal" data-target="#modalEditarCampos"
+						data-id="<?= $row['idComprobante'] ?>"
+						data-ruc="<?= $row['dniRUC'] ?>"
+						data-razon="<?= $row['razonSocial'] ?>"
+						data-direccion="<?= $row['cliDireccion'] ?>"
+						data-tipo="<?= $row['factTipoDocumento'] ?>"
+						title="Editar campos"><i class="bi bi-pencil-square"></i></button>
+						<?php } 
+				if (in_array($row['comprobanteEmitido'], [1, 3])) { ?>
 					<button class="btn btn-outline-warning btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="bi bi-sticky-fill"></i></button>
 					<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera d-none d-sm-block" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="bi bi-printer"></i></button>
 					<button class="btn btn-outline-secondary btn-sm border border-light imprPDFFuera d-block d-sm-none" data-toggle="tooltip" data-placement="top" title="Imprimir PDF"><i class="bi bi-printer"></i></button>
