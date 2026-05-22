@@ -15,15 +15,6 @@ if($resultado->num_rows>=1){
 	);
 	echo json_encode($fila);
 }else{
-	/* $json = file_get_contents("https://infocatsoluciones.com/app/consorcioSoriano/dataSunat.php?ruc={$_POST['ruc']}");
-	$obj = json_decode($json);
-	//echo $obj->access_token;
-	//var_dump($obj->ruc);
-	echo json_encode($obj); 
-	$fila = array(
-		"razon_social" => '',
-		"domicilio_fiscal" => ''
-	);*/
 	if(strlen($_POST['ruc'])<8){
 		$fila = array(
 			"ruc" => '00000000',

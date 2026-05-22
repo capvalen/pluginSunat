@@ -17,12 +17,14 @@ $_POST = json_decode(file_get_contents('php://input'),true);
 /* Verifico si existe, el cliente, sino lo guardo */
 $sqlCliente = "SELECT * FROM `clientes` where cliRuc = '{$_POST['cliente']['dni']}' and cliActivo=1;";
 $respCliente = $datab->query($sqlCliente)->fetchAll();
+$clienteFormateado = str_replace(['"', '|'], ' ',$_POST['cliente']['razon']); $clienteFormateado = trim($clienteFormateado);
+$clienteFormateado = preg_replace('/\s+/', ' ', $clienteFormateado); //evita múltiples espacios
 if(count($respCliente)==0){
 	$prepCliente = $datab->prepare("INSERT INTO `clientes`(`cliRuc`, `cliRazonSocial`, `cliDomicilio`) VALUES (?, ?, ?)");
-	$respCliente2 = $prepCliente->execute([ $_POST['cliente']['dni'], $_POST['cliente']['razon'], $_POST['cliente']['direccion'] ]);
+	$respCliente2 = $prepCliente->execute([ $_POST['cliente']['dni'], $clienteFormateado, $_POST['cliente']['direccion'] ]);
 }else{
 	$prepCliente2 = $datab->prepare("UPDATE `clientes` SET `cliRazonSocial`=?, `cliDomicilio`=? WHERE `cliRuc`= ?;");
-	$respCliente2 = $prepCliente2->execute([ $_POST['cliente']['razon'], $_POST['cliente']['direccion'], $_POST['cliente']['dni'] ]);
+	$respCliente2 = $prepCliente2->execute([ $clienteFormateado, $_POST['cliente']['direccion'], $_POST['cliente']['dni'] ]);
 }
 
 //Identificar descuentos:
@@ -95,7 +97,6 @@ if($filasCorrelativo==0){
 $factura =  $serie.'-'.$correlativo;
 $nombreArchivo = $_POST['empresa']['ruc'].$caso.$factura ;
 
-
 $sql="INSERT INTO `fact_cabecera`(`factTipoDocumento`, `factSerie`, `factCorrelativo`, `fechaEmision`, `horaEmision`, `tipDocUsuario`,
  `dniRUC`, `razonSocial`,
  `factExonerados`, `costoFinal`, `IGVFinal`, `totalFinal`,`sumDescTotal`,`sumImpVenta`, `mtoBaseImponible`, `mtoTributo`, `desLeyenda`,
@@ -108,8 +109,9 @@ VALUES ({$_POST['cabecera']['tipo']},'{$serie}','{$correlativo}',{$fecha}, curti
 	{$_POST['cliente']['adelanto']}, ? );";
 
 $resultado=$cadena->prepare($sql);
+//El nombre del cliente se jala de arriba ya formateado
 $resultado->execute([
-	$_POST['cliente']['razon'], $_POST['cliente']['direccion'],
+	$clienteFormateado, $_POST['cliente']['direccion'],
 	($_POST['cliente']['observaciones'] ?? '')
 ]);
 
@@ -170,6 +172,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 $sqlCabeza="SELECT * from `fact_cabecera` where idComprobante={$idCabecera}; "; //factSerie = '{$serie}' and factCorrelativo='{$correlativo}' //echo $sqlCabeza;
 $resultadoCabeza=$cadena->query($sqlCabeza);
 $filasCabeza = $resultadoCabeza->num_rows;
+$dire = null; $totFin=0; $costo=0; $igvFin=0;
 if($filasCabeza==1){
 	$rowC=$resultadoCabeza->fetch_assoc();
 
