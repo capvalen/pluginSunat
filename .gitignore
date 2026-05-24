@@ -2,3 +2,6 @@ ticket_demo.php
 comprobantes
 /comprobantes
 automatizador/DATA
+automatizador/.env
+automatizador/__pycache__
+automatizador/.vscode

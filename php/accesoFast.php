@@ -1,5 +1,5 @@
 <?php
-require 'conexion.php';
+require __DIR__. '/conexion.php';
 
 $token = $_GET['token'] ?? null;
 
@@ -30,7 +30,7 @@ include "validarSesion.php";
 $response = ob_get_clean();
 
 // Redirigir
-if( trim($response) === "concedido" && $_POST['user']=='cpariona'){
+if( trim($response) === "concedido" &&  in_array($_POST['user'], ['operario', 'cpariona']) ){
   header("Location: ../envioFactura.php");
 	exit;
 }
