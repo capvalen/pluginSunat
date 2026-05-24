@@ -18,6 +18,10 @@ $esclavo->set_charset("utf8");
 $conf= new mysqli($server, $username, $password, $db);
 $conf->set_charset("utf8");
 
+$initCommandAttr = defined('Pdo\Mysql::ATTR_INIT_COMMAND') 
+    ? Pdo\Mysql::ATTR_INIT_COMMAND 
+    : PDO::MYSQL_ATTR_INIT_COMMAND;
+
 //Con Objetos:
 try {
 	$datab = new PDO (
@@ -25,7 +29,7 @@ try {
 		dbname='.$db,
 		$username,
 		$password,
-		array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")
+		array($initCommandAttr => "SET NAMES utf8")
 	);
 } catch (Exception $e) {
 	echo "Problema con la conexion: ".$e->getMessage();

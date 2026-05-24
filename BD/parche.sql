@@ -11,7 +11,7 @@ DROP TRIGGER IF EXISTS `registroFacturacion`//
 CREATE TRIGGER `registroFacturacion` AFTER INSERT ON `fact_cabecera`
 FOR EACH ROW
 BEGIN
-    IF (NEW.factTipoDocumento = 1 OR NEW.factTipoDocumento = 2) THEN
+    IF (NEW.factTipoDocumento = 1 OR NEW.factTipoDocumento = 3) THEN
         INSERT INTO `facturador`(`idFacturador`, `idComprobante`)
         VALUES (NULL, NEW.idComprobante);
     END IF;
