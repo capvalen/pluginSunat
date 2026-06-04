@@ -1,3 +1,5 @@
+$.undMap = { GLI: 'GAL', LTR: 'LTR', NIU: 'UND', KGM: 'KG', GRM: 'GR', CAN: 'LATA', PA: 'PK', BAG: 'SBR', BO: 'BOT', BX: 'CAJ', ZZ: '-' };
+
 $(document).ready(function(){
 	$.creditos=[];
 
@@ -214,8 +216,7 @@ $('#btnEmitirBoletav2').click(function() {
 			var jsonProductos = [];
 			$.each( $('.cardHijoProducto'), function (i, elem) {
 				var productVariable ='';
-				if( $(elem).find('.sltFiltroProductos').selectpicker('val')!='' ){
-					if($(elem).find('.divNombProducto button').attr('title')=='Libre'){
+					if($(elem).find('.divNombProducto').attr('data-tipo')=='libre'){
 						productVariable = $(elem).find('.campoTextoLibre').val();
 					}else{
 						productVariable = $(elem).find('.divNombProducto button').attr('title')
@@ -225,12 +226,11 @@ $('#btnEmitirBoletav2').click(function() {
 						precioProducto: $(elem).find('.campoPrecioUnit').val(),
 						unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
 						unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
-						unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
+						unidadCorto: $.undMap[$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')],
 						subtotal: $(elem).find('.campoSubTotal').val(),
 						afecto: $(elem).find('#sltFiltroGravado').selectpicker('val'),
 						idProd: $(elem).attr('data-producto')
 					});
-				}
 			});
 			var dniRc ='', razon='';
 			if($('#txtDniBoleta').val()!=''){
@@ -301,23 +301,21 @@ $('#btnEmitirFacturav2').click(function() {
 		}
 		var jsonProductos= [];
 		$.each( $('.cardHijoProducto'), function (i, elem) {
-			if( $(elem).find('.sltFiltroProductos').selectpicker('val')!='' ){
-				if($(elem).find('.divNombProducto button').attr('title')=='Libre'){
+			if($(elem).find('.divNombProducto').attr('data-tipo')=='libre'){
 					productVariable = $(elem).find('.campoTextoLibre').val();
 				}else{
 					productVariable = $(elem).find('.divNombProducto button').attr('title')
 				}
-				jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
-					descripcionProducto: productVariable,
-					precioProducto: $(elem).find('.campoPrecioUnit').val(),
-					unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
-					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
-					unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
-					subtotal: $(elem).find('.campoSubTotal').val(),
-					afecto: $(elem).find('#sltFiltroGravado').selectpicker('val'),
-					idProd: $(elem).attr('data-producto')
-				});
-		}
+			jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
+				descripcionProducto: productVariable,
+				precioProducto: $(elem).find('.campoPrecioUnit').val(),
+				unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
+				unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
+				unidadCorto: $.undMap[$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')],
+				subtotal: $(elem).find('.campoSubTotal').val(),
+				afecto: $(elem).find('#sltFiltroGravado').selectpicker('val'),
+				idProd: $(elem).attr('data-producto')
+			});
 		});
 		var dniRc ='', razon='';
 		if($('#txtDniBoleta').val()!=''){
@@ -382,18 +380,47 @@ $('#btnPrintPDF').click(function() {
 	location.reload();
 });
 
+function quitarPlaceholderProductos() {
+	$('#placeholderProductos').remove();
+}
+
 $('#btnAgregarProducto').click(function() {
 	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
-	if( !$.isNumeric($('#divProductos .sltFiltroProductos').last().selectpicker('val')) ){
+	var $ultimo = $('#divProductos .sltFiltroProductos').last();
+	if ($ultimo.length && $ultimo.is(':visible') && !$.isNumeric($ultimo.selectpicker('val'))) {
 		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Falta seleccionar un producto').parent().removeClass('d-none');
-	}else if( $('#divProductos .sltFiltroUnidad').last().selectpicker('val')==null ){
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidó rellenar una unidad').parent().removeClass('d-none');
-	}else{
-		$.ajax({url: 'php/filaNueva.php', type: 'POST' }).done(function(resp) {
-			$('#divProductos').append(resp);
-			$('.selectpicker').selectpicker('render');
-		});
+		return;
 	}
+	if ($('#divProductos .cardHijoProducto').length && !$('#divProductos .sltFiltroUnidad').last().selectpicker('val')) {
+		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidó rellenar una unidad').parent().removeClass('d-none');
+		return;
+	}
+	$.ajax({url: 'php/filaNueva.php', type: 'POST' }).done(function(resp) {
+		quitarPlaceholderProductos();
+		$('#divProductos').append(resp);
+		$('.selectpicker').selectpicker('render');
+	});
+});
+
+$('#btnAgregarLibre').click(function() {
+	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
+	$.ajax({url: 'php/filaNueva.php', type: 'POST' }).done(function(resp) {
+		quitarPlaceholderProductos();
+		$('#divProductos').append(resp);
+		$('.selectpicker').selectpicker('render');
+		var $row = $('#divProductos .cardHijoProducto').last();
+		$row.find('.divNombProducto').attr('data-tipo', 'libre');
+		var $select = $row.find('.sltFiltroProductos');
+		var libreVal = $select.find('option').first().val();
+		if (libreVal) $select.selectpicker('val', libreVal);
+		$select.addClass('d-none');
+		$row.find('.campoTextoLibre').removeClass('d-none').focus();
+		$row.find('.sltFiltroUnidad').selectpicker('val', 'NIU');
+		$row.find('.sltFiltroPrecios').selectpicker('val', '0');
+		$row.find('.campoPrecioUnit').prop('readonly', false).val('0.00');
+		$row.find('.sltFiltroGravado').selectpicker('val', $.precios[0].idGravado); 
+		
+	});
 });
 
 $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, clickedIndex, isSelected, previousValue) {
@@ -432,17 +459,11 @@ $('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, c
 
 $('#divProductos').on('click', '.borrarFila', function (e) {
 	var padre=$(this).parent().parent();
-	padre.find('.campoPrecioUnit').prop('readonly',true);
-	padre.find('#sltFiltroGravado').prop('disabled', true).selectpicker('refresh');
 	if($('.cardHijoProducto').length>1){
 		padre.remove();
 	}else{
-		padre.find('.sltFiltroProductos').selectpicker('val', -1).selectpicker('refresh');
-		padre.find('.campoCantidad').val(0);
-		padre.find('.campoPrecioUnit').val('0.00');
-		padre.find('.campoSubTotal').val('0.00');
-		padre.find('.bootstrap-select').removeClass('d-none');
-		padre.find('.campoTextoLibre').addClass('d-none');
+		padre.remove();
+		$('#divProductos').append('<div class="text-muted py-3" id="placeholderProductos"><i class="bi bi-chevron-down"></i> Seleccione una opción</div>');
 	}
 	sumaTodo();
 });

@@ -382,6 +382,11 @@ $('#btnUpdateProduct').click(function() {
 $('#modalNuevoProducto').on('shown.bs.modal', function () { 
 	$('#txtDescripcionNuevo').focus();
 });
+$('#sltFiltroUnidadesNuevo').on('changed.bs.select', function () {
+	var val = $(this).selectpicker('val');
+	if (val) $('#txtCodeSunat').val(val);
+});
+
 $('#btnAgregarProducto').click(function() {
 	$('#sltFiltroGravadoNuevo').selectpicker('val', '1')
 	$('#sltFiltroUnidadesNuevo').selectpicker('val', 'NIU')

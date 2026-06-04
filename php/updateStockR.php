@@ -1,5 +1,5 @@
 <?php 
-include "conexion.php";
+include __DIR__. "/conexion.php";
 $sqlStock='';
 switch ($_POST['proceso']) {
 	case '1':

@@ -122,7 +122,7 @@
 				<div class="card">
 					<div class="card-body">
 						<p class="text-muted d-none mb-0"><strong>Detalle:</strong></p>
-						<div class="row text-muted">
+						<div class="row text-muted text-center">
 							<div class="col-6 col-md-4"><strong>Concepto</strong></div>
 							<div class="col-6 col-md-2"><strong>Cant.</strong></div>
 							<?php if($_COOKIE['facCambiarUnidad']==1): ?>
@@ -138,9 +138,12 @@
 							<div class="col-6 col-md-2 d-none"><strong>Sub-Total</strong></div>
 						</div>
 						<div id="divProductos">
-							<?php include "php/filaNueva.php";?>
+							<div class="text-muted py-3" id="placeholderProductos">
+								<i class="bi bi-chevron-down"></i> Seleccione una opción
+							</div>
 						</div>
-						<button class="btn btn-outline-success btn-sm mt-2" id="btnAgregarProducto"><i class="bi bi-plus-lg"></i> Agregar más produtos</button>
+						<button class="btn btn-outline-info btn-sm mt-2" id="btnAgregarLibre"><i class="bi bi-pencil"></i> Agregar campo libre</button>
+						<button class="btn btn-outline-success btn-sm mt-2 ml-1" id="btnAgregarProducto"><i class="bi bi-plus-lg"></i> Agregar <?= $esServicio ? 'productos / servicios' : 'más productos' ?></button>
 					</div>
 				</div>
 				<div class='my-3 '>
@@ -158,26 +161,31 @@
 				
 			
 			<div class="container-fluid">
-				<div class="row">
-					<div class="col">
-						<p class="mb-0"><small>Observaciones adicionales:</small></p>
+				<div class="row align-items-end">
+					<div class="col-md-5 mb-2 mb-md-0">
+						<small class="text-muted">Observaciones adicionales:</small>
 						<input type="text" class="form-control" id="txtObservaciones">
 					</div>
-				</div>
-			</div>
-			
-			<div class="container-fluid row d-flex justify-content-end my-3">
-				<div class="row">
-					<label for="" class="col-sm-4 col-form-label text-right"><small>Paga con:</small></label>
-					<input type="number" class="form-control col-sm-3" id="txtPagaCuanto">
-					<label for="" class="col-sm-4 col-form-label d-none"><small>Vuelto: S/<span id="spanVuelto"></span></small></label>
-				</div>
-				<div class="col mt-2 mt-md-0">
-					<button type="button" class="btn btn-outline-success float-right d-none" id="btnEmitirFacturav2" ><i class="bi bi-bookmark-star"></i> Emitir Factura</button>
-					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="bi bi-bookmark-star"></i> Emitir Boleta</button>
-				</div>
-				<div class="container-fluid row mt-3 d-flex justify-content-end d-none" id="">
-					<span id="spanLimiteSobrepasado" style="background: #e6330a!important;"><span class=""><i class="bi bi-chat-dots"></i> Se sobrepasó el límite máximo en comprobantes.</span></span>
+					<div class="col-md-3 mb-2 mb-md-0">
+						<small class="text-muted">Paga con:</small>
+						<div class="input-group">
+							<input type="number" class="form-control" id="txtPagaCuanto" placeholder="0.00">
+							<div class="input-group-append d-none" id="spanVueltoWrapper">
+								<span class="input-group-text text-success">Vuelto: S/<span id="spanVuelto">0.00</span></span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 text-right d-flex flex-column justify-content-end">
+						<div>
+							<button type="button" class="btn btn-outline-success d-none" id="btnEmitirFacturav2" ><i class="bi bi-bookmark-star"></i> Emitir Factura</button>
+							<button type="button" class="btn btn-outline-primary" id="btnEmitirBoletav2" ><i class="bi bi-bookmark-star"></i> Emitir Boleta</button>
+						</div>
+						<div>
+							<div class=" mt-1" id="spanLimiteSobrepasado" style="background: #e6330a;color:white;padding:4px 8px;border-radius:4px;font-size:12px;">
+								<i class="bi bi-chat-dots"></i> Se sobrepasó el límite máximo en comprobantes.
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

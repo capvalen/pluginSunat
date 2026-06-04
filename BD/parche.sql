@@ -1,3 +1,8 @@
+-- 1.23
+INSERT INTO `configuracion` (`idConf`, `confVariable`, `confValor`) VALUES (NULL, 'version', '1.23');
+UPDATE `unidades` set undDescipcion = 'Servicio', undSunat ='ZZ', undCorto='-' where idUnidad=11;
+UPDATE `unidades` SET `undCorto` = 'PK' WHERE `unidades`.`idUnidad` = 7; 
+
 --1.16
 INSERT INTO `configuracion` (`idConf`, `confVariable`, `confValor`) VALUES (NULL, 'version', '1.21');
 INSERT INTO `usuario` (`idUsuario`, `usuNombres`, `usuApellido`, `usuNick`, `usuPass`, `token`, `usuPoder`, `usuActivo`) VALUES (NULL, 'operario', 'operario', 'operario', '', '', '3', b'1');

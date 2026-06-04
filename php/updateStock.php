@@ -1,5 +1,8 @@
 <?php 
-include "conexion.php";
+include __DIR__. "/conexion.php";
+
+if ($_POST['idProd'] == 1) { return "ok"; exit; } //no cuenta el stock libre, en vano
+
 $sqlStock='';
 switch ($_POST['proceso']) {
 	case '1':

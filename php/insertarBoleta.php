@@ -136,13 +136,16 @@ for ($i=0; $i < count($productos) ; $i++) {
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
 		 (null,  concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['descripcionProducto']}',
 		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, NOW(), {$productos[$i]['afecto']}, {$productos[$i]['idProd']}, {$porcentajeIGV});";
+		 //echo $sqlProd; die();
 		 $cadena->query($sqlProd);
 
 		 $_POST['idProd']=$productos[$i]['idProd'];
 		 $_POST['proceso']='3';
 		 $_POST['cantidad']=$canti;
 		 $_POST['obs']='';
+		 ob_start();
 		 require __DIR__. '/updateStock.php';
+		 ob_end_clean();
 		 
 
 		//echo $sqlProd;
