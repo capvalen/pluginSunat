@@ -9,6 +9,7 @@ $direccionEmisor = "Av. Industrial S/N  (Esquina Av. Industrial y Av. España) S
 $celularEmisor = "985 946 052";
 $nombrePrint = 'HP1102W'; //TM-T20II
 $casaHost = "pluginSunat";
+$webHost = "http://localhost/pluginSunat/";
 
 $generarArchivo = false;
 $esServicio = true;

@@ -22,7 +22,7 @@ $resultadoUnd=$esclavo->query($sqlUnd);
 		}		
 		?>
 		</select>
-		<input type="text" class="d-none form-control campoTextoLibre text-capitalize" value="" placeholder='Concepto de venta' >
+		<input type="text" class="d-none form-control campoTextoLibre text-capitalize" value="" placeholder='Concepto de venta' autocomplete="off">
 	</div>
 	<?php if($_COOKIE['verCantidad']==0):?>
 		<div class="col-6 col-md-2 d-none"><input type="number" class="form-control text-center esMoneda campoCantidad" value="1" step="1" min="0"></div>

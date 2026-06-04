@@ -300,6 +300,7 @@ thead tr th{cursor: pointer;}
 
 
 <?php include "php/modal.php"; ?>
+<?php include "modals-emision.php"; ?>
 
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js" integrity="" crossorigin="anonymous"></script>
@@ -516,5 +517,11 @@ function Exportar(){
 
 </script>
 
+<script>
+	$.decimalSuper = <?= json_encode($decimalesSuper) ?>;
+	$.porcentajeIGV1 = <?= json_encode($porcentajeIGV1) ?>;
+	$.casaHost = <?= json_encode($casaHost) ?>;
+</script>
+<script src="js/emision.js"></script>
 </body>
 </html>

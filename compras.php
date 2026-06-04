@@ -18,7 +18,7 @@ include "generales.php"; ?>
 	<link rel="stylesheet" href="css/anksunamun.css">
 	<link rel="shortcut icon" href="images/VirtualCorto.png" type="image/png">
 	<link rel="stylesheet" href="css/colorsmaterial.css">
-
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 </head>
 <body class="pb-5">
@@ -311,11 +311,8 @@ thead tr th{cursor: pointer;}
 
 
 
-<div id="overlay">
-	<div class="text"><span id="hojita"><i class="icofont icofont-leaf"></i></span> <p id="pFrase"> Solicitando los datos a Sunat... <br> <span>«Pregúntate si lo que estás haciendo hoy <br> te acerca al lugar en el que quieres estar mañana» <br> Walt Disney</span></p></div>
-</div>
-
 <?php include "php/modal.php"; ?>
+<?php include "modals-emision.php"; ?>
 
 <script src="js/jquery.min.js"></script>
 <script src="js/popper.min.js"></script>
@@ -572,5 +569,11 @@ $('#buscarCompraFecha').click(()=>{
   else{w.addEventListener('load',l,false);}}})();
 </script> -->
 <!-- {/literal} END JIVOSITE CODE -->
+<script>
+	$.decimalSuper = <?= json_encode($decimalesSuper) ?>;
+	$.porcentajeIGV1 = <?= json_encode($porcentajeIGV1) ?>;
+	$.casaHost = <?= json_encode($casaHost) ?>;
+</script>
+<script src="js/emision.js"></script>
 </body>
 </html>

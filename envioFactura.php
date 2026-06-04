@@ -1,4 +1,5 @@
 <?php
+include "generales.php";
 if( !isset($_COOKIE['ckUsuario']) ){ 
 	header("Location: index.html");
 	die();
@@ -8,7 +9,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<title>Facturador electrónico - Desarrollado por: Infocat Soluciones</title>
+	<title>Facturador electrónico -Infocat Soluciones</title>
 	<?php include 'headers.php'; ?>
 	<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -138,5 +139,13 @@ if( !isset($_COOKIE['ckUsuario']) ){
 });
 app.todaData();
 </script>
+
+<?php include 'modals-emision.php'; ?>
+<script>
+	$.decimalSuper = <?= json_encode($decimalesSuper) ?>;
+	$.porcentajeIGV1 = <?= json_encode($porcentajeIGV1) ?>;
+	$.casaHost = <?= json_encode($casaHost) ?>;
+</script>
+<script src="js/emision.js"></script>
 </body>
 </html>

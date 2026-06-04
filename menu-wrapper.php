@@ -10,8 +10,8 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-		<?php if($nomArchivo=='facturador.php'){ ?>
-			<li class="nav-item dropdown">
+		<a class="nav-item nav-link " href="facturador.php"><i class="bi bi-sticky"></i> Facturador</a>
+		<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<i class="bi bi-sticky"></i> Emitir
 				</a>
@@ -19,13 +19,8 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 					<a class="dropdown-item" href="#!" id="AEmitirBoleta"><i class="icofont-ui-note"></i> Boleta</a>
 					<a class="dropdown-item" href="#!" id="AEmitirFactura"><i class="icofont-ui-copy"></i> Factura</a>
 					<a class="dropdown-item" href="./POS" id="AEmitirFactura"><i class="icofont-diamond"></i> POS Ventas</a>
-					<!-- <a class="dropdown-item AEmitirNotas" href="#!" id=""><i class="icofont-layers"></i> Nota de crédito</a>
-					<a class="dropdown-item AEmitirNotas d-none" href="#!" id=""><i class="icofont-layers"></i> Nota de débito</a> -->
 				</div>
 			</li>
-		<?php }else{ ?>
-		<a class="nav-item nav-link " href="facturador.php" id=""><i class="bi bi-sticky"></i> Facturador</a>
-		<?php } ?>
 		<?php if($_COOKIE['ckPower']=='1' ): ?>
 			<li class="nav-item dropdown <?php if($nomArchivo =='productos.php' || $nomArchivo =='compras.php') echo 'active'; ?>">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

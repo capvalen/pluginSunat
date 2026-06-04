@@ -149,7 +149,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 	}
 }
 
-
+$crearArchivo = $_COOKIE['crearArchivo'] ?? 0;
 
 
 # Generando los archivos txt para sunat 
@@ -170,7 +170,7 @@ if($filasCabeza==1){
 	$lineaCabeza = $rowC['tipOperacion'].$separador.$rowC['fechaEmision'].$separador.$rowC['horaEmision'].$separador.$rowC['fechaVencimiento'].$separador. $domicilioFiscal.$separador. $tipoDoc.$separador.$rowC['dniRUC'].$separador.$rowC['razonSocial']. $separador.$rowC['tipoMoneda'].$separador. $igvFin.$separador. $costo.$separador. $totFin . $separador. $descuento.$separador. $sumaCargos.$separador.$anticipos. $separador. $totFin.$separador.$versionUbl.$separador. $customizacion.$separador;
 	//echo $lineaCabeza;
 
-	if($_COOKIE['crearArchivo']==1){
+	if($crearArchivo==1){
 	$archivo = fopen("{$directorio}{$nombreArchivo}.cab", "w");
 	fwrite($archivo, "{$lineaCabeza}");
 	fclose($archivo);
@@ -210,7 +210,7 @@ while($rowD=$resultadoDetalle->fetch_assoc()){
 }
 //echo $lineaDetalle ;
 
-if($_COOKIE['crearArchivo']==1){
+if($crearArchivo==1){
 $detalle = fopen("{$directorio}{$nombreArchivo}.det", "w");
 fwrite($detalle, "{$lineaDetalle}");
 fclose($detalle);

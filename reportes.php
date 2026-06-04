@@ -112,6 +112,7 @@ include "generales.php"; ?>
 
 
 <?php include "php/modal.php"; ?>
+<?php include "modals-emision.php"; ?>
 <?php include "footer.php"; ?>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="js/bootstrap-datepicker.js?version=1.0.1"></script>
@@ -362,5 +363,11 @@ thead tr th{cursor: pointer;}
 width: 100%!important;}
 .bg-success th{color:white!important}
 </style>
+<script>
+	$.decimalSuper = <?= json_encode($decimalesSuper) ?>;
+	$.porcentajeIGV1 = <?= json_encode($porcentajeIGV1) ?>;
+	$.casaHost = <?= json_encode($casaHost) ?>;
+</script>
+<script src="js/emision.js"></script>
 </body>
 </html>

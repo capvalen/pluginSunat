@@ -8,7 +8,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.php");
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<title>Facturador electrónico - Desarrollado por: Infocat Soluciones</title>
+	<title>Facturador electrónico -Infocat Soluciones</title>
 	<?php include 'headers.php'; ?>
 </head>
 <body>
@@ -65,206 +65,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.php");
 	<p class="mb-1"><i class="bi bi-bookmark"></i> Facturador Sunat 2.1</p>
 </footer>
 
-<div class="modal fade" id="modalArchivoBien" tabindex="-1" role="dialog" data-backdrop="static" >
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header border-0">
-				<h5 class="modal-title">Guardado exitoso</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<img src="images/successful.jpg" class="img-fluid px-5 mb-2">
-				<h5>Comprobante generado correctamente. </h5>
-				<p>¿Qué deseas hacer a continuación?</p>
-				<div class="d-flex justify-content-between">
-					<button class="btn btn-outline-primary" id="btnPrintTicketera"><i class="bi bi-clipboard2"></i> Imprimir ticket</button>
-					<button class="btn btn-outline-success d-none d-sm-block" id="btnPrintA4"><i class="bi bi-printer"></i> Ver en A4</button>
-					<button class="btn btn-outline-success d-block d-sm-none" id="btnPrintPDF"><i class="bi bi-printer"></i> Ver en PDF</button>
-				</div>
-			</div>
-			<div class="modal-footer d-none">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-
-<!-- Modal para Emitir Boleta -->
-<div class="modal fade" id="modalEmisionBoleta" tabindex="-1" role="dialog" data-backdrop="static">
-	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-		<div class="modal-content">
-			<div class="modal-body">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<i class="bi bi-x"></i>
-				</button>
-				<h4 class="py-3 hTitulo"><i class="bi bi-clipboard2"></i> Generar: <span id="queGenero"></span> Electrónica</h4>
-				<div class="row d-none">
-					<div class="col">
-						<div class="checkbox checkbox-success mb-3">
-							<input id="checkbox2" class="styled" type="checkbox" id="chkFecha" onchange="mostrarFecha()">
-							<label for="checkbox2">Fecha</label>
-						</div>
-					</div>
-					<div class="col">
-						<!-- <div class="form-check mb-3">
-							<input class="form-check-input" type="checkbox" value="" id="chkSerie" >
-							<label class="form-check-label" for="chkSerie" >Serie</label>
-						</div> -->
-						<div class="checkbox checkbox-success mb-3">
-							<input id="checkbox3" class="styled" type="checkbox" id="chkSerie" onchange="mostrarSeries()">
-							<label for="checkbox3">Serie</label>
-						</div>
-					</div>
-					<div class="col">
-						<div class="checkbox checkbox-success mb-3">
-							<input id="chkCreditos" class="styled" type="checkbox" id="chkPago" onchange="mostrarCreditos()">
-							<label for="chkCreditos">Pago al contado</label>
-						</div>
-					</div>
-				</div>
-				<div class="card mb-2" id="cardAtributos">
-					<div class="card-body row">
-						<div class="form-check mb-3 d-none">
-							<input class="form-check-input" type="checkbox" value="" id="chkEstadoDni" >
-							<label class="form-check-label" id="labelEstadoDni" for="chkEstadoDni" >Cliente anónimo</label>
-						</div>
-						<div class="form-check mb-3 ml-5 d-none">
-							<label for="">Placa de vehículo:</label>
-							<input type="text" class='form-control text-uppercase ml-3' placeholder="N° Placa &#xee1e;" id="txtPlacaBoleta">
-						</div>
-						<div class="col">
-							<label class="pr-3 text-muted mt-2" for=""><strong>Clientes guardados:</strong></label>
-							<select class="selectpicker" data-live-search="true" id="sltFiltroClientes" title="&#xed12; Filtro de clientes">
-							<?php include "php/listarTodosClientes.php";?>
-						</select>
-						</div>
-						<div class="col " id="divFecha">
-							<label class="pr-3  text-muted mt-2" for=""><strong>Fecha:</strong></label>
-							<input type="date" class="form-control  mr-2" id="txtFechaComprobante">
-						</div>
-					
-						<div class="col " id="divSeries">
-							<label class="pr-3 text-muted mt-2" for=""><strong>Serie:</strong></label>
-							<div class="dropdown">
-							<?php
-								$sqlSerieBoleta="SELECT * FROM `fact_series`";
-								$resultadoSerieBoleta=$cadena->query($sqlSerieBoleta);
-								$rowSerieBoleta=$resultadoSerieBoleta->fetch_assoc();
-							?>
-							<select class="form-control" id="sltSeriesBoleta">
-								<option value="series" selected>Series</option>
-								<option id="optBoleta"><?= $rowSerieBoleta['serieBoleta']; ?></option>
-								<option id="optFactura"><?= $rowSerieBoleta['serieFactura']; ?></option>
-								<option id="optOpcional"><?= $rowSerieBoleta['serieOpcional']; ?></option>
-								<option id="optOpcional"><?= $rowSerieBoleta['serieOpcional2']; ?></option>
-							</select>
-							</div>
-							
-						</div>
-						<div class="col" id="divCreditos">
-							<label class="pr-3 text-muted mt-2 w-100" for=""><strong>Crédito y fechas:</strong></label>
-							<button class="btn btn-sm btn-outline-secondary" id="btnAddCredito" data-toggle="modal" data-target="#modalCreditos"><i class="bi bi-stars"></i> Agregar crédito</button>
-						</div>
-						<div class="col" id="divCuantosCreditos">
-						</div>
-					</div>
-				</div>
-			
-				
-				<div id="divDatosCliente" class=" card mb-3">
-					<div class="card-body">
-						<p class="text-muted "><strong>Datos del cliente:</strong></p>
-						<div class="row mb-2">
-							<div class="col-4">
-								<div class="input-group mb-2">
-									<input type="text" class="form-control ml-2 soloNumeros" id="txtDniBoleta" placeholder="Dni o RUC" autocomplete="off">
-									<div class="input-group-append">
-										<button class="btn btn-outline-secondary" type="button" id="btnReniec" onclick="buscarReniec()"><img src="images/reniec.png" width="16"> Reniec</button>
-									</div>
-									<div class="input-group-append d-none">
-										<button class="btn btn-outline-secondary" type="button" id="btnSunat" onclick="buscarReniec()"><img src="images/sunat.webp" width="16"> SUNAT</button>
-									</div>
-								</div>
-							</div>
-							<div class="col-8">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtRazonBoleta" value="" placeholder='Razón social o Apellidos y Nombres' autocomplete="off">
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
-								<input type="text"  class="form-control ml-2 text-capitalize" id="txtDireccionBoleta" value="" placeholder='Dirección' autocomplete="off">
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="card">
-					<div class="card-body">
-						<p class="text-muted d-none mb-0"><strong>Detalle:</strong></p>
-						<div class="row text-muted">
-							<div class="col-6 col-md-4"><strong>Concepto</strong></div>
-							<div class="col-6 col-md-2"><strong>Cant.</strong></div>
-							<?php if($_COOKIE['facCambiarUnidad']==1): ?>
-							<div class="col-6 col-md-2"><strong>Und</strong></div>
-							<?php endif;
-							if($_COOKIE['facCambiarGravado']==1): ?>
-							<div class="col-6 col-md-2"><strong>Gravado.</strong></div>
-							<?php endif; ?>
-							<div class="col-6 col-md-2"><strong>Precio</strong></div>
-							<?php if($_COOKIE['verCantidad']==1):?>
-							<div class="col-6 col-md-2 "><strong>Precio Unit.</strong></div>
-							<?php endif;?>
-							<div class="col-6 col-md-2 d-none"><strong>Sub-Total</strong></div>
-						</div>
-						<div id="divProductos">
-							<?php include "php/filaNueva.php";?>
-						</div>
-						<button class="btn btn-outline-success btn-sm mt-2" id="btnAgregarProducto"><i class="bi bi-plus-lg"></i> Agregar más produtos</button>
-					</div>
-				</div>
-				<div class='my-3 '>
-					<div class="container row row-cols-2 row-cols-md-4 text-center" id="divCalculosFinales"> <!-- align-items-end flex-column -->
-						<span><small>Exonerado:</small> <span>S/ <span id="spExoneradoBoleta">0.00</span></span></span>
-						<span><small>Sub-Total:</small> <span>S/ <span id="spSubTotBoleta">0.00</span></span></span>
-						<span><small>IGV:</small> <span>S/ <span id="spIgvBoleta">0.00</span></span></span>
-						<span><small>Total:</small> <strong>S/ <span id="spTotalBoleta">0.00</span></strong></span>
-					</div>
-				</div>
-				
-				<div class="container-fluid row mt-3 d-flex justify-content-end">
-					<span id="spanErrorFinal" for="" class=" d-none"> <span class="lblError"></span></span>
-				</div>
-				
-			
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col">
-						<p class="mb-0"><small>Observaciones adicionales:</small></p>
-						<input type="text" class="form-control" id="txtObservaciones">
-					</div>
-				</div>
-			</div>
-			
-			<div class="container-fluid row d-flex justify-content-end my-3">
-				<div class="row">
-					<label for="" class="col-sm-4 col-form-label text-right"><small>Paga con:</small></label>
-					<input type="number" class="form-control col-sm-3" id="txtPagaCuanto">
-					<label for="" class="col-sm-4 col-form-label d-none"><small>Vuelto: S/<span id="spanVuelto"></span></small></label>
-				</div>
-				<div class="col mt-2 mt-md-0">
-					<button type="button" class="btn btn-outline-success float-right d-none" id="btnEmitirFacturav2" ><i class="bi bi-bookmark-star"></i> Emitir Factura</button>
-					<button type="button" class="btn btn-outline-primary float-right" id="btnEmitirBoletav2" ><i class="bi bi-bookmark-star"></i> Emitir Boleta</button>
-				</div>
-				<div class="container-fluid row mt-3 d-flex justify-content-end d-none" id="">
-					<span id="spanLimiteSobrepasado" style="background: #e6330a!important;"><span class=""><i class="bi bi-chat-dots"></i> Se sobrepasó el límite máximo en comprobantes.</span></span>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-</div>
+<?php include 'modals-emision.php'; ?>
 
 
 <!-- Modal para ingresar el N° ticket -->
@@ -386,74 +187,41 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.php");
 		</div>
 	</div>
 </div>
-<!-- Modal para pedir fechas y monto -->
-<div class="modal fade" id="modalCreditos" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Agregar crédito</h5>
-			</div>
-			<div class="modal-body">
-				<label for="">Fecha del próximo pago:</label>
-				<input type="date" class="form-control text-center" id="txtCreditoFecha">
-				<label for="">Monto de pago:</label>
-				<input type="number" class="form-control text-center" id="txtCreditoMonto">
-				<center class="mt-2"><button class="btn btn-lg btn-primary " id="btnCerrarCredito" data-toggle="modal" data-target="#modalEmisionBoleta">Agregar crédito</button></center>
-			</div>
-		</div>
-	</div>
-</div>
 <!-- Modal para empezar Compartir en PC -->
 <div class="modal fade" id="modalCompartirPc" tabindex="-1" role="dialog">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Compartir comprobante</h5>
+		<div class="modal-content border-0 shadow">
+			<div class="modal-header border-bottom-0 pb-0">
+				<h5 class="modal-title"><i class="bi bi-share"></i> Compartir comprobante</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<label for="">Elija la modalidad para compartir</label>
-				<div class="accordion " id="accordionExample">
-					<div class="card d-none">
-						<div class="card-header" id="headingOne">
-							<h2 class="mb-0 d-flex justify-content-between" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="cursor:pointer; color: #6a6a6a;">
-								<button class="btn btn-link btn-block text-left" type="button" >
-									<i class="icofont-mail"></i> Por Correo electrónico
-								</button>
-								<i class="icofont-rounded-down"></i>
-							</h2>
+				<div class="card border">
+					<div class="card-body">
+						<div class="d-flex align-items-center mb-3">
+							<div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mr-3" style="width: 40px; height: 40px;">
+								<i class="bi bi-envelope text-white"></i>
+							</div>
+							<h6 class="mb-0 font-weight-bold">Correo electrónico</h6>
 						</div>
-
-						<div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#accordionExample">
-							<div class="card-body">
-								<div class="input-group">
-									<input type="mail" class="form-control" id="txtCorreo" autocomplete="off" value="">
-									<div class="input-group-append">
-										<button class="btn btn-outline-secondary" type="button" onclick="btnEnviarCorreo()" data-dismiss="modal"><i class="bi bi-send"></i> Enviar</button>
-									</div>
-								</div>
+						<div class="input-group mb-4">
+							<input type="email" class="form-control" id="txtCorreo" autocomplete="off" placeholder="correo@ejemplo.com">
+							<div class="input-group-append">
+								<button class="btn btn-primary" type="button" onclick="btnEnviarCorreo()" data-dismiss="modal"><i class="bi bi-send"></i> Enviar</button>
 							</div>
 						</div>
-					</div>
-					<div class="card">
-						<div class="card-header" id="headingTwo">
-							<h2 class="mb-0" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="cursor:pointer; color: #6a6a6a;">
-								<button class="btn btn-link btn-block text-left collapsed" type="button" >
-									<i class="icofont-brand-whatsapp"></i> Por Whatsapp
-								</button>
-							</h2>
+						<div class="d-flex align-items-center mb-3">
+							<div class="rounded-circle bg-success d-flex align-items-center justify-content-center mr-3" style="width: 40px; height: 40px;">
+								<i class="bi bi-whatsapp text-white"></i>
+							</div>
+							<h6 class="mb-0 font-weight-bold">WhatsApp</h6>
 						</div>
-						<div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#headingTwo">
-							<div class="card-body">
-								<p>Ingrese el número de celular a compartir:</p>
-								<div class="input-group">
-									<input type="text" class="form-control" id="txtWhatsapp" autocomplete="off">
-									<div class="input-group-append">
-										<button class="btn btn-outline-secondary" type="button" onclick="btnEnviarWhatsapp()"><i class="bi bi-send"></i> Enviar</button>
-									</div>
-								</div>
+						<div class="input-group">
+							<input type="text" class="form-control" id="txtWhatsapp" autocomplete="off" placeholder="Número de celular">
+							<div class="input-group-append">
+								<button class="btn btn-success" type="button" onclick="btnEnviarWhatsapp()"><i class="bi bi-send"></i> Enviar</button>
 							</div>
 						</div>
 					</div>
@@ -517,26 +285,11 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.php");
 </div>
 <?php } ?>
 
-<div id="overlay">
-	<div class="text"><span id="hojita"><i class="bi bi-circle-half"></i></span> <p id="pFrase"> Solicitando los datos a Sunat... <br> <span>«Pregúntate si lo que estás haciendo hoy <br> te acerca al lugar en el que quieres estar mañana» <br> Walt Disney</span></p></div>
-</div>
-
 <?php include "php/modal.php"; ?>
 <?php include "footer.php"; ?>
 
 <script>
 $(document).ready(function(){
-	$.decimalSuper = '<?= $decimalesSuper?>';
-	$.creditos=[];
-	$('.selectpicker').selectpicker('render');
-	$('.selectpicker').selectpicker('val', -1);
-
-	$.ajax({url: 'php/getPreciosProductos.php', type: 'POST' }).done(function(resp) {
-		//console.log(resp)
-		console.info('Lista de precios:' );
-		$.precios = JSON.parse(resp);
-		console.log( $.precios );
-	});
 	$('#fechaFiltro').val( moment().format('YYYY-MM-DD'));
 	$('[data-toggle="tooltip"]').tooltip();
 	$('#tablaPrincipal tbody').children().remove();	
@@ -729,46 +482,21 @@ $('#padreTablaPrincipal').on('click', '.imprTicketFuera', function (e) {
 		window.open('./ticket.php?serie='+serie+'&correlativo='+correlativo+'&token='+token, '_blank');
 	<?php } ?>
 });
-$('#btnPrintTicketera').click(function() { console.log( 'ticketera' );
-	imprimitEnTicketera()
-});
-function imprimitEnTicketera(){
-	$.ajax({url: 'http://127.0.0.1/<?= $casaHost; ?>/printComprobante.php', type: 'POST', data: {
-				tipoComprobante: $.jTicket[0].tipoComprobante,
-				rucEmisor: $.jTicket[0].rucEmisor,
-				queEs: $.jTicket[0].queSoy,
-				serie: $.jTicket[0].serie,
-				correlativo: $.jTicket[0].correlativo,
-				tipoCliente: $.jTicket[0].tipoCliente,
-				fecha: $.jTicket[0].fechaEmision,
-				fechaLat: moment($.jTicket[0].fechaEmision, 'YYYY-MM-DD').format('DD/MM/YYYY'),
-				cliente: $.jTicket[0].razonSocial,
-				docClient: $.jTicket[0].ruc,
-				monedas: $.jTicket[0].letras,
-				descuento: parseFloat($.jTicket[0].descuento).toFixed(2),
-				costoFinal: parseFloat($.jTicket[0].costoFinal).toFixed(2),
-				igvFinal: parseFloat($.jTicket[0].igvFinal).toFixed(2),
-				totalFinal: parseFloat($.jTicket[0].totalFinal).toFixed(2),
-				productos: $.jTicket[1],
-				direccion:$.jTicket[0].direccion,
-				exonerado: parseFloat($.jTicket[0].exonerado).toFixed(2),
-				/* placa: $.jTicket[0].placa, */
-			}}).done(function(resp) {
-				console.log(resp)
-				//location.reload();
-			});
-}
 $('#btnModificarSerie').click(function() {
-	$.ajax({url: 'llamarSeries.php', type: 'POST', data: { }}).done(function(resp) {
-		var data = JSON.parse(resp)[0];
-		console.log( data );
-		$('#txtSerieBoleta').val( data.serieBoleta );
-		$('#txtSerieFactura').val( data.serieFactura );
-		$('#txtSerieInterna').val( data.serieOpcional );
-		
+	var cargarSeries = function(s) {
+		$('#txtSerieBoleta').val(s.serieBoleta);
+		$('#txtSerieFactura').val(s.serieFactura);
+		$('#txtSerieInterna').val(s.serieOpcional);
 		$('#modalModSerie').modal('show');
-	});
-	
+	};
+	if ($.series && $.series.length) {
+		cargarSeries($.series[0]);
+	} else {
+		$.ajax({url: 'llamarSeries.php', type: 'POST'}).done(function(resp) {
+			$.series = JSON.parse(resp);
+			if ($.series.length) cargarSeries($.series[0]);
+		});
+	}
 });
 $('#btnUpdateSeries').click(function() {
 	$('#pError2').addClass('d-none')
@@ -812,14 +540,6 @@ $('#padreTablaPrincipal').on('click', '.imprPDFFuera', function (e) {
 		window.open( 'printComprobantePDF.php?serie='+encodeURIComponent(serie)+'&correlativo='+encodeURIComponent(correlativo) ,'_blank');
 	});
 });
-$('#btnPrintA4').click(function() {
-	window.open( 'printComprobanteA4.php?serie='+encodeURIComponent($.jTicket[0].serie)+'&correlativo='+encodeURIComponent($.jTicket[0].correlativo) ,'_blank');
-	location.reload();
-});
-$('#btnPrintPDF').click(function() {
-	window.open( 'printComprobantePDF.php?serie='+encodeURIComponent($.jTicket[0].serie)+'&correlativo='+encodeURIComponent($.jTicket[0].correlativo) ,'_blank');
-	location.reload();
-});
 $('tbody').on('click', '.btnGenComprobante', function (e) {
 	var ticket = $(this).attr('data-ticket');
 	//console.log( ticket );
@@ -835,318 +555,6 @@ $('tbody').on('click', '.btnGenComprobante', function (e) {
 });
 $('#btnRefresh').click(function() {
 	location.reload();
-});
-$('#AEmitirBoleta').click(function() {
-	$('#optBoleta').attr('disabled',false);
-	$('#optFactura').attr('disabled',true);
-	$('#txtDniBoleta').attr('placeholder', 'DNI. o RUC.');
-	$('#txtRazonBoleta').attr('placeholder', 'Nombres y apellidos');
-	$('#btnEmitirBoletav2').removeClass('d-none');
-	$('#btnEmitirFacturav2').addClass('d-none');
-	$('#sltSeriesBoleta option').removeAttr('selected');
-	$('#optBoleta').attr('selected', true);
-	$('#chkEstadoDni').prop('checked', true).change().attr('disabled', false);
-	$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'));
-	$('#queGenero').text('Boleta de venta');
-	$('#modalEmisionBoleta').modal('show');
-});
-$('#AEmitirFactura').click(function() {
-	$('#optBoleta').attr('disabled',true);
-	$('#optFactura').attr('disabled',false);
-	$('#txtDniBoleta').attr('placeholder', 'R.U.C.');
-	$('#txtRazonBoleta').attr('placeholder', 'Razón social');
-	$('#btnEmitirBoletav2').addClass('d-none');
-	$('#btnEmitirFacturav2').removeClass('d-none');
-	$('#optFactura').attr('selected', true);
-	$('#chkEstadoDni').prop('checked', false).change().attr('disabled', true);
-	$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'));
-	$('#queGenero').text('Factura');
-	$('#modalEmisionBoleta').modal('show');
-});
-
-$('#chkEstadoDni').change(function() {
-	if($('#chkEstadoDni').prop('checked')	){
-		$('#labelEstadoDni').text('Cliente anónimo');
-		//$('#divDatosCliente').addClass('d-none');
-		//$('#txtDniBoleta').attr('readonly', true).val('');
-		//$('#txtRazonBoleta').attr('readonly', true).val('');
-		//$('#txtDireccionBoleta').attr('readonly', true).val('');
-		$('.selectpicker').selectpicker('val', -1);
-		$('#txtDniBoleta').focus();
-	}else{
-		$('#labelEstadoDni').text('Cliente con Documento');
-		//$('#divDatosCliente').removeClass('d-none');
-		//$('#txtRazonBoleta').attr('readonly', false);
-		//$('#txtDireccionBoleta').attr('readonly', false);
-		//$('#txtDniBoleta').attr('readonly', false).focus();
-		$('#txtDniBoleta').focus();
-	}
-});
-$('#divProductos').on('keyup','.campoSubTotal', function() {	
-	var padre = $(this).parent().parent();
-	var subTotal = 0;
-	var precio = parseFloat(padre.find('.campoPrecioUnit').val());
-	var cantidad = 0;//parseFloat(padre.find('.campoCantidad').val());
-	if($(this).val()!=''){
-		subTotal = parseFloat($(this).val());
-	}
-	cantidad = parseFloat(subTotal/precio);
-	if( cantidad==Infinity ){
-		cantidad=0;
-	}
-	padre.find('.campoCantidad').val( cantidad.toFixed(<?= $decimalesSuper?>) );
-	sumaTodo();
-});
-$('#divProductos').on('keyup','.campoPrecioUnit', function() {
-	var padre = $(this).parent().parent();
-	var precio = 0;
-	var cantidad = parseFloat(padre.find('.campoCantidad').val());
-	var subTotal = 0;//parseFloat(padre.find('.campoPrecioUnit').val());
-	if($(this).val()!=''){
-		precio = parseFloat($(this).val());
-	}
-
-	subTotal = parseFloat(cantidad*precio);
-	padre.find('.campoSubTotal').val( subTotal.toFixed(2) );
-	sumaTodo();
-});
-$('#divProductos').on('keyup','.campoCantidad', function() {
-	var padre = $(this).parent().parent();
-	var cantidad = 0;
-	if($(this).val()!=''){
-		cantidad = parseFloat($(this).val());
-	}
-	var precio = parseFloat(padre.find('.campoPrecioUnit').val());
-	var subTotal = 0;//parseFloat(padre.find('.campoPrecioUnit').val());
-	subTotal = parseFloat(cantidad*precio);
-	padre.find('.campoSubTotal').val( subTotal.toFixed(<?= $decimalesSuper?>) );
-	sumaTodo();
-});
-function sumaTodo() {
-	var sumaTotal=0, afectos = 0, exonerados = 0;
-	
-	$.each( $('.campoSubTotal'), function(i, elem){
-		if( $(elem).val()!='' ){
-			if( $(elem).attr('data-exonerado')=='1' ){
-				afectos+=parseFloat($(elem).val());
-			}else{
-				exonerados+=parseFloat($(elem).val());
-			}
-		}
-		
-	});
-	//console.log( sumaTotal );
-	sumaTotal=afectos+exonerados;
-	var costo = afectos/parseFloat(<?= $porcentajeIGV1; ?>);
-	var igv=afectos-costo;
-	$('#spExoneradoBoleta').text(parseFloat(exonerados).toFixed(2));
-	$('#spSubTotBoleta').text(parseFloat(costo).toFixed(2));
-	$('#spIgvBoleta').text(parseFloat(igv).toFixed(2));
-	$('#spTotalBoleta').text(parseFloat(sumaTotal).toFixed(2));
-	calcularVuelto();
-}
-/* $('#modalEmisionBoleta').on('shown.bs.modal', function () { 
-	$('#txtPlacaBoleta').focus();
-}); */
-		
-		
-$('#btnEmitirBoletav2').click(function() {
-	
-	/* console.log( resuelve() ); */
-	pantallaOver(true)
-	
-	const promesaCompletoTodo = new Promise((resolve, reject) => {
-		var truncado = false;
-		$.each( $('.cardHijoProducto'), function (i, elem) { 
-			
-			if( $(elem).find('.sltFiltroProductos').selectpicker('val')=='1' && $(elem).find('.campoTextoLibre').val()=='' ){
-				truncado = true;
-			}
-			if( i== $('.cardHijoProducto').length -1 && truncado ==true ){
-				//console.log( 'vacio1' );
-				$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Existen conceptos vacíos en uno de los items').parent().removeClass('d-none');
-				reject('falta datos');
-			}else if( i== $('.cardHijoProducto').length -1 && truncado ==false ){
-				//console.log( 'completo todo' );
-				$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
-				resolve('completo todo')
-			}
-		});
-	});
-
-	promesaCompletoTodo.then(resPromesa => {
-		
-		if( $('#sltSeriesBoleta').val()=='series'){
-			$('#sltSeriesBoleta').focus();
-			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none'); pantallaOver(false);
-		}else if( $('.cardHijoProducto').first().find('#sltTemporal').selectpicker('val')==null ){
-			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste seleccionar un producto').parent().removeClass('d-none'); pantallaOver(false);
-		}else if( $('.cardHijoProducto').first().find('.esMoneda').val()=='0.00' || $('.cardHijoProducto').first().find('.esMoneda').val()==0 || $('.cardHijoProducto').first().find('.campoPrecioUnit').val()=='0.00' || $('.cardHijoProducto').first().find('.campoPrecioUnit').val()==0 ){
-			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste ingresar una cantidad / precio').parent().removeClass('d-none'); pantallaOver(false);
-		}else if( $('.cardHijoProducto').first().find('#sltfiltroTemporal').selectpicker('val')==null ){
-			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste seleccionar una unidad').parent().removeClass('d-none'); pantallaOver(false);
-		}else if( $('#spTotalBoleta').text()=='0.00' ){
-			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none'); pantallaOver(false);
-		}else if( $('.cardHijoProducto').first().find('.sltFiltroProductos').selectpicker('val')== null ){
-			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none'); pantallaOver(false)	;
-		}else if( parseFloat($('#spTotalBoleta').text())>700 && $('#txtDniBoleta').val().length<8 ){
-			$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Ésta boleta por ser mayor a S/ 700.00 requiere DNI').parent().removeClass('d-none'); pantallaOver(false);
-		}
-		else{
-			var jsonCliente= [];
-
-			if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
-				jsonCliente.push({dni: $('#txtDniBoleta').val(),
-					razon: $('#txtRazonBoleta').val(),
-					direccion: $('#txtDireccionBoleta').val(),
-					contado: $.creditos.length==0 ? 1 : 2, //1:contado, 2:credito
-					fechaCredito : $('#txtDateVencimiento').val(),
-					adelanto: 0,// parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
-					montoCredito:0, //$('#txtMontoCredito').val(),
-					observaciones: $('#txtObservaciones').val()
-				});
-			}else{
-				jsonCliente.push({
-					dni:'00000000',
-					razon: 'Cliente sin documento',
-					direccion: '',
-					contado: $.creditos.length==0 ? 1 : 2, //1:contado, 2:credito
-					fechaCredito : $('#txtDateVencimiento').val(),
-					adelanto: 0,// parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
-					montoCredito:0, //$('#txtMontoCredito').val(),
-					observaciones: $('#txtObservaciones').val()
-				})
-			}
-			var jsonProductos = [];
-			$.each( $('.cardHijoProducto'), function (i, elem) {
-				var productVariable ='';
-				if( $(elem).find('.sltFiltroProductos').selectpicker('val')!='' ){
-					if($(elem).find('.divNombProducto button').attr('title')=='Libre'){
-						productVariable = $(elem).find('.campoTextoLibre').val();
-					}else{
-						productVariable = $(elem).find('.divNombProducto button').attr('title')
-					}
-					jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
-						descripcionProducto: productVariable,
-						precioProducto: $(elem).find('.campoPrecioUnit').val(),
-						unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
-						unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
-						unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
-						subtotal: $(elem).find('.campoSubTotal').val(),
-						afecto: $(elem).find('#sltFiltroGravado').selectpicker('val'),
-						idProd: $(elem).attr('data-producto')
-					});
-				}
-				
-			});
-			var dniRc ='', razon='';
-			if($('#txtDniBoleta').val()!=''){
-				dniRc=$('#txtDniBoleta').val();
-				razon=$('#txtRazonBoleta').val()
-			}else{
-				dniRc='00000000';
-				razon='Cliente sin documento';
-			}
-			
-			$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 3, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(),jsonProductos: jsonProductos, jsonCliente:jsonCliente, fecha: $('#txtFechaComprobante').val(), creditos: $.creditos }}).done(function(resp) { //  placa: $('#txtPlacaBoleta').val(),
-				console.log(resp)
-				$.jTicket = JSON.parse(resp); console.log( $.jTicket );
-				if($.jTicket.length >=1){
-					$('#modalEmisionBoleta').modal('hide');
-					$('#modalArchivoBien').modal('show');
-				}
-				pantallaOver(false)
-			});
-		}
-
-	}).finally(()=>{
-		pantallaOver(false)
-	})
-
-	
-});
-$('#btnEmitirFacturav2').click(function() {
-	pantallaOver(true)
-
-	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
-	if( $('#sltSeriesBoleta').val()=='series'){
-		$('#sltSeriesBoleta').focus();
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidaste seleccionar un tipo de serie').parent().removeClass('d-none');
-	}/* else if( $('#txtPlacaBoleta').val()==''){
-		$('#txtPlacaBoleta').focus();
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> La placa del automóvil tiene que ser rellenado').parent().removeClass('d-none');
-	} */else if( $('#txtDniBoleta').val().length!=11 ){
-		$('#txtDniBoleta').focus();
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> El RUC del cliente, no es correcto').parent().removeClass('d-none'); pantallaOver(false)
-	}else if( $('#txtRazonBoleta').val()=='' ){
-		$('#txtRazonBoleta').focus(); pantallaOver(false)
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> La razón social no puede estar en blanco').parent().removeClass('d-none');
-	}else if( $('#spTotalBoleta').text()=='0.00' ){
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber al menos un producto con precio').parent().removeClass('d-none'); pantallaOver(false)
-	}else if( $('.cardHijoProducto').first().find('.sltFiltroProductos').selectpicker('val')== null ){
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Debe haber seleccionar al menos un producto').parent().removeClass('d-none'); pantallaOver(false)
-	}else{
-		var jsonCliente= [];
-		if( $('#txtDniBoleta').val()!='' && $('#txtRazonBoleta').val()!='' ){
-			jsonCliente.push({dni: $('#txtDniBoleta').val(),
-				razon: $('#txtRazonBoleta').val(),
-				direccion: $('#txtDireccionBoleta').val(),
-				contado: $.creditos.length==0 ? 1 : 2, //1:contado, 2:credito
-				fechaCredito : $('#txtDateVencimiento').val(),
-				adelanto: 0,// parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
-				montoCredito:0, //$('#txtMontoCredito').val(),
-				observaciones: $('#txtObservaciones').val()
-			});
-		}else{
-			jsonCliente.push({
-				dni:'00000000',
-				razon: 'Cliente sin documento',
-				direccion: '',
-				contado: $.creditos.length==0 ? 1 : 2, //1:contado, 2:credito
-				fechaCredito : $('#txtDateVencimiento').val(),
-				adelanto: 0,// parseFloat($('#spTotalBoleta').text() -$('#txtMontoCredito').val()),
-				montoCredito:0, //$('#txtMontoCredito').val(),
-				observaciones: $('#txtObservaciones').val()
-			})
-		}
-		var jsonProductos= [];
-		$.each( $('.cardHijoProducto'), function (i, elem) {
-			if( $(elem).find('.sltFiltroProductos').selectpicker('val')!='' ){
-				if($(elem).find('.divNombProducto button').attr('title')=='Libre'){
-					productVariable = $(elem).find('.campoTextoLibre').val();
-				}else{
-					productVariable = $(elem).find('.divNombProducto button').attr('title')
-				}
-				jsonProductos.push({cantidad: $(elem).find('.campoCantidad').val(),
-					descripcionProducto: productVariable,
-					precioProducto: $(elem).find('.campoPrecioUnit').val(),
-					unidadProducto: $(elem).find('.divUnidadProducto button').attr('title'),
-					unidadSunat: $(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val'),
-					unidadCorto: $(elem).find(`.sltFiltroUnidad option[value="${$(elem).find('.divUnidadProducto .sltFiltroUnidad').selectpicker('val')}"]`).attr('data-unidad') ,
-					subtotal: $(elem).find('.campoSubTotal').val(),
-					afecto: $(elem).find('#sltFiltroGravado').selectpicker('val'),
-					idProd: $(elem).attr('data-producto')
-				});
-		}
-		});
-		var dniRc ='', razon='';
-		if($('#txtDniBoleta').val()!=''){
-			dniRc=$('#txtDniBoleta').val();
-			razon=$('#txtRazonBoleta').val()
-		}else{
-			dniRc='00000000';
-			razon='Cliente sin documento';
-		}
-		$.ajax({url: 'php/insertarBoleta.php', type: 'POST', data: { emitir: 1, queSerie: $('#sltSeriesBoleta').val(), dniRUC: dniRc, razonSocial: razon, cliDireccion: $('#txtDireccionBoleta').val(), jsonProductos: jsonProductos, jsonCliente: jsonCliente, fecha: $('#txtFechaComprobante').val(), creditos: ($.creditos) }}).done(function(resp) { // placa: $('#txtPlacaBoleta').val(),
-			console.log(resp)
-			$.jTicket = JSON.parse(resp); console.log( $.jTicket );
-			if($.jTicket.length >=1){
-				$('#modalEmisionBoleta').modal('hide');
-				$('#modalArchivoBien').modal('show');
-			}
-			pantallaOver(false)
-		});
-	}
 });
 $('#btnModificarPrecios').click(function() {
 	$.ajax({url: 'php/llamarPrecios.php', type: 'POST'}).done(function(resp) {
@@ -1173,202 +581,6 @@ $('#btnUpdatePrecios').click(function() {
 		});
 	}
 });
-$('#sltFiltroClientes').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-	
-	var index=$('#sltFiltroClientes').val();
-	var padre = $("#sltFiltroClientes option[value="+index+"]");
-	if($(this).val()!=null){
-		$('#chkEstadoDni').prop('checked', false).change();
-	}
-	
-	
-	$('#txtDniBoleta').val(padre.attr('data-ruc'));
-	$('#txtRazonBoleta').val(padre.attr('data-razon'));
-	$('#txtDireccionBoleta').val(padre.attr('data-direccion'));
-});
-$('#btnAgregarProducto').click(function() {
-	$('#modalEmisionBoleta .lblError').parent().addClass('d-none');
-	if( !$.isNumeric($('#divProductos .sltFiltroProductos').last().selectpicker('val')) ){
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Falta seleccionar un producto').parent().removeClass('d-none');
-	}else if( $('#divProductos .sltFiltroUnidad').last().selectpicker('val')==null ){
-		$('#modalEmisionBoleta .lblError').html('<i class="bi bi-chat-dots"></i> Olvidó rellenar una unidad').parent().removeClass('d-none');
-	}else{
-		$.ajax({url: 'php/filaNueva.php', type: 'POST' }).done(function(resp) {
-			//console.log(resp)
-			$('#divProductos').append(resp);
-			$('.selectpicker').selectpicker('render');
-		});
-	}
-});
-$('#divProductos').on('changed.bs.select', '.sltFiltroProductos', function (e, clickedIndex, isSelected, previousValue) {
-	var padre = $(this).parent().parent(); //.parent()
-	//console.log( padre );
-	
-	if( $('.sltFiltroProductos').selectpicker('val')!=null && $('.sltFiltroProductos').selectpicker('val')!='' ){
-		var queProd= $('.sltFiltroProductos').selectpicker('val');
-		
-		//padre.find('.campoPrecioUnit').val
-		$.each( $.precios , function(i, prodObj){
-			if(prodObj.idProductos==queProd){
-				//console.log('es pecio', prodObj.prodPrecio );
-				//padre.find('.sltFiltroUnidad').selectpicker('val', '3')
-				padre.attr('data-producto', prodObj.idProductos );
-				padre.find('.sltFiltroUnidad #sltfiltroTemporal').selectpicker('val', prodObj.undSunat ).selectpicker('refresh');;
-				padre.find('.sltFiltroGravado').selectpicker('val', prodObj.idGravado ).selectpicker('refresh');
-				padre.find('.campoPrecioUnit').val(parseFloat(prodObj.prodPrecio).toFixed(2));
-				padre.find('.campoSubTotal').val(parseFloat(prodObj.prodPrecio).toFixed(2)).attr('data-exonerado', padre.find('#sltFiltroGravado').selectpicker('val'));
-				padre.find('.campoCantidad').val(1).focus();
-
-				padre.find('.selectpicker').selectpicker('refresh');
-			}
-		});
-
-		//console.log('ver:' + JSON.stringify($(this).selectpicker('val')))
-
-		if( clickedIndex ==1){ //codigo de la posición libre -> Antes #52
-			//padre.find('#sltFiltroGravado').prop('disabled', false).selectpicker('refresh');
-			padre.find('.sltFiltroProductos').addClass('d-none');
-			padre.find('.campoTextoLibre').removeClass('d-none').focus();
-
-			padre.find('.sltFiltroPrecios').selectpicker('val', 0);
-			padre.find('.campoPrecioUnit').prop('readonly', false);
-			console.log('estoy en libre')
-		}
-		else if(clickedIndex>1){
-			padre.find('.sltFiltroPrecios').selectpicker('val', 1);
-			padre.find('.campoPrecioUnit').prop('readonly', true);
-			console.log('estoy en otro')
-		}
-		padre.find('.sltFiltroUnidad').selectpicker('val', 'NIU')
-		sumaTodo();
-	}
-});
-$('#divProductos').on('click', '.borrarFila', function (e) {
-	var padre=$(this).parent().parent();
-	padre.find('.campoPrecioUnit').prop('readonly',true);
-	padre.find('#sltFiltroGravado').prop('disabled', true).selectpicker('refresh');
-	if($('.cardHijoProducto').length>1){
-		padre.remove();
-	}else{
-		padre.find('.sltFiltroProductos').selectpicker('val', -1).selectpicker('refresh');
-		padre.find('.campoCantidad').val(0);
-		padre.find('.campoPrecioUnit').val('0.00');
-		padre.find('.campoSubTotal').val('0.00');
-		padre.find('.bootstrap-select').removeClass('d-none');
-		padre.find('.campoTextoLibre').addClass('d-none');
-	}
-	sumaTodo();
-});
-
-$('#divProductos').on('click', '.optPrecios', function (e) {
-	var padre = $(this).parent().parent().parent().parent().parent().parent().parent();
-	padre.find('.campoPrecioUnit').prop('readonly',true);
-	
-	switch ( padre.find('#sltFiltroPrecios').selectpicker('val')) {
-		case "0":
-			padre.find('.campoPrecioUnit').prop('readonly',false).focus().val('0.00');
-		case "1":
-			$.each( $.precios , function(i, prodObj){
-				if(prodObj.idProductos == padre.attr('data-producto') ){
-					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecio).toFixed(2) ).keyup(); sumaTodo(); return false;
-				}
-			});
-			break;
-		case "2":
-			$.each( $.precios , function(i, prodObj){
-				if(prodObj.idProductos == padre.attr('data-producto') ){
-					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecioMayor).toFixed(2) ).keyup(); sumaTodo(); return false;
-				}
-			});
-			break;
-		case "3":
-			$.each( $.precios , function(i, prodObj){
-				if(prodObj.idProductos == padre.attr('data-producto') ){
-					padre.find('.campoPrecioUnit').val( parseFloat(prodObj.prodPrecioDescto).toFixed(2) ).keyup(); sumaTodo(); return false;
-				}
-			});
-			break;
-		default:
-			break;
-	}
-	
-});
-var divFecha = document.getElementById('divFecha');
-var divSeries = document.getElementById('divSeries');
-var divCreditos = document.getElementById('divCreditos');
-function mostrarFecha(){
-	$('#txtDateVencimiento').val(moment().format('YYYY-MM-DD'))
-	divFecha.classList.toggle('d-none'); ocultarPadre() }
-function mostrarSeries(){ divSeries.classList.toggle('d-none'); ocultarPadre() }
-function mostrarCreditos(){
-	$('#txtDateVencimiento').val(moment().add(1, 'day').format('YYYY-MM-DD'))
-	$('#txtMontoCredito').val($('#spTotalBoleta').text())
-	divCreditos.classList.toggle('d-none'); ocultarPadre()
-}
-function ocultarPadre(){
-	if($('#cardAtributos .d-none').length == 6 ){ //total de d-none ocultos
-		$('#cardAtributos').addClass('d-none')
-	}else{
-		$('#cardAtributos').removeClass('d-none')
-	}
-}
-
-$("#txtDniBoleta").keyup(function(e){
-	var code = e.which;
-	if($('#txtDniBoleta').val().length==11){//es ruc
-		$('#btnReniec').parent().addClass('d-none')
-		$('#btnSunat').parent().removeClass('d-none')
-	}else{
-		$('#btnReniec').parent().removeClass('d-none')
-		$('#btnSunat').parent().addClass('d-none')
-	}
-
-	if( code==13 ){
-		e.preventDefault();
-		if($('#txtDniBoleta').val().length==11) buscarSunat()
-		else buscarReniec()
-	}
-});
-function buscarReniec(){
-	pantallaOver(true);
-
-	if( ![0,8,11].includes($("#txtDniBoleta").val().length) ){ //si no es 8 ni 11 o vacío
-		alertify.error('<i class="bi bi-exclamation-diamond"></i> Datos del DNI no son correctos.', 8000);
-		pantallaOver(false);
-		return
-	}
-	$('#txtDniBoleta').val( $.trim($('#txtDniBoleta').val()) )	
-	$.ajax({url: 'php/dataSunat.php', type: 'POST', data: { ruc: $('#txtDniBoleta').val() }}).done(function(resp) {
-		try {
-			dato = JSON.parse(resp);
-			console.log(dato)
-			if(dato.length=!0){	
-				//console.log( dato.razon_social );
-				$('#txtRazonBoleta').val( dato.razon_social);
-				$('#txtDireccionBoleta').val( dato.domicilio_fiscal);
-			}
-		} catch (error) {}
-		pantallaOver(false);
-	});
-	
-}
-
-$('#txtPagaCuanto').keyup(function() {
-	calcularVuelto()
-});
-function calcularVuelto(){
-	if( $('#txtPagaCuanto').val()!=''){
-		if( $('#txtPagaCuanto').val() > parseFloat($('#spTotalBoleta').text()) ){
-			$('#spanVuelto').text( parseFloat(parseFloat($('#txtPagaCuanto').val()) - parseFloat($('#spTotalBoleta').text())).toFixed(2) );
-			$('#spanVuelto').parent().parent().removeClass('d-none')
-		}else{
-			$('#spanVuelto').parent().parent().addClass('d-none')
-		}
-	}else{
-		$('#spanVuelto').parent().parent().addClass('d-none')
-	}
-}
-
 function prepararTransformacion(id){
 	$.idComprobante = id;
 	$.ajax({url: 'php/prepararConversion.php', type: 'POST', data: { id: $.idComprobante }}).done(function(resp) {
@@ -1408,25 +620,30 @@ function compartirPc(serie, correlativo){
 }
 async function  btnEnviarCorreo(){
 	const correo = document.getElementById('txtCorreo').value;
-	if(correo){
-		let datos = new FormData()
-		datos.append('correo', correo)
-		datos.append('serie', $.serie)
-		datos.append('correlativo', $.correlativo)
-		const servidor = await fetch('php/correo.php',{
-			method:'POST', body: datos
-		});
-		const respuesta = await servidor.text()
-		if(respuesta =='Mensaje entregado')
-			alertify.notify('<i class="icofont-check"></i> Mensaje enviado', 'success', 5);
-			else
-			alertify.notify('<i class="icofont-check"></i> Hubo un problema con el servidor SMTP', 'danger', 5);
+	if(!correo){
+		Swal.fire({ icon: 'warning', title: 'Campo vacío', text: 'Ingrese un correo electrónico', confirmButtonColor: '#7030a0' });
+		return;
+	}
+	Swal.fire({ title: 'Enviando...', text: 'Enviando comprobante al correo', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+	let datos = new FormData();
+	datos.append('correo', correo);
+	datos.append('serie', $.serie);
+	datos.append('correlativo', $.correlativo);
+	if ($.jTicket && $.jTicket[0] && $.jTicket[0].tipoComprobante) {
+		datos.append('tipo', $.jTicket[0].tipoComprobante);
+	}
+	const servidor = await fetch('php/correo.php',{ method:'POST', body: datos });
+	const respuesta = await servidor.text();
+	if(respuesta == 'Mensaje entregado'){
+		Swal.fire({ icon: 'success', title: 'Enviado', text: 'El comprobante se envió correctamente al correo', confirmButtonColor: '#7030a0' });
+	}else{
+		Swal.fire({ icon: 'error', title: 'Error al enviar', text: respuesta, confirmButtonColor: '#7030a0' });
 	}
 }
 function btnEnviarWhatsapp(){
 	const celular = document.getElementById('txtWhatsapp').value;
 	if(celular)
-		window.open('https://wa.me/51'+ document.getElementById('txtWhatsapp').value.replaceAll(' ', '') + '?text='+ `Su Comprobante ${$.serie}-${$.correlativo} puede ser revisado online desde: ` + encodeURIComponent(`https://infocatsoluciones.com/app/bodegaMary/printComprobantePDF.php?serie=${$.serie}&correlativo=${$.correlativo}`), '_blank')
+		window.open('https://wa.me/51'+ document.getElementById('txtWhatsapp').value.replaceAll(' ', '') + '?text='+ `Su Comprobante ${$.serie}-${$.correlativo} puede ser revisado online desde: ` + encodeURIComponent(`<?=  $webHost ?>printComprobantePDF.php?serie=${$.serie}&correlativo=${$.correlativo}`), '_blank')
 	
 }
 $('#txtFiltro').keyup(e=>{
@@ -1438,26 +655,6 @@ $('#txtFiltro').keyup(e=>{
 		}
 	}
 })
-
-$('#btnAddCredito').click(()=>{
-	$('#modalEmisionBoleta').modal('hide')
-});
-$('#btnCerrarCredito').click(()=>{
-	if($('#txtCreditoFecha').val() !='' && $('#txtCreditoMonto').val()!='' )
-		$.creditos.push({fecha:$('#txtCreditoFecha').val(), monto: $('#txtCreditoMonto').val() })
-	$('#modalCreditos').modal('hide')
-	dibujarCreditos()
-});
-function dibujarCreditos(){
-	var html = ''
-	$.creditos.forEach(credito=>{
-		html +='<li>'+ fechaLatam(credito.fecha) +' - S/ '+ parseFloat(credito.monto).toFixed(2) + '</li>'
-	})
-	$('#divCuantosCreditos').html(html)
-}
-function fechaLatam(fechita){
-	if(fechita) return moment(fechita).format('DD/MM/YYYY')
-}
 
 <?php if($_COOKIE['ckPower']==1 || $_COOKIE['ckPower']==2){ ?>
 $('#seccionPrincipal').on('click', '.btnDarBajas', function (e) {
@@ -1493,19 +690,6 @@ $('#btnDarbaja').click(function() {
 
 	}
 });
-$('#txtFechaComprobante').focusout(function() {
-	let hoy = moment( moment().format('YYYY-MM-DD'), 'YYYY-MM-DD')
-	let comprobante = moment($('#txtFechaComprobante').val(), 'YYYY-MM-DD')
-	let diferencia = hoy.diff(comprobante, 'days')
-	if( diferencia<0 ){
-		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
-	}else if(diferencia>4){
-		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
-	}else if( isNaN(diferencia)){
-		$('#txtFechaComprobante').val(moment().format('YYYY-MM-DD'))
-	}
-});
-
 $('#btnVaciarBandeja').click(function() {
 	$('#overlay').css('display', 'flex')
 	$('#pFrase').text('Limpiando los datos de la bandeja')
@@ -1603,7 +787,11 @@ function buscarSunatEditar() {
 }
 
 <?php }?>
+	$.decimalSuper = <?= json_encode($decimalesSuper) ?>;
+	$.porcentajeIGV1 = <?= json_encode($porcentajeIGV1) ?>;
+	$.casaHost = <?= json_encode($casaHost) ?>;
 </script>
+<script src="js/emision.js"></script>
 <?php include "piePagina.php"; ?>
 </body>
 </html>
