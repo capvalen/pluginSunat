@@ -1,5 +1,5 @@
 <?php
-include "conexion.php";
+include __DIR__. "/conexion.php";
 $sql="SELECT `idProductos`, `prodDescripcion`, p.`idUnidad`, `prodPrecio`, `prodActivo`, u.undDescipcion
 FROM `productos` p inner join unidades u on u.idUnidad = p.idUnidad 
 WHERE `prodActivo`=1";
