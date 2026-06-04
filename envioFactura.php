@@ -24,8 +24,8 @@ if( !isset($_COOKIE['ckUsuario']) ){
 	<h1>Enviar facturas</h1>
 	<p>Todas las facturas que no han sido enviadas aún a SUNAT. </p>
 	<div class="row">
-		<button class="btn btn-outline-primary mb-3" @click="enviarComprobantes()"><i class="icofont-copy"></i> Generar comprobantes TXT</button>
-		<button class="btn btn-outline-primary ml-2 mb-3" @click="actualizarDB()"><i class="icofont-copy"></i> Actualizar DB</button>
+		<button class="btn btn-outline-primary mb-3" @click="enviarComprobantes()"><i class="bi bi-file-earmark-zip"></i> Generar comprobantes TXT</button>
+		<button class="btn btn-outline-success ml-2 mb-3" @click="actualizarDB()"><i class="bi bi-arrow-repeat"></i> Actualizar DB</button>
 	</div>
 	<table class="table table-hover">
 		<thead>
@@ -35,7 +35,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 				<th>Fecha</th>
 				<th>Comprobante</th>
 				<th>Estado</th>
-				<th @click="incluirTodo()"><i class="icofont-plus"></i> <input type="checkbox" id="chkTodo" ></th>
+				<th><i class="bi bi-check-all"></i> <input type="checkbox" id="chkTodo" checked @change="incluirTodo()"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -65,12 +65,14 @@ if( !isset($_COOKIE['ckUsuario']) ){
 	methods:{
 		todaData(){
 			axios.get('php/listarComprobantesRestantesSUNAT.php')
-      .then(function (response) { console.log( response );
+      .then(function (response) { //console.log( response );
 				app.comprobantes = response.data;
+				app.$nextTick(() => app.incluirTodo());
       })
       .catch(function (error) {
          console.log(error);
       });
+			
 		},
 		enlistar( estado, idComprobante ){ //console.log( 'estado ' + estado );
 			if (estado){
@@ -87,7 +89,7 @@ if( !isset($_COOKIE['ckUsuario']) ){
 		},
 		enviarComprobantes(){
 			axios('php/limpiarServidorSunat.php')
-			.then((response)=> {console.log( console.log(response.data));
+			.then((response)=> { console.log(response.data);
 				axios.post('php/crearArchivosFacturacion.php', {
 					comprobantes: app.seleccionados
 				})
@@ -124,15 +126,14 @@ if( !isset($_COOKIE['ckUsuario']) ){
 			.catch((error)=>{ console.log( error );});
 		},
 		incluirTodo(){
-			this.comprobantes.forEach( caso => {
-				console.log( caso );
-				this.enlistar(true, caso.idComprobante)
-			})
-			//this.seleccionados.push(idComprobante)
-			let checks = document.querySelectorAll('tbody .checkbox');
-			checks.forEach((chk)=>{
-				chk.checked=true;
-			});
+			var chkTodo = document.getElementById('chkTodo');
+			if (chkTodo.checked) {
+				this.comprobantes.forEach(caso => this.enlistar(true, caso.idComprobante));
+				document.querySelectorAll('tbody .checkbox').forEach(chk => chk.checked = true);
+			} else {
+				this.seleccionados = [];
+				document.querySelectorAll('tbody .checkbox').forEach(chk => chk.checked = false);
+			}
 		}
 		
 	}

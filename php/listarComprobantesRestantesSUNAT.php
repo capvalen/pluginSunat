@@ -2,7 +2,7 @@
 
 include __DIR__. '/conexion.php';
 
-$sql="SELECT `idFacturador`, f.`idComprobante`, case `estado` when 1 then 'Falta' else 'otro caso' end as estado, date_format(`fechaEmision`, '%d/%m/%y %h:%i %p') as factFecha, fc.factSerie, fc.factCorrelativo
+$sql="SELECT `idFacturador`, f.`idComprobante`, case `estado` when 0 then 'Falta' when 1 then 'Falta' else 'otro caso' end as estado, date_format(`fechaEmision`, '%d/%m/%y %h:%i %p') as factFecha, fc.factSerie, fc.factCorrelativo
 FROM `facturador` f 
 inner join fact_cabecera fc on fc.idComprobante = f.idComprobante
 WHERE f.estado in (0,1) and fc.factTipoDocumento<>0; ";
