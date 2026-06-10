@@ -28,7 +28,7 @@ $nomArchivo = basename($_SERVER['PHP_SELF']); ?>
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
     		  <!-- <a class="dropdown-item" href="#!" id="btnModificarSerie"><i class="icofont-tag"></i> Modificar serie</a> -->
-					<!-- <a class="dropdown-item" href="compras.php" target="_blank"><i class="icofont-sale-discount"></i> Compras</a> -->
+					<a class="dropdown-item" href="compras.php"><i class="icofont-sale-discount"></i> Compras</a>
 					<a class="dropdown-item" href="productos.php" id=""><i class="icofont-hotel"></i> Productos</a>
 					<a class="dropdown-item d-none" href="#!" id="btnModificarPrecios"><i class="icofont-infinite"></i> Modificar precios</a>
 					

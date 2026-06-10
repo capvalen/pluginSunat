@@ -1,18 +1,19 @@
 <?php 
 
 date_default_timezone_set('America/Lima');
-include 'conexion.php';
+include __DIR__.'/conexion.php';
 
 
 $productos= $_POST['jsonProductos'];
 
 
-$sqlEProveedor="SELECT * FROM `clientes` where cliRuc = '{$_POST['ruc']}' and esProveedor=1; ";
+$sqlEProveedor="SELECT * FROM `clientes` where cliRuc = '{$_POST['ruc']}' "; //antes: and esProveedor=1; 
 
 $resultadoEProveedor=$cadena->query($sqlEProveedor);
 if( $resultadoEProveedor->num_rows>=1 ){
 	$rowEProveedor=$resultadoEProveedor->fetch_assoc();
 	$idProveedor = $rowEProveedor['idCliente'];
+	$esclavo->query("UPDATE clientes SET esProveedor=1 WHERE idCliente=$idProveedor");
 }else{
 	$sqlInsProveedor="INSERT INTO `clientes`(`idCliente`, `cliRuc`, `cliRazonSocial`, `cliComercial`, `cliDomicilio`, `cliTelefono`, `cliActivo`, `esProveedor`) 
 	VALUES (null, '{$_POST['ruc']}','{$_POST['razonSocial']}','', '{$_POST['domicilio']}','',1,1); ";
@@ -45,7 +46,7 @@ for ($i=0; $i < count($productos) ; $i++) {
 	}
 	
 	$_POST['cantidad']=$productos[$i]['cantidad'];
-	$_POST['obs']='';
+	$_POST['obs']="Compra N° $idCompra";
 	require 'updateStock.php';
 	
 

@@ -1,3 +1,16 @@
+-- 1.24
+INSERT INTO `configuracion` (`idConf`, `confVariable`, `confValor`) VALUES (NULL, 'version', '1.24');
+ALTER TABLE `compras_detalle`
+  ADD `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+
+ALTER TABLE `compras_detalle`
+  ADD `editado` datetime DEFAULT NULL COMMENT 'ultima edicion' AFTER `idUnidad`;
+
+ALTER TABLE `compras`
+  ADD `editado` datetime DEFAULT NULL COMMENT 'ultima edicion' AFTER `compTotal`;
+
+
+
 -- 1.23
 INSERT INTO `configuracion` (`idConf`, `confVariable`, `confValor`) VALUES (NULL, 'version', '1.23');
 UPDATE `unidades` set undDescipcion = 'Servicio', undSunat ='ZZ', undCorto='-' where idUnidad=11;

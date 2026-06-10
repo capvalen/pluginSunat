@@ -2,7 +2,7 @@
 include __DIR__. "/conexion.php";
 $sqlStock='';
 switch ($_POST['proceso']) {
-	case '1':
+	case '1': case '4':
 		$sqlStock = "UPDATE `productos` SET `prodStock` = `prodStock` + {$_POST['cantidad']}
 		where  `idProductos`= {$_POST['idProd']};";
 		break;

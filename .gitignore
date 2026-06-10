@@ -5,3 +5,4 @@ automatizador/DATA
 automatizador/.env
 automatizador/__pycache__
 automatizador/.vscode
+BD/estructura.sql

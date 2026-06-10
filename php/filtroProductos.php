@@ -14,7 +14,7 @@
 
 <?php 
 
-include 'conexion.php';
+include __DIR__.'/conexion.php';
 
 $sql="SELECT p.`idProductos`, lower(`prodDescripcion`) as prodDescripcion, p.`idUnidad`, `prodPrecio`, `prodStock`, p.`idGravado`, lower(u.undCorto) as undCorto, g.gravDescripcion, undSunat FROM `productos`  p
 inner join unidades u on u.idUnidad = p.idUnidad
@@ -28,14 +28,14 @@ $i=0;
 if( $resultado->num_rows>=1 ){
 while($row=$resultado->fetch_assoc()){ ?>
 
-<tr data-id='<?= $row['idProductos'];?>'>
+<tr data-id='<?= $row['idProductos'];?>' style="cursor:pointer">
 	<td> #<?=$row['idProductos']; ?> </td>
 	<td class="text-capitalize tdNombreProd"> <?=$row['prodDescripcion']; ?> </td>
 	<td class="tdPrecioProd"> <?=$row['prodPrecio']; ?> </td>
 	<td> <?=$row['prodStock']; ?> </td>
 	<td class="text-capitalize tdUnidad" data-und="<?= $row['undSunat'];?>"> <?=$row['undCorto']; ?> </td>
 	<td class="tdGravado" data-gravado="<?= $row['idGravado'];?>"> <?=$row['gravDescripcion']; ?> </td>	
-	<td> <button class="btn btn-sm btn-outline-primary border-0 btnAgregarProdCesta" data-toggle="tooltip" title="Agregar a la lista"><i class="icofont-rounded-down"></i></button> </td>
+	<td> <button class="btn btn-sm btn-outline-primary border-0 btnAgregarProdCesta" data-toggle="tooltip" title="Seleccionar producto"><i class="bi bi-arrow-right"></i></button> </td>
 </tr>
 
 <?php $i++; } } else{ ?>

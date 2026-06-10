@@ -5,7 +5,7 @@ if ($_POST['idProd'] == 1) { return "ok"; exit; } //no cuenta el stock libre, en
 
 $sqlStock='';
 switch ($_POST['proceso']) {
-	case '1':
+	case '1': case '4':
 		$sqlStock = "UPDATE `productos` SET `prodStock` = `prodStock` + {$_POST['cantidad']}
 		where  `idProductos`= {$_POST['idProd']};";
 		break;
