@@ -3,11 +3,21 @@ date_default_timezone_set('America/Lima');
 include __DIR__. "/conexion.php";
 
 $comprobantes = [1, 3, 12];
-$numInterno = 0; $numBoletas =0; $numFacturas = 0; $numDebito=0; $numCredito=0; $sumIgv =0; $sumTotales=0;
+$numInterno = 0; $numBoletas =0; $numFacturas = 0; $numDebito=0; $numCredito=0; $sumIgv =0; $sumTotales=0; $sumBajas=0;
 
-$select = "SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'Factura' when 3 then 'Boleta' when 4 then 'Nota de Crédito' when 5 then 'Nota de Débito' when 0 then 'Interno' when -1 then 'Proforma' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Generar XML' when 0 then 'Sin emitir' when '2' then 'De baja' when '3' then 'Enviado a SUNAT' when 4 then 'Borrado' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja`, esContado, adelanto, observaciones FROM `fact_cabecera` ";
+$select = "SELECT `idComprobante`, `factTipoDocumento`, case `factTipoDocumento` when 1 then 'Factura' when 3 then 'Boleta' when 4 then 'Nota de Crédito' when 5 then 'Nota de Débito' when 0 then 'Interno' when -1 then 'Proforma' end as 'queDoc', `factSerie`, `factCorrelativo`, `tipOperacion`, `fechaEmision`, `horaEmision`, `fechaVencimiento`, `codLocalEmisor`, `tipDocUsuario`, `dniRUC`, lower(`razonSocial`) as razonSocial, `tipoMoneda`, `costoFinal`, `IGVFinal`, `totalFinal`, `sumDescTotal`, `sumOtrosCargos`, `sumTotalAnticipos`, `sumImpVenta`, `ublVersionId`, `customizationId`, `ideTributo`, `nomTributo`, `codTipTributo`, `mtoBaseImponible`, `mtoTributo`, `codLeyenda`, `desLeyenda`, comprobanteEmitido, case `comprobanteEmitido` when 1 then 'Generar XML' when 0 then 'Sin emitir' when '2' then 'De baja' when '3' then 'Enviado a SUNAT' when 4 then 'Borrado' end as comprobanteEmitidoDescr, `comprobanteFechado`, `cliDireccion`, `motivoBaja`, esContado, adelanto, observaciones, notificadoBaja FROM `fact_cabecera` ";
 if (isset($_POST['texto']) && $_POST['texto']<>'' ):
-	$sql = $select . " WHERE concat( `factSerie`,'-',factCorrelativo) like '%{$_POST['texto']}' or dniRUC = '%{$_POST['texto']}' or razonSocial like '%{$_POST['texto']}%';";
+	$texto = $_POST['texto'];
+	if (strpos($texto, '-') !== false) {
+		$partes = explode('-', $texto, 2);
+		$serie = trim($partes[0]);
+		$correlativo = ltrim(trim($partes[1]), '0') ?: '0';
+		$sql = $select . " WHERE `factSerie` = '{$serie}' AND `factCorrelativo` = '{$correlativo}';";
+	} elseif (is_numeric($texto) && strlen($texto) >= 8) {
+		$sql = $select . " WHERE `dniRUC` = '{$texto}';";
+	} else {
+		$sql = $select . " WHERE razonSocial LIKE '%{$texto}%';";
+	}
 
 else:
 	if (isset($_POST['fecha'])) {
@@ -56,15 +66,20 @@ if ($numero == 0) { ?>
 <?php }
 $i = 1;
 while ($row = $resultado->fetch_assoc()) {
-	$fEmision1 = new DateTime($row['fechaEmision']);
-	$hora = new DateTime($row['horaEmision']);
-	if( $row['factTipoDocumento']==0) $numInterno++;
-	if( $row['factTipoDocumento']==1) $numFacturas++;
-	if( $row['factTipoDocumento']==3) $numBoletas++;
-	if( $row['factTipoDocumento']==4) $numCredito++;
-	if( $row['factTipoDocumento']==5) $numDebito++;
-	$sumIgv += $row['IGVFinal'];
-	$sumTotales += $row['totalFinal'];
+
+	if($row['comprobanteEmitido']<>2){
+		$fEmision1 = new DateTime($row['fechaEmision']);
+		$hora = new DateTime($row['horaEmision']);
+		if( $row['factTipoDocumento']==0) $numInterno++;
+		if( $row['factTipoDocumento']==1) $numFacturas++;
+		if( $row['factTipoDocumento']==3) $numBoletas++;
+		if( $row['factTipoDocumento']==4) $numCredito++;
+		if( $row['factTipoDocumento']==5) $numDebito++;
+		$sumIgv += $row['IGVFinal'];
+		$sumTotales += $row['totalFinal'];
+	}else{
+		$sumBajas++;
+	}
 ?>
 	<tr>
 		<td><?= $i; ?></td>
@@ -179,6 +194,7 @@ while ($row = $resultado->fetch_assoc()) {
 				<div class="col">
 					<p class="mb-0"><strong>Comprobantes:</strong> <span class="spanResultado"><?=  $i-1 ?></span></p>
 					<p class="mb-0"><strong>Venta interna:</strong> <span class="spanResultado"><?=  $numInterno ?></span></p>
+					<?php if($sumBajas > 0): ?><p class="mb-0"><strong>Bajas:</strong> <span class="spanResultado"><?=  $sumBajas ?></span></p><?php endif; ?>
 				</div>
 				<div class="col">
 					<p class="mb-0"><strong>Facturas:</strong> <span class="spanResultado"><?=  $numFacturas ?></span></p>

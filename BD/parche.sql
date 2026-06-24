@@ -1,3 +1,12 @@
+-- 1.26
+INSERT INTO `configuracion` (`idConf`, `confVariable`, `confValor`) VALUES (NULL, 'version', '1.26');
+ALTER TABLE `fact_cabecera` ADD `notificadoBaja` INT(1) NOT NULL DEFAULT '0' COMMENT '0=no notificado, 1=notificado' AFTER `observaciones`;
+ALTER TABLE `facturador` CHANGE `estado` `estado` INT(11) NOT NULL DEFAULT '0' COMMENT '0,1 falta enviar, 2 baja por enviar, 3 enviado, 4 baja enviada';
+
+-- 1.25
+INSERT INTO `configuracion` (`idConf`, `confVariable`, `confValor`) VALUES (NULL, 'version', '1.25');
+
+
 -- 1.24
 INSERT INTO `configuracion` (`idConf`, `confVariable`, `confValor`) VALUES (NULL, 'version', '1.24');
 ALTER TABLE `compras_detalle`

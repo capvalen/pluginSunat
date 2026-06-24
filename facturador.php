@@ -41,7 +41,7 @@ if( !isset($_COOKIE['ckidUsuario']) ){ header("Location: index.php");
 				<h3 class="display-4" style="font-size: 2.5rem;">Facturación Electrónica</h3>
 				<small class="text-muted"><i class="bi bi-person"></i> Usuario: <?= strtoupper($_COOKIE['ckAtiende']); ?></small>
 				<div class="row d-flex ">
-					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-calendar2-event"></i> Filtro por fecha</small><input type="date" class="form-control text-center" id="fechaFiltro" onchange="filtrarTablaHtml()"></div>
+					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-calendar2-event"></i> Filtro por fecha</small><input type="date" class="form-control text-center" id="fechaFiltro" onchange="$('#txtFiltro').val('');filtrarTablaHtml()"></div>
 					<div class="col-sm-3"><small class="text-muted"><i class="bi bi-funnel"></i> Filtro por comprobante, Cliente</small><input type="text" autocomplete="off" class="form-control" id="txtFiltro"></div>
 					<div class="col-sm-2 d-flex align-items-end">
 						<div><button class="btn btn-outline-primary" id="btnRefresh"><i class="bi bi-arrow-clockwise"></i> Refrescar</button></div>
@@ -295,20 +295,31 @@ $(document).ready(function(){
 	$('#tablaPrincipal tbody').children().remove();	
 	filtrarTablaHtml()
 });
+var timeoutBusqueda;
+function procesarRespuesta(resp){
+	$('#padreTablaPrincipal').html(resp)
+	$('#resumenTable').insertBefore('#tablaPrincipal');
+	$("#padreTablaPrincipal table").stupidtable();
+	$('[data-toggle="tooltip"]').tooltip();
+	$("#tablaPrincipal").stupidtable();
+	sumarGenerados()
+}
+
 function filtrarTablaHtml(){
 	$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{
 		fecha: $('#fechaFiltro').val(),
-		texto: $('#txtFiltro').val(),
-	} }).done(function(resp) {
-		//console.log(resp)
-		$('#padreTablaPrincipal').html(resp)
-		$('#resumenTable').insertBefore('#tablaPrincipal');
+		texto: ''
+	} }).done(procesarRespuesta);
+}
 
-		//$('#tablaPrincipal tbody').append(resp).anotherJqueryMethod;
-		$("#padreTablaPrincipal table").stupidtable();
-		$('[data-toggle="tooltip"]').tooltip();
-		$("#tablaPrincipal").stupidtable();
-		sumarGenerados()
+function buscarPorTexto(){
+	var txt = $('#txtFiltro').val().trim();
+	if(txt == '') return;
+	$('#txtFiltro').prop('disabled', true);
+	$.ajax({url: 'php/listarTodoPorFecha.php', type: 'POST', data:{
+		texto: txt
+	} }).done(procesarRespuesta).always(function(){
+		$('#txtFiltro').prop('disabled', false).focus().select();
 	});
 }
 function sumarGenerados(){
@@ -316,7 +327,7 @@ function sumarGenerados(){
 	$.each( $('#tablaPrincipal tbody tr'), function(index, obj){
 		//console.log( 'cambio num: '+ $(obj).find('.spTotalPac').text() );
 		let caso  = $(obj).find('.spTotalPac');
-		if($(caso).attr('data-estado')!='4'){
+		if($(caso).attr('data-estado')!='2' && $(caso).attr('data-estado')!='4'){
 			sumaDia+= parseFloat( caso.text().replace(',',''));
 		}
 	});
@@ -554,7 +565,9 @@ $('tbody').on('click', '.btnGenComprobante', function (e) {
 	});
 });
 $('#btnRefresh').click(function() {
-	location.reload();
+	$('#txtFiltro').val('');
+	$('#fechaFiltro').val(moment().format('YYYY-MM-DD'));
+	filtrarTablaHtml();
 });
 $('#btnModificarPrecios').click(function() {
 	$.ajax({url: 'php/llamarPrecios.php', type: 'POST'}).done(function(resp) {
@@ -646,12 +659,23 @@ function btnEnviarWhatsapp(){
 		window.open('https://wa.me/51'+ document.getElementById('txtWhatsapp').value.replaceAll(' ', '') + '?text='+ `Su Comprobante ${$.serie}-${$.correlativo} puede ser revisado online desde: ` + encodeURIComponent(`<?=  $webHost ?>printComprobantePDF.php?serie=${$.serie}&correlativo=${$.correlativo}`), '_blank')
 	
 }
-$('#txtFiltro').keyup(e=>{
+$('#txtFiltro').on('input', function(){
+	clearTimeout(timeoutBusqueda);
+	var txt = $(this).val().trim();
+	if(txt.length >3 && txt.indexOf('-') === -1){
+		timeoutBusqueda = setTimeout(function() {
+			$('#fechaFiltro').val('');
+			buscarPorTexto();
+		}, 600);
+	}
+}).keyup(function(e){
 	if (e.keyCode === 13) {
-		if($('#txtFiltro').val()==''){
+		clearTimeout(timeoutBusqueda);
+		var txt = $(this).val().trim();
+		if(txt == ''){
 			$('#btnRefresh').click()
 		}else{
-			filtrarTablaHtml()
+			buscarPorTexto()
 		}
 	}
 })

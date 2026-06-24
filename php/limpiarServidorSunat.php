@@ -23,6 +23,13 @@ if(is_dir($directorio)){
 					//echo "es archivo ". $archivoSinFirma." tiene ".strpos($archivoSinFirma, '.zip')."<br>";
 					if( strpos($archivoSinFirma, '.zip') ){ unlink($directorio . $archivoSinFirma); }
 					if( strpos($archivoSinFirma, '.CBA') ){ unlink($directorio . $archivoSinFirma); }
+					if( stripos($archivoSinFirma, '.RDI') ){ 
+						echo '<li>Eliminando RDI: '.$archivoSinFirma.'</li>'; 
+						unlink($directorio . $archivoSinFirma); 
+					}
+					if( stripos($archivoSinFirma, '.TRD') ){ 
+						unlink($directorio . $archivoSinFirma); 
+					}
 				}
 				if( strpos($archivoSinFirma, '.CAB') ){
 					echo '<li>';
@@ -42,7 +49,7 @@ if(is_dir($directorio)){
 				unlink($archivoSinFirma);
 			} */
 		}//finaliza While
-		echo '</ul>';//Se cierra la lista
+		echo '</ul>';
 		
 	}
 	/* $arZip =glob(opendir($directorio."datosSunat*.zip"));
@@ -55,7 +62,7 @@ if(is_dir($directorio)){
 		if(file_exists($arCBA[$i])){ unlink($arCBA[$i]); }
 	} */
 }else{
-	echo "La ruta del Facturador es erronea";
+	echo "La ruta del Facturador es errónea";
 }
 
 function actualizarDB($archivoConFirma, $dirBase){

@@ -9,7 +9,7 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 	$resultadoEstado=$esclavo->query($sqlEstado);
 	$rowEstado=$resultadoEstado->fetch_assoc();
 	if($rowEstado['comprobanteEmitido']=='2'){ //de baja
-		$estado=2;
+		$estado=4; //baja ya enviada
 	}else{
 		$estado=3;
 	}

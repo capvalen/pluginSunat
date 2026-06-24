@@ -20,11 +20,71 @@ $path = realpath( $current_dir . '/'.$directorio );
 $_POST = json_decode(file_get_contents('php://input'),true); 
 //var_dump($_POST['comprobantes']); die();
 
+
 foreach ($_POST['comprobantes'] as $comprobante) {
 	$lineaDetalle='';
 	$sqlCabecera="SELECT * from `fact_cabecera` WHERE `idComprobante` = {$comprobante}; ";
 	$resultadoCabecera=$cadena->query($sqlCabecera);
 	while($rowCabecera=$resultadoCabecera->fetch_assoc()){
+
+		/* *************** BAJAS ****************** */
+		if ($rowCabecera['comprobanteEmitido'] == 2) {
+			$contBajaPad = str_pad('001', 3, '0', STR_PAD_LEFT);
+			$nombreArchivoBaja = $rucEmisor."-RA-".date('Ymd')."-".$contBajaPad;
+			$factura = $rowCabecera['factSerie'].'-'.str_pad($rowCabecera['factCorrelativo'], 8, '0', STR_PAD_LEFT);
+			$tipoDocResumen = sprintf("%02d", $rowCabecera['factTipoDocumento']);
+
+			$totalGravadas = number_format($rowCabecera['costoFinal'], 2, '.', '');
+			$totalExoneradas = number_format($rowCabecera['factExonerados'], 2, '.', '');
+			$totalVenta = number_format($rowCabecera['totalFinal'], 2, '.', '');
+
+			$lineaRdi = implode('|', [
+				$rowCabecera['fechaEmision'],
+				date('Y-m-d'),
+				$tipoDocResumen,
+				$factura,
+				$rowCabecera['tipDocUsuario'],
+				$rowCabecera['dniRUC'],
+				$rowCabecera['tipoMoneda'],
+				$totalGravadas,
+				$totalExoneradas,
+				'0.00', // inafectas
+				'0.00', // exportación
+				'0.00', // gratuitas
+				number_format($rowCabecera['sumOtrosCargos'], 2, '.', ''),
+				$totalVenta,
+				'', '', '', '', '', '', '', '', // campos 15-22 vacíos
+				'3'  // estado: 3 = baja
+			]) . '|';
+
+			// RDI: si existe, agregar línea; si no, crear archivo
+			$rdiPath = "{$path}/{$nombreArchivoBaja}.RDI";
+			if (file_exists($rdiPath)) {
+				$rdi = fopen($rdiPath, "a");
+				fwrite($rdi, "\n" . $lineaRdi);
+			} else {
+				$rdi = fopen($rdiPath, "w");
+				fwrite($rdi, $lineaRdi);
+			}
+			fclose($rdi);
+
+			// TRD: línea de tributo
+			$lineaTrd = '1|1000|IGV|VAT|' . number_format($rowCabecera['mtoBaseImponible'], 2, '.', '') . '|' . number_format($rowCabecera['mtoTributo'], 2, '.', '') . '|';
+
+			// TRD: si existe, agregar línea; si no, crear archivo
+			$trdPath = "{$path}/{$nombreArchivoBaja}.TRD";
+			if (file_exists($trdPath)) {
+				$trd = fopen($trdPath, "a");
+				fwrite($trd, "\n" . $lineaTrd);
+			} else {
+				$trd = fopen($trdPath, "w");
+				fwrite($trd, $lineaTrd);
+			}
+			fclose($trd);
+
+			continue 2; //sale del while y del foreach
+		}
+		
 		/* ***************  CABECERA ****************** */
 		
 		$caso = "-0{$rowCabecera['factTipoDocumento']}-"; // 01 para factura, 03 para boleta
@@ -120,9 +180,7 @@ foreach ($_POST['comprobantes'] as $comprobante) {
 		$i++;
 	}
 }
-/* ************ Llamamos a bajas *************** */
-require_once('darBajas_todas.php');
-/* ************ Fin de bajas *************** */
+/* ************ Bajas procesadas dentro del while *************** */
 
 
 

@@ -32,8 +32,9 @@ if( !isset($_COOKIE['ckUsuario']) ){
 			<tr>
 				<th>#</th>
 				<th>ID</th>
-				<th>Fecha</th>
 				<th>Comprobante</th>
+				<th>Fecha Comprobante</th>
+				<th>Ocurencia</th>
 				<th>Estado</th>
 				<th><i class="bi bi-check-all"></i> <input type="checkbox" id="chkTodo" checked @change="incluirTodo()"></th>
 			</tr>
@@ -43,8 +44,9 @@ if( !isset($_COOKIE['ckUsuario']) ){
 				<tr v-for="(comprobante, index) in comprobantes">
 					<td>{{index+1}}</td>
 					<td>{{comprobante.idComprobante}}</td>
-					<td>{{comprobante.factFecha}}</td>
 					<td>{{comprobante.factSerie}} {{comprobante.factCorrelativo}}</td>
+					<td>{{comprobante.factFecha}}</td>
+					<td>{{comprobante.fechaOcurrencia}}</td>
 					<td>{{comprobante.estado}}</td>
 					<td><label @click="enlistar($event.target.checked, comprobante.idComprobante)"><input type="checkbox" class="checkbox" > </label></td>
 				</tr>
