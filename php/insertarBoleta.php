@@ -132,9 +132,9 @@ for ($i=0; $i < count($productos) ; $i++) {
 			$igvCant= 0;
 			$codigoIGV='9997'; $nomTributo ='EXO'; $tipAfecto=20;
 		}
-		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`, `facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
+		$sqlProd = "INSERT INTO `fact_detalle`(`codItem`,`idCabecera`, `facSerieCorre`, `codUnidadMedida`, `cantidadItem`, `codProducto`, `descripcionItem`,
 		`valorUnitario`, `valorExonerado`, `igvUnitario`, `mtoIgvItem`, `valorItem`, `mtoPrecioVenta`, `mtoValorVenta`, `codTriIGV`, `nomTributoIgvItem`, `tipAfeIGV`, `fechaEmision`, `idGravado`, `idProducto`, `porIgvItem`) VALUES
-		 (null,  concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['descripcionProducto']}',
+		 (null, $idFactura, concat('{$serie}','-','{$correlativo}'), '{$productos[$i]['unidadSunat']}', {$canti}, {$i}, '{$productos[$i]['descripcionProducto']}',
 		 {$costoUnit}, {$exonerado}, {$igvUnit}, {$igvCant}, {$valorUnit},{$subTo},{$valorUnit}, {$codigoIGV}, '{$nomTributo}', {$tipAfecto}, NOW(), {$productos[$i]['afecto']}, {$productos[$i]['idProd']}, {$porcentajeIGV});";
 		 //echo $sqlProd; die();
 		 $cadena->query($sqlProd);

@@ -148,16 +148,18 @@ while ($row = $resultado->fetch_assoc()) {
 					<button class="btn btn-outline-warning btn-sm border border-light imprTicketFuera" data-toggle="tooltip" data-placement="top" title="Imprimir ticket"><i class="bi bi-sticky-fill"></i></button>
 					<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera d-none d-sm-block" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="bi bi-printer"></i></button>
 					<button class="btn btn-outline-secondary btn-sm border border-light imprPDFFuera d-block d-sm-none" data-toggle="tooltip" data-placement="top" title="Imprimir PDF"><i class="bi bi-printer"></i></button>
-					<!-- Boton compartir -->
-					<button class="btn btn-outline-primary btn-sm border border-light  d-block d-sm-none" onclick="compartir(`<?= $row['factSerie'] ?>`, `<?= $row['factCorrelativo']; ?>`)" data-toggle="tooltip" data-placement="top" title="Compartir"><i class="bi bi-share"></i></button>
-					<button class="btn btn-outline-primary btn-sm border border-light " data-toggle="modal" data-target="#modalCompartirPc" onclick="compartirPc(`<?= $row['factSerie'] ?>`, `<?= $row['factCorrelativo']; ?>`)" data-toggle="tooltip" data-placement="top" title="Compartir Pc"><i class="bi bi-share"></i></button>
-					<!-- Fin Boton compartir -->
+					<?php if($row['notificadoBaja']!=1): ?>
+						<!-- Boton compartir -->
+						<button class="btn btn-outline-primary btn-sm border border-light  d-block d-sm-none" onclick="compartir(`<?= $row['factSerie'] ?>`, `<?= $row['factCorrelativo']; ?>`)" data-toggle="tooltip" data-placement="top" title="Compartir"><i class="bi bi-share"></i></button>
+						<button class="btn btn-outline-primary btn-sm border border-light " data-toggle="modal" data-target="#modalCompartirPc" onclick="compartirPc(`<?= $row['factSerie'] ?>`, `<?= $row['factCorrelativo']; ?>`)" data-toggle="tooltip" data-placement="top" title="Compartir Pc"><i class="bi bi-share"></i></button>
+						<!-- Fin Boton compartir -->
 
-					<?php if ($_COOKIE['ckPower'] == 1) { ?>
-						<button class="btn btn-outline-danger btn-sm border border-light btnDarBajas" data-toggle="tooltip" data-placement="top" title="Dar de baja" data-boleta="<?= $row['factTipoDocumento']; ?>" data-baja="<?= $row['idComprobante']; ?>"><i class="bi bi-box-arrow-in-down"></i></button>
+						<?php if ($_COOKIE['ckPower'] == 1) { ?>
+							<button class="btn btn-outline-danger btn-sm border border-light btnDarBajas" data-toggle="tooltip" data-placement="top" title="Dar de baja" data-boleta="<?= $row['factTipoDocumento']; ?>" data-baja="<?= $row['idComprobante']; ?>"><i class="bi bi-box-arrow-in-down"></i></button>
 
-				<?php }
-				} else {?>
+						<?php } ?>
+					<?php endif; //fin de if de notificadoBaja ?>
+				<?php } else {?>
 					<button class="btn btn-outline-secondary btn-sm border border-light imprA4Fuera" data-toggle="tooltip" data-placement="top" title="Imprimir A4"><i class="bi bi-printer"></i></button>
 					<?php
 				}
@@ -175,9 +177,11 @@ while ($row = $resultado->fetch_assoc()) {
 					<button class="btn btn-outline-warning btn-sm border border-light " onclick="borrarExtra('<?= $row['idComprobante'] ?>')" data-toggle="tooltip" data-placement="top" title="Borrar interno"><i class="bi bi-patch-minus"></i></button>
 					<button class="btn btn-outline-primary btn-sm border border-light " onclick="prepararTransformacion('<?= $row['idComprobante'] ?>')" data-toggle="tooltip" data-placement="top" title="Convertir en..."><i class="bi bi-chevron-double-up"></i></button>
 				<?php } ?>
+				<?php if($row['notificadoBaja']!=1): ?>
 				<!-- Boton compartir -->
 				<button class="btn btn-outline-primary btn-sm border border-light " data-toggle="modal" data-target="#modalCompartirPc" onclick="compartirPc(`<?= $row['factSerie'] ?>`, `<?= $row['factCorrelativo']; ?>`)" data-toggle="tooltip" data-placement="top" title="Compartir Pc"><i class="bi bi-share"></i></button>
 				<!-- Fin Boton compartir -->
+				<?php endif; ?>
 			</td>
 		<?php } ?>
 	</tr>
