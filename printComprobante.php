@@ -2,16 +2,16 @@
 //include('phpqrcode/qrlib.php'); 
 include "generales.php";
 
-$jsonData = file_get_contents('php://input');
-$_POST = json_decode($jsonData, true);
+/* $jsonData = file_get_contents('php://input');
+if($jsonData) $_POST = json_decode($jsonData, true);
 
 // Rechazar OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 	http_response_code(200);
 	exit;
-}
+} */
 
-var_dump($_POST); die();
+//var_dump($_POST); die();
 //require __DIR__ . '/vendor/mike42/escpos-php/autoload.php';
 require __DIR__ . '/vendor/autoload.php';
 use Mike42\Escpos\Printer;
@@ -39,6 +39,8 @@ $separador ='|';
 $tempDir = './';
 $filename = "qrtemp";
 $body =  $_POST['rucEmisor'] .$separador. $_POST['tipoComprobante'] .$separador. $_POST['serie'] .$separador. $_POST['correlativo'] .$separador. $_POST['igvFinal'] .$separador. $_POST['totalFinal'] . $separador. $_POST['fecha'] . $separador. $_POST['tipoCliente'] . $separador. $_POST['docClient']. $separador ;
+
+$_POST['esServicio'] =0; //desactivar en caso de productos
 
 $writer = new PngWriter();
 
