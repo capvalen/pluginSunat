@@ -1,3 +1,8 @@
+-- 1.27
+UPDATE `configuracion` SET `confValor` = '1.26' WHERE `confValor` = 'version'; 
+ALTER TABLE `fact_detalle` CHANGE `tipAfeIGV` `tipAfeIGV` DECIMAL(10,2) NULL DEFAULT '10.5';
+ALTER TABLE `fact_detalle` CHANGE `porIgvItem` `porIgvItem` DECIMAL(10,2) NULL DEFAULT '18';
+
 -- 1.26
 UPDATE `configuracion` SET `confValor` = '1.26' WHERE `confValor` = 'version'; 
 ALTER TABLE `fact_cabecera` ADD `notificadoBaja` INT(1) NOT NULL DEFAULT '0' COMMENT '0=no notificado, 1=notificado' AFTER `observaciones`;
