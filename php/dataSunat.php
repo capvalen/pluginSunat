@@ -25,7 +25,7 @@ if($resultado->num_rows>=1){
 		echo json_encode($fila);
 	}
 	if( strlen($_POST['ruc'])==8){
-		$info = consultarDNI( $_POST['ruc'], $token );
+		$info = consultarDNI( $_POST['ruc'], $api_dni );
 	}
 	if( strlen($_POST['ruc'])==11){
 		$info = consultarRUC( $_POST['ruc'], $token );
@@ -33,8 +33,8 @@ if($resultado->num_rows>=1){
 	echo json_encode($info, true);
 }
 
-function consultarDNI($dni, $token ){
-	$url = "https://dniruc.apisperu.com/api/v1/dni/{$dni}?token={$token}";
+function consultarDNI($dni, $token_dni){
+	$url = "https://dnis.infocat.workers.dev/api/dni/{$dni}/{$token_dni}";
 
 	$ch = curl_init();
 
@@ -61,20 +61,20 @@ function consultarDNI($dni, $token ){
 	// Decodificar JSON
 	$data = json_decode($response, true);
 	
-	// Si no se encontraron resultados, devolver fila vacía
-	if (isset($data['message']) && $data['message'] === 'No se encontraron resultados.') {
+	// Si hay error en la respuesta (Formato incorrecto o DNI no encontrado)
+	if (isset($data['error'])) {
 		return filaVacia();
 	}
 	
 	// Si tiene los datos esperados, devolver fila con datos
-	if (isset($data['dni'], $data['nombres'], $data['apellidoPaterno'], $data['apellidoMaterno'])) {
+	if (isset($data['dni'], $data['apellido'], $data['nombre'])) {
 			return array(
-					"razon_social" => limpiarTexto($data['apellidoPaterno']) . ' ' . limpiarTexto($data['apellidoMaterno']) . ' ' . limpiarTexto($data['nombres']),
-					"domicilio_fiscal" => '',
+					"razon_social" => limpiarTexto($data['completo'] ?? $data['apellido'] . ', ' . $data['nombre']),
+					"domicilio_fiscal" => isset($data['direccion']) ? limpiarTexto($data['direccion']) : '',
 					"activo" => 'ACTIVO',
-					"paterno" => limpiarTexto($data['apellidoPaterno']),
-					"materno" => limpiarTexto($data['apellidoMaterno']),
-					"nombres" => limpiarTexto($data['nombres'])
+					"paterno" => limpiarTexto($data['apellido']),
+					"materno" => '',
+					"nombres" => limpiarTexto($data['nombre'])
 			);
 	}
 	
